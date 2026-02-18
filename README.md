@@ -20,6 +20,10 @@ No hay botón manual de ejecutar: el flujo corre automático al terminar la grab
 	- `POST /api/transcribe` (proxy a Whisper)
 	- `POST /api/execute` (transcribe + match + launch en AWX)
 	- `GET /api/health-awx` (diagnóstico de conectividad/token AWX)
+	- `POST /api/auth/login` (inicio de sesión)
+	- `POST /api/auth/logout` (cierre de sesión)
+	- `GET /api/auth/session` (estado de sesión)
+	- `GET/POST/DELETE /api/auth/local-users` (gestión de usuarios locales)
 - STT local: `whisper-server` en `http://127.0.0.1:5000`.
 - Orquestación remota: AWX API v2 con token Bearer.
 
@@ -57,22 +61,31 @@ Notas:
 - `AWX_BASE_URL` debe usar el protocolo real configurado en tu instancia (`http` o `https`).
 - El backend elimina slash final automáticamente.
 - `AUTH_JWT_SECRET` es obligatorio para emitir sesiones.
-- El login intenta primero contra `LOCAL_AUTH_USERS` y luego contra LDAP (si está configurado).
+- El login intenta primero contra usuarios locales guardados en `uploads/local-users.json`, luego contra `LOCAL_AUTH_USERS` y por último LDAP (si está configurado).
 - Si no configuras LDAP, puedes operar solo con usuarios locales.
-- Los usuarios locales creados desde la UI se guardan en `uploads/local-users.json` con hash seguro (no texto plano).
+- Los usuarios locales creados desde la UI se guardan en `uploads/local-users.json` con hash seguro + salt (no texto plano).
+- `LOCAL_AUTH_USERS` se puede usar como bootstrap inicial y luego retirarse.
 
 ## Autenticación
 
 - El acceso a `/` y a las APIs operativas requiere sesión.
 - Pantalla de login: `/login`.
+- Gestión de usuarios locales: `/users`.
 - Métodos admitidos:
 	- LDAP / Active Directory por correo + contraseña.
-	- Usuarios locales definidos en `LOCAL_AUTH_USERS`.
+	- Usuarios locales creados desde `/users`.
+	- Usuarios locales definidos en `LOCAL_AUTH_USERS` (fallback/arranque).
 - Endpoints de auth:
 	- `POST /api/auth/login`
 	- `POST /api/auth/logout`
 	- `GET /api/auth/session`
 	- `GET/POST/DELETE /api/auth/local-users` (gestión de usuarios locales)
+
+## Gestión de usuarios locales
+
+- La creación/edición/eliminación se hace desde `/users`.
+- Se guarda únicamente `email`, `salt` y `passwordHash` en `uploads/local-users.json`.
+- No se almacenan contraseñas en texto plano.
 
 ## Ejecutar en local
 
@@ -148,10 +161,18 @@ Verifica:
 
 ## UI actual
 
+- Header con logo (`public/logo.png`) a la izquierda.
+- Menú hamburguesa con accesos a gestión de usuarios y cierre de sesión.
+- Soporte de tema claro/oscuro persistido en `localStorage` (`dashboard-theme`).
 - Layout responsive: 2 bloques arriba (control + transcripción) y 1 abajo (resultado).
 - En desktop, los dos bloques superiores tienen altura visual equilibrada.
 - En móvil, los bloques se apilan en una sola columna.
 - Auto-stop por silencio para cerrar grabación sin clic extra.
+
+## Corrección de transcripción
+
+- Antes de ejecutar el matching de comandos se aplican correcciones de términos frecuentes (por ejemplo, variantes de “ansible”).
+- Lógica en `src/lib/transcript-corrections.ts`.
 
 ## Integración con `whisper-server`
 
@@ -173,6 +194,13 @@ npm run dev
 ### 2) “Unable to acquire lock ... .next/dev/lock”
 
 Ya hay otra instancia de Next.js corriendo. Cierra la anterior o mata el proceso y vuelve a iniciar.
+
+Si ocurre en build (`.next/lock`), elimina el lock y relanza:
+
+```bash
+rm -f .next/lock
+npm run build
+```
 
 ### 3) Errores 502 al ejecutar
 

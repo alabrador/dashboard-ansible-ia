@@ -125,20 +125,18 @@ export default function LoginPage() {
             <div
               className={
                 theme === "dark"
-                  ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/5 px-4 text-xs font-semibold tracking-wider text-zinc-200"
-                  : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-semibold tracking-wider text-zinc-700"
+                  ? "inline-flex h-8 items-center rounded-full border border-white/20 bg-white/5 px-2 text-xs font-semibold tracking-wider text-zinc-200"
+                  : "inline-flex h-8 items-center rounded-full border border-zinc-300 bg-white px-2 text-xs font-semibold tracking-wider text-zinc-700"
               }
             >
-              <div className="relative h-6 w-28">
-                <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  fill
-                  sizes="112px"
-                  className="object-contain"
-                  priority
-                />
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={28}
+                height={28}
+                className="h-5 w-auto object-contain"
+                priority
+              />
             </div>
             <button
               type="button"
