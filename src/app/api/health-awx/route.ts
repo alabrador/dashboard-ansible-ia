@@ -1,0 +1,62 @@
+import { NextResponse } from "next/server";
+
+const awxBaseUrl = process.env.AWX_BASE_URL;
+const awxToken = process.env.AWX_API_TOKEN;
+
+export async function GET() {
+  if (!awxBaseUrl || !awxToken) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Faltan AWX_BASE_URL o AWX_API_TOKEN en .env.local",
+      },
+      { status: 500 },
+    );
+  }
+
+  const baseUrl = awxBaseUrl.replace(/\/$/, "");
+  const pingUrl = `${baseUrl}/api/v2/ping/`;
+
+  try {
+    const response = await fetch(pingUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${awxToken}`,
+      },
+      signal: AbortSignal.timeout(10000),
+    });
+
+    const rawBody = await response.text();
+    let body: unknown = rawBody;
+
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      body = rawBody;
+    }
+
+    return NextResponse.json(
+      {
+        ok: response.ok,
+        status: response.status,
+        url: pingUrl,
+        baseUrl,
+        body,
+      },
+      { status: response.ok ? 200 : response.status },
+    );
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : "Error desconocido";
+
+    return NextResponse.json(
+      {
+        ok: false,
+        status: 502,
+        url: pingUrl,
+        baseUrl,
+        error: `No se pudo conectar con AWX: ${detail}`,
+      },
+      { status: 502 },
+    );
+  }
+}

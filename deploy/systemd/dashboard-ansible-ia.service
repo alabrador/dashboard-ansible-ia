@@ -1,0 +1,22 @@
+[Unit]
+Description=Dashboard Ansible IA (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=alabrador
+Group=alabrador
+WorkingDirectory=/home/alabrador/ansible/Dashboard Ansible IA/dashboard-ansible-ia
+Environment=NODE_ENV=production
+EnvironmentFile=/home/alabrador/ansible/Dashboard Ansible IA/dashboard-ansible-ia/.env.local
+ExecStart=/usr/bin/npm run start:prod
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/home/alabrador/ansible/Dashboard Ansible IA/dashboard-ansible-ia
+
+[Install]
+WantedBy=multi-user.target
