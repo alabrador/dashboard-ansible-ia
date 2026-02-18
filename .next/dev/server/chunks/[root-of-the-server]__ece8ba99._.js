@@ -1,0 +1,285 @@
+module.exports = [
+"[externals]/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js [external] (next/dist/compiled/next-server/app-route-turbo.runtime.dev.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/compiled/next-server/app-route-turbo.runtime.dev.js", () => require("next/dist/compiled/next-server/app-route-turbo.runtime.dev.js"));
+
+module.exports = mod;
+}),
+"[externals]/next/dist/compiled/@opentelemetry/api [external] (next/dist/compiled/@opentelemetry/api, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/compiled/@opentelemetry/api", () => require("next/dist/compiled/@opentelemetry/api"));
+
+module.exports = mod;
+}),
+"[externals]/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js [external] (next/dist/compiled/next-server/app-page-turbo.runtime.dev.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/compiled/next-server/app-page-turbo.runtime.dev.js", () => require("next/dist/compiled/next-server/app-page-turbo.runtime.dev.js"));
+
+module.exports = mod;
+}),
+"[externals]/next/dist/server/app-render/work-unit-async-storage.external.js [external] (next/dist/server/app-render/work-unit-async-storage.external.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/server/app-render/work-unit-async-storage.external.js", () => require("next/dist/server/app-render/work-unit-async-storage.external.js"));
+
+module.exports = mod;
+}),
+"[externals]/next/dist/server/app-render/work-async-storage.external.js [external] (next/dist/server/app-render/work-async-storage.external.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/server/app-render/work-async-storage.external.js", () => require("next/dist/server/app-render/work-async-storage.external.js"));
+
+module.exports = mod;
+}),
+"[externals]/next/dist/shared/lib/no-fallback-error.external.js [external] (next/dist/shared/lib/no-fallback-error.external.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/shared/lib/no-fallback-error.external.js", () => require("next/dist/shared/lib/no-fallback-error.external.js"));
+
+module.exports = mod;
+}),
+"[externals]/next/dist/server/app-render/after-task-async-storage.external.js [external] (next/dist/server/app-render/after-task-async-storage.external.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/server/app-render/after-task-async-storage.external.js", () => require("next/dist/server/app-render/after-task-async-storage.external.js"));
+
+module.exports = mod;
+}),
+"[externals]/node:crypto [external] (node:crypto, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("node:crypto", () => require("node:crypto"));
+
+module.exports = mod;
+}),
+"[externals]/node:fs [external] (node:fs, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("node:fs", () => require("node:fs"));
+
+module.exports = mod;
+}),
+"[externals]/node:path [external] (node:path, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("node:path", () => require("node:path"));
+
+module.exports = mod;
+}),
+"[externals]/node:util [external] (node:util, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("node:util", () => require("node:util"));
+
+module.exports = mod;
+}),
+"[project]/src/lib/auth/local-user-store.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "listStoredLocalUserEmails",
+    ()=>listStoredLocalUserEmails,
+    "removeStoredLocalUser",
+    ()=>removeStoredLocalUser,
+    "upsertStoredLocalUser",
+    ()=>upsertStoredLocalUser,
+    "verifyStoredLocalUser",
+    ()=>verifyStoredLocalUser
+]);
+var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/node:crypto [external] (node:crypto, cjs)");
+var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/node:fs [external] (node:fs, cjs)");
+var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/node:path [external] (node:path, cjs)");
+var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$util__$5b$external$5d$__$28$node$3a$util$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/node:util [external] (node:util, cjs)");
+;
+;
+;
+;
+const scrypt = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$util__$5b$external$5d$__$28$node$3a$util$2c$__cjs$29$__["promisify"])(__TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["scrypt"]);
+const STORE_DIR = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__["join"])(process.cwd(), "uploads");
+const STORE_PATH = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__["join"])(STORE_DIR, "local-users.json");
+async function ensureStoreFile() {
+    await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].mkdir(STORE_DIR, {
+        recursive: true
+    });
+    try {
+        await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].access(STORE_PATH);
+    } catch  {
+        const initialData = {
+            users: []
+        };
+        await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].writeFile(STORE_PATH, JSON.stringify(initialData, null, 2), "utf8");
+    }
+}
+async function readStore() {
+    await ensureStoreFile();
+    const raw = await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].readFile(STORE_PATH, "utf8");
+    try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.users)) {
+            return {
+                users: []
+            };
+        }
+        return {
+            users: parsed.users.filter((item)=>typeof item?.email === "string" && typeof item?.passwordHash === "string" && typeof item?.salt === "string")
+        };
+    } catch  {
+        return {
+            users: []
+        };
+    }
+}
+async function writeStore(data) {
+    await ensureStoreFile();
+    await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf8");
+}
+async function hashPassword(password, salt) {
+    const derivedKey = await scrypt(password, salt, 64);
+    return derivedKey.toString("hex");
+}
+async function listStoredLocalUserEmails() {
+    const store = await readStore();
+    return store.users.map((user)=>user.email).sort((a, b)=>a.localeCompare(b));
+}
+async function upsertStoredLocalUser(email, password) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const salt = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["randomBytes"])(16).toString("hex");
+    const passwordHash = await hashPassword(password, salt);
+    const store = await readStore();
+    const nextUsers = store.users.filter((user)=>user.email !== normalizedEmail);
+    nextUsers.push({
+        email: normalizedEmail,
+        passwordHash,
+        salt
+    });
+    await writeStore({
+        users: nextUsers
+    });
+}
+async function removeStoredLocalUser(email) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const store = await readStore();
+    const nextUsers = store.users.filter((user)=>user.email !== normalizedEmail);
+    if (nextUsers.length === store.users.length) {
+        return false;
+    }
+    await writeStore({
+        users: nextUsers
+    });
+    return true;
+}
+async function verifyStoredLocalUser(email, password) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const store = await readStore();
+    const user = store.users.find((item)=>item.email === normalizedEmail);
+    if (!user) {
+        return false;
+    }
+    const providedHash = await hashPassword(password, user.salt);
+    const expected = Buffer.from(user.passwordHash, "hex");
+    const actual = Buffer.from(providedHash, "hex");
+    if (expected.length !== actual.length) {
+        return false;
+    }
+    return (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["timingSafeEqual"])(expected, actual);
+}
+}),
+"[project]/src/app/api/auth/local-users/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "DELETE",
+    ()=>DELETE,
+    "GET",
+    ()=>GET,
+    "POST",
+    ()=>POST
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$user$2d$store$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/auth/local-user-store.ts [app-route] (ecmascript)");
+;
+;
+function normalizeEmail(email) {
+    return email.trim().toLowerCase();
+}
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+async function GET() {
+    try {
+        const users = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$user$2d$store$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["listStoredLocalUserEmails"])();
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            users
+        });
+    } catch  {
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            error: "No se pudo cargar la lista de usuarios locales."
+        }, {
+            status: 500
+        });
+    }
+}
+async function POST(request) {
+    try {
+        const body = await request.json();
+        const email = normalizeEmail(body.email ?? "");
+        const password = body.password?.trim() ?? "";
+        if (!email || !password) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "Debes enviar correo y contraseña."
+            }, {
+                status: 400
+            });
+        }
+        if (!isValidEmail(email)) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "El correo no tiene formato válido."
+            }, {
+                status: 400
+            });
+        }
+        if (password.length < 8) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "La contraseña debe tener al menos 8 caracteres."
+            }, {
+                status: 400
+            });
+        }
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$user$2d$store$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["upsertStoredLocalUser"])(email, password);
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            ok: true
+        });
+    } catch  {
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            error: "No se pudo guardar el usuario local."
+        }, {
+            status: 500
+        });
+    }
+}
+async function DELETE(request) {
+    try {
+        const body = await request.json();
+        const email = normalizeEmail(body.email ?? "");
+        if (!email) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "Debes indicar el correo a eliminar."
+            }, {
+                status: 400
+            });
+        }
+        const removed = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$user$2d$store$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["removeStoredLocalUser"])(email);
+        if (!removed) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "Usuario no encontrado."
+            }, {
+                status: 404
+            });
+        }
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            ok: true
+        });
+    } catch  {
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            error: "No se pudo eliminar el usuario local."
+        }, {
+            status: 500
+        });
+    }
+}
+}),
+];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__ece8ba99._.js.map

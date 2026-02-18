@@ -41,6 +41,30 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
+      "page": "/api/auth/local-users",
+      "regex": "^/api/auth/local\\-users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/local\\-users(?:/)?$"
+    },
+    {
+      "page": "/api/auth/login",
+      "regex": "^/api/auth/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/login(?:/)?$"
+    },
+    {
+      "page": "/api/auth/logout",
+      "regex": "^/api/auth/logout(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/logout(?:/)?$"
+    },
+    {
+      "page": "/api/auth/session",
+      "regex": "^/api/auth/session(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/session(?:/)?$"
+    },
+    {
       "page": "/api/execute",
       "regex": "^/api/execute(?:/)?$",
       "routeKeys": {},
@@ -63,6 +87,18 @@
       "regex": "^/favicon\\.ico(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/users",
+      "regex": "^/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/users(?:/)?$"
     }
   ],
   "dataRoutes": [],

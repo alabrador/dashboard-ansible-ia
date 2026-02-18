@@ -1,0 +1,3 @@
+{
+  "/api/auth/local-users/route": "app/api/auth/local-users/route.js"
+}

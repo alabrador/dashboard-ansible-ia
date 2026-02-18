@@ -32,23 +32,47 @@ No hay botón manual de ejecutar: el flujo corre automático al terminar la grab
 
 ## Variables de entorno
 
-1. Copia:
-
-```bash
-cp .env.example .env.local
-```
-
-2. Ajusta valores en `.env.local`:
+Configura `.env.local` con:
 
 ```dotenv
 WHISPER_SERVER_URL=http://127.0.0.1:5000
 AWX_BASE_URL=http://<host-awx>:10445
 AWX_API_TOKEN=<tu_token>
+AUTH_JWT_SECRET=<clave-larga-y-segura>
+
+# Usuarios locales (opcional)
+# Formato: correo:password;correo2:password2
+LOCAL_AUTH_USERS=admin@empresa.com:ClaveSegura123;operador@empresa.com:OtraClaveSegura
+
+# LDAP / Active Directory (opcional)
+LDAP_URL=ldap://ad.empresa.local:389
+LDAP_BASE_DN=DC=empresa,DC=local
+LDAP_BIND_DN=CN=svc_dashboard,OU=Servicios,DC=empresa,DC=local
+LDAP_BIND_PASSWORD=<password_cuenta_servicio>
+LDAP_USER_FILTER=(mail={{email}})
+LDAP_TIMEOUT_MS=5000
 ```
 
 Notas:
 - `AWX_BASE_URL` debe usar el protocolo real configurado en tu instancia (`http` o `https`).
 - El backend elimina slash final automáticamente.
+- `AUTH_JWT_SECRET` es obligatorio para emitir sesiones.
+- El login intenta primero contra `LOCAL_AUTH_USERS` y luego contra LDAP (si está configurado).
+- Si no configuras LDAP, puedes operar solo con usuarios locales.
+- Los usuarios locales creados desde la UI se guardan en `uploads/local-users.json` con hash seguro (no texto plano).
+
+## Autenticación
+
+- El acceso a `/` y a las APIs operativas requiere sesión.
+- Pantalla de login: `/login`.
+- Métodos admitidos:
+	- LDAP / Active Directory por correo + contraseña.
+	- Usuarios locales definidos en `LOCAL_AUTH_USERS`.
+- Endpoints de auth:
+	- `POST /api/auth/login`
+	- `POST /api/auth/logout`
+	- `GET /api/auth/session`
+	- `GET/POST/DELETE /api/auth/local-users` (gestión de usuarios locales)
 
 ## Ejecutar en local
 

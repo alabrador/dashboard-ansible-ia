@@ -1,0 +1,9 @@
+{
+  "users": [
+    {
+      "email": "alabrador@grupo-alter.com",
+      "passwordHash": "c3d1da2e11148a40573c80342319190787e86703fdfae6422eecace2a6601dd298b37d982240991f04b27cfd298d58f070eea0ef999a2c7f8c18cee42cebfd75",
+      "salt": "c9c46584d8e19a957a0f1e599321875d"
+    }
+  ]
+}

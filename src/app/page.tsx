@@ -1,6 +1,9 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Language = "es" | "en" | "it" | "pt";
 
@@ -45,6 +48,21 @@ const translations: Record<
     micAccessError: string;
     unknownError: string;
     invalidAudioCommand: string;
+    signOut: string;
+    signOutError: string;
+    localUsersTitle: string;
+    localUsersDescription: string;
+    localUsersEmail: string;
+    localUsersPassword: string;
+    localUsersSave: string;
+    localUsersReload: string;
+    localUsersEmpty: string;
+    localUsersDelete: string;
+    localUsersSaved: string;
+    localUsersDeleted: string;
+    localUsersLoadError: string;
+    localUsersSaveError: string;
+    localUsersDeleteError: string;
   }
 > = {
   es: {
@@ -73,6 +91,21 @@ const translations: Record<
     micAccessError: "No se pudo acceder al micrófono.",
     unknownError: "Error inesperado.",
     invalidAudioCommand: "No se encontró un comando válido en el audio.",
+    signOut: "Cerrar sesión",
+    signOutError: "No se pudo cerrar sesión.",
+    localUsersTitle: "Usuarios locales",
+    localUsersDescription: "Crear, actualizar o eliminar accesos locales por correo y contraseña.",
+    localUsersEmail: "Correo",
+    localUsersPassword: "Contraseña",
+    localUsersSave: "Guardar usuario",
+    localUsersReload: "Actualizar lista",
+    localUsersEmpty: "No hay usuarios locales guardados.",
+    localUsersDelete: "Eliminar",
+    localUsersSaved: "Usuario guardado correctamente.",
+    localUsersDeleted: "Usuario eliminado correctamente.",
+    localUsersLoadError: "No se pudo cargar la lista de usuarios locales.",
+    localUsersSaveError: "No se pudo guardar el usuario local.",
+    localUsersDeleteError: "No se pudo eliminar el usuario local.",
   },
   en: {
     themeLight: "☀️ Light",
@@ -99,6 +132,21 @@ const translations: Record<
     micAccessError: "Could not access the microphone.",
     unknownError: "Unexpected error.",
     invalidAudioCommand: "No valid command was found in the audio.",
+    signOut: "Sign out",
+    signOutError: "Could not sign out.",
+    localUsersTitle: "Local users",
+    localUsersDescription: "Create, update, or delete local credentials by email and password.",
+    localUsersEmail: "Email",
+    localUsersPassword: "Password",
+    localUsersSave: "Save user",
+    localUsersReload: "Refresh list",
+    localUsersEmpty: "No local users saved yet.",
+    localUsersDelete: "Delete",
+    localUsersSaved: "User saved successfully.",
+    localUsersDeleted: "User deleted successfully.",
+    localUsersLoadError: "Could not load local users list.",
+    localUsersSaveError: "Could not save local user.",
+    localUsersDeleteError: "Could not delete local user.",
   },
   it: {
     themeLight: "☀️ Chiaro",
@@ -126,6 +174,21 @@ const translations: Record<
     micAccessError: "Impossibile accedere al microfono.",
     unknownError: "Errore imprevisto.",
     invalidAudioCommand: "Nessun comando valido trovato nell'audio.",
+    signOut: "Esci",
+    signOutError: "Impossibile uscire.",
+    localUsersTitle: "Utenti locali",
+    localUsersDescription: "Crea, aggiorna o elimina accessi locali con email e password.",
+    localUsersEmail: "Email",
+    localUsersPassword: "Password",
+    localUsersSave: "Salva utente",
+    localUsersReload: "Aggiorna elenco",
+    localUsersEmpty: "Nessun utente locale salvato.",
+    localUsersDelete: "Elimina",
+    localUsersSaved: "Utente salvato correttamente.",
+    localUsersDeleted: "Utente eliminato correttamente.",
+    localUsersLoadError: "Impossibile caricare l'elenco utenti locali.",
+    localUsersSaveError: "Impossibile salvare l'utente locale.",
+    localUsersDeleteError: "Impossibile eliminare l'utente locale.",
   },
   pt: {
     themeLight: "☀️ Claro",
@@ -153,6 +216,21 @@ const translations: Record<
     micAccessError: "Não foi possível acessar o microfone.",
     unknownError: "Erro inesperado.",
     invalidAudioCommand: "Nenhum comando válido foi encontrado no áudio.",
+    signOut: "Sair",
+    signOutError: "Não foi possível encerrar a sessão.",
+    localUsersTitle: "Usuários locais",
+    localUsersDescription: "Criar, atualizar ou remover acessos locais por e-mail e senha.",
+    localUsersEmail: "E-mail",
+    localUsersPassword: "Senha",
+    localUsersSave: "Salvar usuário",
+    localUsersReload: "Atualizar lista",
+    localUsersEmpty: "Ainda não há usuários locais salvos.",
+    localUsersDelete: "Excluir",
+    localUsersSaved: "Usuário salvo com sucesso.",
+    localUsersDeleted: "Usuário removido com sucesso.",
+    localUsersLoadError: "Não foi possível carregar a lista de usuários locais.",
+    localUsersSaveError: "Não foi possível salvar o usuário local.",
+    localUsersDeleteError: "Não foi possível remover o usuário local.",
   },
 };
 
@@ -228,6 +306,7 @@ function formatError(error: unknown, fallback: string): string {
 }
 
 export default function Home() {
+  const router = useRouter();
   const SILENCE_AUTOSTOP_MS = 1300;
   const MIN_RECORDING_MS = 900;
 
@@ -241,6 +320,7 @@ export default function Home() {
   const [liveTranscript, setLiveTranscript] = useState("");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [language, setLanguage] = useState<Language>("es");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const t = translations[language];
 
@@ -438,6 +518,18 @@ export default function Home() {
     setIsRecording(false);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      router.replace("/login");
+      router.refresh();
+    } catch {
+      setError(t.signOutError);
+    }
+  };
+
   const primaryButtonClass = isRecording
     ? "bg-red-500 text-white hover:bg-red-400"
     : "bg-gradient-to-br from-sky-400 via-cyan-400 to-blue-500 text-zinc-950 hover:from-sky-300 hover:to-blue-400";
@@ -486,6 +578,21 @@ export default function Home() {
       ? "inline-flex items-center gap-1 font-medium text-sky-300 hover:text-sky-200"
       : "inline-flex items-center gap-1 font-medium text-sky-700 hover:text-sky-600";
 
+  const menuButtonClass =
+    theme === "dark"
+      ? "inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-zinc-200 transition hover:bg-white/15"
+      : "inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-700 transition hover:bg-zinc-100";
+
+  const menuPanelClass =
+    theme === "dark"
+      ? "absolute right-0 top-12 z-20 w-56 rounded-xl border border-white/15 bg-zinc-900/95 p-2 shadow-xl"
+      : "absolute right-0 top-12 z-20 w-56 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl";
+
+  const menuItemClass =
+    theme === "dark"
+      ? "flex h-9 items-center rounded-lg px-3 text-xs font-medium text-zinc-200 transition hover:bg-white/10"
+      : "flex h-9 items-center rounded-lg px-3 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100";
+
   const hintBoxClass =
     theme === "dark"
       ? "mt-4 rounded-lg border border-zinc-700 bg-zinc-950/70 p-3 text-xs text-zinc-300"
@@ -500,8 +607,25 @@ export default function Home() {
         </div>
       ) : null}
       <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center gap-6 px-6 py-10">
-        <header className="space-y-3 text-center">
-          <div className="flex flex-wrap items-center justify-end gap-2">
+        <header className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div
+              className={
+                theme === "dark"
+                  ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/5 px-4 text-xs font-semibold tracking-wider text-zinc-200"
+                  : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-semibold tracking-wider text-zinc-700"
+              }
+            >
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={120}
+                height={28}
+                className="h-6 w-auto object-contain"
+                priority
+              />
+            </div>
+            <div className="flex flex-wrap items-center justify-end gap-2">
             <div
               className={
                 theme === "dark"
@@ -555,12 +679,59 @@ export default function Home() {
             >
               {theme === "dark" ? t.themeLight : t.themeDark}
             </button>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsMenuOpen((current) => !current)}
+                className={menuButtonClass}
+                aria-label="Abrir menú"
+                aria-expanded={isMenuOpen}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              </button>
+              {isMenuOpen ? (
+                <div className={menuPanelClass}>
+                  <Link
+                    href="/users"
+                    className={menuItemClass}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Gestión de usuarios
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      void handleSignOut();
+                    }}
+                    className={`${menuItemClass} w-full`}
+                  >
+                    {t.signOut}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+            </div>
           </div>
-          <p className={`text-sm uppercase tracking-[0.2em] ${topLabelClass}`}>{t.headerSubtitle}</p>
-          <h1 className={titleClass}>
+          <p className={`text-center text-sm uppercase tracking-[0.2em] ${topLabelClass}`}>{t.headerSubtitle}</p>
+          <h1 className={`${titleClass} text-center`}>
             Whisper + AWX
           </h1>
-          <p className={`mx-auto max-w-2xl text-sm ${subtitleClass}`}>
+          <p className={`mx-auto max-w-2xl text-center text-sm ${subtitleClass}`}>
             {t.pageDescription}
           </p>
         </header>
@@ -654,6 +825,7 @@ export default function Home() {
             </div>
           ) : null}
         </section>
+
       </div>
     </main>
   );
