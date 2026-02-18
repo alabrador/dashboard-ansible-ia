@@ -55,6 +55,10 @@ LDAP_BIND_DN=CN=svc_dashboard,OU=Servicios,DC=empresa,DC=local
 LDAP_BIND_PASSWORD=<password_cuenta_servicio>
 LDAP_USER_FILTER=(mail={{email}})
 LDAP_TIMEOUT_MS=5000
+
+# Vercel KV / Upstash Redis (recomendado en producción)
+KV_REST_API_URL=<url-rest-kv>
+KV_REST_API_TOKEN=<token-rest-kv>
 ```
 
 Notas:
@@ -65,6 +69,7 @@ Notas:
 - Si no configuras LDAP, puedes operar solo con usuarios locales.
 - Los usuarios locales creados desde la UI se guardan en `uploads/local-users.json` con hash seguro + salt (no texto plano).
 - `LOCAL_AUTH_USERS` se puede usar como bootstrap inicial y luego retirarse.
+- Si `KV_REST_API_URL` y `KV_REST_API_TOKEN` están presentes, la app usa Vercel KV/Upstash para persistencia de usuarios locales.
 
 ## Autenticación
 
@@ -84,9 +89,11 @@ Notas:
 ## Gestión de usuarios locales
 
 - La creación/edición/eliminación se hace desde `/users`.
-- Se guarda únicamente `email`, `salt` y `passwordHash` en `uploads/local-users.json`.
+- Se guarda únicamente `email`, `salt` y `passwordHash`.
+- En producción con KV configurado, los usuarios se persisten en Vercel KV/Upstash.
+- En local (sin KV), se usa `uploads/local-users.json`.
 - No se almacenan contraseñas en texto plano.
-- En entornos serverless (ej. Vercel), el filesystem no es persistente para este uso; usa `LOCAL_AUTH_USERS` como método principal de acceso local.
+- En entornos serverless sin KV configurado (ej. Vercel), el filesystem no es persistente; usa `LOCAL_AUTH_USERS` como respaldo.
 
 ## Ejecutar en local
 

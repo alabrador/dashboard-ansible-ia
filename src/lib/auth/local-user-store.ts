@@ -2,10 +2,12 @@ import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:cry
 import { promises as fs } from "node:fs";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { kv } from "@vercel/kv";
 
 const scrypt = promisify(scryptCallback);
 const STORE_DIR = join(process.cwd(), "uploads");
 const STORE_PATH = join(STORE_DIR, "local-users.json");
+const KV_USERS_KEY = "dashboard:local-users";
 
 type StoredLocalUser = {
   email: string;
@@ -16,6 +18,31 @@ type StoredLocalUser = {
 type StoredLocalUserFile = {
   users: StoredLocalUser[];
 };
+
+function isVercelKvConfigured(): boolean {
+  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
+async function readStoreFromKv(): Promise<StoredLocalUserFile> {
+  const payload = await kv.get<StoredLocalUserFile>(KV_USERS_KEY);
+
+  if (!payload || !Array.isArray(payload.users)) {
+    return { users: [] };
+  }
+
+  return {
+    users: payload.users.filter(
+      (item) =>
+        typeof item?.email === "string" &&
+        typeof item?.passwordHash === "string" &&
+        typeof item?.salt === "string",
+    ),
+  };
+}
+
+async function writeStoreToKv(data: StoredLocalUserFile): Promise<void> {
+  await kv.set(KV_USERS_KEY, data);
+}
 
 async function ensureStoreFile(): Promise<void> {
   await fs.mkdir(STORE_DIR, { recursive: true });
@@ -29,6 +56,10 @@ async function ensureStoreFile(): Promise<void> {
 }
 
 async function readStore(): Promise<StoredLocalUserFile> {
+  if (isVercelKvConfigured()) {
+    return readStoreFromKv();
+  }
+
   await ensureStoreFile();
   const raw = await fs.readFile(STORE_PATH, "utf8");
 
@@ -52,6 +83,11 @@ async function readStore(): Promise<StoredLocalUserFile> {
 }
 
 async function writeStore(data: StoredLocalUserFile): Promise<void> {
+  if (isVercelKvConfigured()) {
+    await writeStoreToKv(data);
+    return;
+  }
+
   await ensureStoreFile();
   await fs.writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf8");
 }
