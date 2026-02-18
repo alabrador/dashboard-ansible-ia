@@ -309,6 +309,7 @@ export default function Home() {
   const router = useRouter();
   const SILENCE_AUTOSTOP_MS = 1300;
   const MIN_RECORDING_MS = 900;
+  const MAX_RECORDING_MS = 12000;
 
   const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -329,8 +330,10 @@ export default function Home() {
   const chunksRef = useRef<BlobPart[]>([]);
   const speechRecognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const maxDurationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const speechDetectedRef = useRef(false);
   const recordingStartedAtRef = useRef(0);
+  const transcriptHintRef = useRef("");
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -383,6 +386,13 @@ export default function Home() {
     }
   };
 
+  const clearMaxDurationTimer = () => {
+    if (maxDurationTimeoutRef.current) {
+      clearTimeout(maxDurationTimeoutRef.current);
+      maxDurationTimeoutRef.current = null;
+    }
+  };
+
   const scheduleSilenceAutostop = () => {
     clearSilenceTimer();
     silenceTimeoutRef.current = setTimeout(() => {
@@ -397,7 +407,16 @@ export default function Home() {
     }, SILENCE_AUTOSTOP_MS);
   };
 
-  const runExecution = async (audio: Blob) => {
+  const scheduleMaxDurationAutostop = () => {
+    clearMaxDurationTimer();
+    maxDurationTimeoutRef.current = setTimeout(() => {
+      if (mediaRecorderRef.current?.state === "recording") {
+        stopRecording();
+      }
+    }, MAX_RECORDING_MS);
+  };
+
+  const runExecution = async (audio: Blob, transcriptHint?: string) => {
     setIsLoading(true);
     setError("");
     setResult(null);
@@ -406,6 +425,9 @@ export default function Home() {
     try {
       const formData = new FormData();
       formData.append("audio", audio, "voice-command.webm");
+      if (transcriptHint?.trim()) {
+        formData.append("transcriptHint", transcriptHint.trim());
+      }
 
       const response = await fetch("/api/execute", {
         method: "POST",
@@ -442,8 +464,10 @@ export default function Home() {
     setLiveTranscript("");
     setTranscript("");
     clearSilenceTimer();
+    clearMaxDurationTimer();
     speechDetectedRef.current = false;
     recordingStartedAtRef.current = Date.now();
+    transcriptHintRef.current = "";
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -478,6 +502,7 @@ export default function Home() {
 
           if (mergedText) {
             speechDetectedRef.current = true;
+            transcriptHintRef.current = mergedText;
             scheduleSilenceAutostop();
             setLiveTranscript(mergedText);
             setTranscript(mergedText);
@@ -504,11 +529,15 @@ export default function Home() {
         stream.getTracks().forEach((track) => track.stop());
         speechRecognitionRef.current?.stop();
         clearSilenceTimer();
+        clearMaxDurationTimer();
         speechDetectedRef.current = false;
-        void runExecution(blob);
+        const transcriptHint = transcriptHintRef.current;
+        transcriptHintRef.current = "";
+        void runExecution(blob, transcriptHint);
       };
 
       recorder.start();
+      scheduleMaxDurationAutostop();
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
     } catch {
@@ -518,6 +547,7 @@ export default function Home() {
 
   const stopRecording = () => {
     clearSilenceTimer();
+    clearMaxDurationTimer();
     if (mediaRecorderRef.current?.state === "recording") {
       mediaRecorderRef.current.stop();
     }

@@ -85,6 +85,11 @@ export async function POST(request: Request) {
 
     const inputForm = await request.formData();
     const audioFile = inputForm.get("audio");
+    const transcriptHintRaw = inputForm.get("transcriptHint");
+    const transcriptHint =
+      typeof transcriptHintRaw === "string"
+        ? applyTranscriptCorrections(transcriptHintRaw)
+        : "";
 
     if (!(audioFile instanceof File)) {
       return NextResponse.json(
@@ -113,7 +118,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const transcript = applyTranscriptCorrections(transcriptionData.text ?? "");
+    const whisperTranscript = applyTranscriptCorrections(transcriptionData.text ?? "");
+    const transcript = whisperTranscript || transcriptHint;
     if (!transcript) {
       return NextResponse.json(
         { error: "No se detectó texto en el audio." },
