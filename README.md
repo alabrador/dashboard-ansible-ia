@@ -86,6 +86,7 @@ Notas:
 - La creación/edición/eliminación se hace desde `/users`.
 - Se guarda únicamente `email`, `salt` y `passwordHash` en `uploads/local-users.json`.
 - No se almacenan contraseñas en texto plano.
+- En entornos serverless (ej. Vercel), el filesystem no es persistente para este uso; usa `LOCAL_AUTH_USERS` como método principal de acceso local.
 
 ## Ejecutar en local
 

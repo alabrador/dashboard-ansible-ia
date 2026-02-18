@@ -36,7 +36,13 @@ function parseLocalUsers(): LocalCredential[] {
 
 export async function authenticateLocal(email: string, password: string): Promise<AuthResult> {
   const normalizedEmail = email.trim().toLowerCase();
-  const storedUserOk = await verifyStoredLocalUser(normalizedEmail, password);
+  let storedUserOk = false;
+
+  try {
+    storedUserOk = await verifyStoredLocalUser(normalizedEmail, password);
+  } catch {
+    storedUserOk = false;
+  }
 
   if (!storedUserOk) {
     const users = parseLocalUsers();
