@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [nextPath, setNextPath] = useState("/");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [isThemeInitialized, setIsThemeInitialized] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,6 +48,8 @@ export default function LoginPage() {
     if (savedTheme === "dark" || savedTheme === "light") {
       setTheme(savedTheme);
     }
+
+    setIsThemeInitialized(true);
   }, []);
 
   useEffect(() => {
@@ -54,8 +57,12 @@ export default function LoginPage() {
       return;
     }
 
+    if (!isThemeInitialized) {
+      return;
+    }
+
     window.localStorage.setItem("dashboard-theme", theme);
-  }, [theme]);
+  }, [isThemeInitialized, theme]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -106,6 +113,10 @@ export default function LoginPage() {
       ? "w-full rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
       : "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring";
 
+  if (!isThemeInitialized) {
+    return null;
+  }
+
   return (
     <main className={mainClass}>
       <div className="mx-auto flex min-h-[80vh] w-full max-w-md items-center">
@@ -118,14 +129,16 @@ export default function LoginPage() {
                   : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-semibold tracking-wider text-zinc-700"
               }
             >
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={120}
-                height={28}
-                className="h-6 w-auto object-contain"
-                priority
-              />
+              <div className="relative h-6 w-28">
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  fill
+                  sizes="112px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
             </div>
             <button
               type="button"

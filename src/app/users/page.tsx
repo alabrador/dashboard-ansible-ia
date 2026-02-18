@@ -30,6 +30,7 @@ function formatError(error: unknown, fallback: string): string {
 export default function UsersPage() {
   const router = useRouter();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [isThemeInitialized, setIsThemeInitialized] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [localUsers, setLocalUsers] = useState<string[]>([]);
   const [localUserEmail, setLocalUserEmail] = useState("");
@@ -47,6 +48,8 @@ export default function UsersPage() {
     if (savedTheme === "dark" || savedTheme === "light") {
       setTheme(savedTheme);
     }
+
+    setIsThemeInitialized(true);
   }, []);
 
   useEffect(() => {
@@ -54,8 +57,12 @@ export default function UsersPage() {
       return;
     }
 
+    if (!isThemeInitialized) {
+      return;
+    }
+
     window.localStorage.setItem("dashboard-theme", theme);
-  }, [theme]);
+  }, [isThemeInitialized, theme]);
 
   const loadLocalUsers = async () => {
     setIsLoading(true);
@@ -190,6 +197,10 @@ export default function UsersPage() {
       ? "mt-4 rounded-lg border border-zinc-700 bg-zinc-950/70 p-3 text-xs text-zinc-300"
       : "mt-4 rounded-lg border border-zinc-200 bg-zinc-100 p-3 text-xs text-zinc-700";
 
+  if (!isThemeInitialized) {
+    return null;
+  }
+
   return (
     <main className={mainClass}>
       {theme === "dark" ? (
@@ -210,14 +221,16 @@ export default function UsersPage() {
                   : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-semibold tracking-wider text-zinc-700"
               }
             >
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={120}
-                height={28}
-                className="h-6 w-auto object-contain"
-                priority
-              />
+              <div className="relative h-6 w-28">
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  fill
+                  sizes="112px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
             </Link>
             <div className="flex flex-wrap items-center justify-end gap-2">
               <button
