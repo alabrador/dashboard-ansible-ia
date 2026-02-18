@@ -1,0 +1,3 @@
+{
+  "/api/health-awx/route": "app/api/health-awx/route.js"
+}

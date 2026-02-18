@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupportedCommands, matchCommand } from "@/lib/command-parser";
+import { applyTranscriptCorrections } from "@/lib/transcript-corrections";
 
 const whisperUrl = process.env.WHISPER_SERVER_URL ?? "http://127.0.0.1:5000";
 const awxBaseUrl = process.env.AWX_BASE_URL;
@@ -112,7 +113,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const transcript = (transcriptionData.text ?? "").trim();
+    const transcript = applyTranscriptCorrections(transcriptionData.text ?? "");
     if (!transcript) {
       return NextResponse.json(
         { error: "No se detectó texto en el audio." },

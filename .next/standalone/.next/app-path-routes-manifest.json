@@ -1,0 +1,9 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/execute/route": "/api/execute",
+  "/api/health-awx/route": "/api/health-awx",
+  "/api/transcribe/route": "/api/transcribe",
+  "/favicon.ico/route": "/favicon.ico",
+  "/page": "/"
+}

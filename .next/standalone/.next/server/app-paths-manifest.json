@@ -1,0 +1,9 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/execute/route": "app/api/execute/route.js",
+  "/api/health-awx/route": "app/api/health-awx/route.js",
+  "/api/transcribe/route": "app/api/transcribe/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
+}

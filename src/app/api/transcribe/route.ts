@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { applyTranscriptCorrections } from "@/lib/transcript-corrections";
 
 const whisperUrl = process.env.WHISPER_SERVER_URL ?? "http://127.0.0.1:5000";
 
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      transcript: data.text ?? "",
+      transcript: applyTranscriptCorrections(data.text ?? ""),
     });
   } catch (error) {
     const detail = error instanceof Error ? error.message : "Error inesperado";
