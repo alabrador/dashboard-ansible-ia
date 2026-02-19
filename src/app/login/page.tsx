@@ -119,8 +119,8 @@ export default function LoginPage() {
 
   const mainClass =
     theme === "dark"
-      ? "min-h-screen bg-zinc-950 px-3 py-3 text-zinc-100 sm:px-6 sm:py-10"
-      : "min-h-screen bg-zinc-50 px-3 py-3 text-zinc-900 sm:px-6 sm:py-10";
+      ? "min-h-[100dvh] bg-zinc-950 px-3 py-2 text-zinc-100 sm:min-h-screen sm:px-6 sm:py-10"
+      : "min-h-[100dvh] bg-zinc-50 px-3 py-2 text-zinc-900 sm:min-h-screen sm:px-6 sm:py-10";
 
   const cardClass =
     theme === "dark"
@@ -157,7 +157,7 @@ export default function LoginPage() {
 
   return (
     <main className={mainClass}>
-      <div className="mx-auto flex min-h-screen w-full max-w-md items-start pt-2 sm:items-center sm:pt-0">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-md items-start pt-1 sm:min-h-screen sm:items-center sm:pt-0">
         <section className={cardClass}>
           <div className="flex items-center justify-between gap-2 sm:gap-3">
             <div

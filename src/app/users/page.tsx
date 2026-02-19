@@ -250,7 +250,9 @@ export default function UsersPage() {
       : "rounded-xl border border-zinc-200 bg-white p-4 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.2)] sm:rounded-2xl sm:p-5";
 
   const mainClass =
-    theme === "dark" ? "min-h-screen bg-zinc-950 text-zinc-100" : "min-h-screen bg-zinc-50 text-zinc-900";
+    theme === "dark"
+      ? "min-h-[100dvh] bg-zinc-950 text-zinc-100 sm:min-h-screen"
+      : "min-h-[100dvh] bg-zinc-50 text-zinc-900 sm:min-h-screen";
 
   const topLabelClass = theme === "dark" ? "text-zinc-400" : "text-zinc-500";
   const subtitleClass = theme === "dark" ? "text-zinc-300" : "text-zinc-600";
@@ -314,7 +316,7 @@ export default function UsersPage() {
         </div>
       ) : null}
 
-      <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-start gap-3 px-3 py-3 sm:justify-center sm:gap-6 sm:px-6 sm:py-10">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 py-2 sm:min-h-screen sm:justify-center sm:gap-6 sm:px-6 sm:py-10">
         <header className="space-y-2 sm:space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             <Link
