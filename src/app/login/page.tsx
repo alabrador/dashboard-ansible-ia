@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
@@ -130,6 +129,11 @@ export default function LoginPage() {
       ? "w-full rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
       : "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring";
 
+  const languageSelectClass =
+    theme === "dark"
+      ? "h-9 rounded-full border border-white/20 bg-zinc-900/70 px-3 text-xs font-medium text-zinc-200 outline-none ring-sky-400 transition focus:ring sm:h-10 sm:text-sm"
+      : "h-9 rounded-full border border-zinc-300 bg-white px-3 text-xs font-medium text-zinc-700 outline-none ring-sky-500 transition focus:ring sm:h-10 sm:text-sm";
+
   if (!isThemeInitialized) {
     return null;
   }
@@ -138,65 +142,27 @@ export default function LoginPage() {
     <main className={mainClass}>
       <div className="mx-auto flex min-h-[80vh] w-full max-w-md items-center">
         <section className={cardClass}>
-          <div className="flex items-center justify-between gap-2 sm:gap-3">
-            <div
-              className={
-                theme === "dark"
-                  ? "inline-flex h-8 items-center rounded-full border border-white/20 bg-white/5 px-2 text-xs font-semibold tracking-wider text-zinc-200"
-                  : "inline-flex h-8 items-center rounded-full border border-zinc-300 bg-white px-2 text-xs font-semibold tracking-wider text-zinc-700"
-              }
-            >
-              <Image
-                src="/logo.png"
-                alt={t.logoAlt}
-                width={28}
-                height={28}
-                className="h-5 w-auto object-contain"
-                priority
-              />
-            </div>
+          <div className="flex items-center justify-end gap-2 sm:gap-3">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <div
-                className={
-                  theme === "dark"
-                    ? "inline-flex h-9 items-center overflow-hidden rounded-full border border-white/20 bg-white/5 sm:h-10"
-                    : "inline-flex h-9 items-center overflow-hidden rounded-full border border-zinc-300 bg-white sm:h-10"
-                }
-              >
-                <div
-                  role="group"
-                  aria-label={t.languageSelectAria}
-                  className={
-                    theme === "dark"
-                      ? "inline-flex h-full overflow-hidden bg-zinc-900/60"
-                      : "inline-flex h-full overflow-hidden bg-zinc-100"
+              <label className="sr-only" htmlFor="language-select-login">{t.languageSelectAria}</label>
+              <select
+                id="language-select-login"
+                aria-label={t.languageSelectAria}
+                value={language}
+                onChange={(event) => {
+                  const nextLanguage = event.target.value;
+                  if (isSupportedLanguage(nextLanguage)) {
+                    setLanguage(nextLanguage);
                   }
-                >
-                  {languageOptions.map((option) => {
-                    const isActive = language === option.code;
-
-                    return (
-                      <button
-                        key={option.code}
-                        type="button"
-                        onClick={() => setLanguage(option.code)}
-                        className={
-                          isActive
-                            ? theme === "dark"
-                              ? "inline-flex h-full items-center bg-sky-500/90 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
-                              : "inline-flex h-full items-center bg-sky-600 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
-                            : theme === "dark"
-                              ? "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-300 transition hover:bg-white/10 sm:px-2.5 sm:text-xs"
-                              : "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-200 sm:px-2.5 sm:text-xs"
-                        }
-                        aria-pressed={isActive}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+                }}
+                className={languageSelectClass}
+              >
+                {languageOptions.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
               <button
                 type="button"
                 onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}

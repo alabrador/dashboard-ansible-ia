@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -268,6 +267,11 @@ export default function UsersPage() {
       ? "inline-flex h-9 items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 text-xs font-medium text-zinc-100 transition hover:bg-white/15 sm:h-10 sm:px-3"
       : "inline-flex h-9 items-center gap-1.5 rounded-full border border-zinc-300 bg-white px-2.5 text-xs font-medium text-zinc-800 transition hover:bg-zinc-100 sm:h-10 sm:px-3";
 
+  const languageSelectClass =
+    theme === "dark"
+      ? "h-9 rounded-full border border-white/20 bg-zinc-900/70 px-3 text-xs font-medium text-zinc-200 outline-none ring-sky-400 transition focus:ring sm:h-10 sm:text-sm"
+      : "h-9 rounded-full border border-zinc-300 bg-white px-3 text-xs font-medium text-zinc-700 outline-none ring-sky-500 transition focus:ring sm:h-10 sm:text-sm";
+
   const menuItemClass =
     theme === "dark"
       ? "flex h-9 items-center rounded-lg px-3 text-xs font-medium text-zinc-200 transition hover:bg-white/10"
@@ -295,66 +299,27 @@ export default function UsersPage() {
 
       <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10">
         <header className="space-y-2 sm:space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
-            <Link
-              href="/"
-              className={
-                theme === "dark"
-                  ? "inline-flex h-8 items-center rounded-full border border-white/20 bg-white/5 px-2 text-xs font-semibold tracking-wider text-zinc-200"
-                  : "inline-flex h-8 items-center rounded-full border border-zinc-300 bg-white px-2 text-xs font-semibold tracking-wider text-zinc-700"
-              }
-            >
-              <Image
-                src="/logo.png"
-                alt={t.logoAlt}
-                width={28}
-                height={28}
-                className="h-5 w-auto object-contain"
-                priority
-              />
-            </Link>
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
             <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
-              <div
-                className={
-                  theme === "dark"
-                    ? "inline-flex h-9 items-center overflow-hidden rounded-full border border-white/20 bg-white/5 sm:h-10"
-                    : "inline-flex h-9 items-center overflow-hidden rounded-full border border-zinc-300 bg-white sm:h-10"
-                }
-              >
-                <div
-                  role="group"
-                  aria-label={t.languageSelectAria}
-                  className={
-                    theme === "dark"
-                      ? "inline-flex h-full overflow-hidden bg-zinc-900/60"
-                      : "inline-flex h-full overflow-hidden bg-zinc-100"
+              <label className="sr-only" htmlFor="language-select-users">{t.languageSelectAria}</label>
+              <select
+                id="language-select-users"
+                aria-label={t.languageSelectAria}
+                value={language}
+                onChange={(event) => {
+                  const nextLanguage = event.target.value;
+                  if (isSupportedLanguage(nextLanguage)) {
+                    setLanguage(nextLanguage);
                   }
-                >
-                  {languageOptions.map((option) => {
-                    const isActive = language === option.code;
-
-                    return (
-                      <button
-                        key={option.code}
-                        type="button"
-                        onClick={() => setLanguage(option.code)}
-                        className={
-                          isActive
-                            ? theme === "dark"
-                              ? "inline-flex h-full items-center bg-sky-500/90 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
-                              : "inline-flex h-full items-center bg-sky-600 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
-                            : theme === "dark"
-                              ? "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-300 transition hover:bg-white/10 sm:px-2.5 sm:text-xs"
-                              : "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-200 sm:px-2.5 sm:text-xs"
-                        }
-                        aria-pressed={isActive}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+                }}
+                className={languageSelectClass}
+              >
+                {languageOptions.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
               <button
                 type="button"
                 onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
