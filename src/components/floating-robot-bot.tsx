@@ -11,12 +11,11 @@ type NewsItem = {
 };
 
 export function FloatingRobotBot() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isSmiling, setIsSmiling] = useState(false);
   const [headline, setHeadline] = useState<NewsItem | null>(null);
   const [isLoadingNews, setIsLoadingNews] = useState(false);
   const [newsError, setNewsError] = useState("");
-  const [cursorTilt, setCursorTilt] = useState({ x: 0, y: 0 });
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     if (typeof window === "undefined") {
       return "dark";
@@ -48,69 +47,17 @@ export function FloatingRobotBot() {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const handleMouseMove = (event: MouseEvent) => {
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const normalizedX = (event.clientX - centerX) / centerX;
-      const normalizedY = (event.clientY - centerY) / centerY;
-
-      setCursorTilt({
-        x: Math.max(-1, Math.min(1, normalizedX)),
-        y: Math.max(-1, Math.min(1, normalizedY)),
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
-  const bubbleClass =
-    theme === "dark"
-      ? "bg-zinc-900/95 text-zinc-100"
-      : "bg-white text-zinc-900";
-
-  const robotTransform = {
-    transform: `translate3d(${cursorTilt.x * 2}px, ${cursorTilt.y * 1.6}px, 0)`,
-  };
-
-  const handleRobotClick = () => {
-    setIsOpen((current) => !current);
-    setIsSmiling(true);
-
-    if (smileTimeoutRef.current) {
-      clearTimeout(smileTimeoutRef.current);
-    }
-
-    smileTimeoutRef.current = setTimeout(() => {
-      setIsSmiling(false);
-      smileTimeoutRef.current = null;
-    }, 1400);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (smileTimeoutRef.current) {
-        clearTimeout(smileTimeoutRef.current);
-      }
-    };
-  }, []);
+  const bubbleClass = theme === "dark" ? "bg-zinc-900/95 text-zinc-100" : "bg-white/95 text-zinc-900";
 
   const loadNews = useCallback(async () => {
     setIsLoadingNews(true);
     setNewsError("");
 
     try {
-      const response = await fetch("/api/news");
+      const response = await fetch("/api/news", { cache: "no-store" });
       const payload = (await response.json()) as { items?: NewsItem[]; error?: string };
 
-      if (!response.ok || !payload.items) {
+      if (!response.ok || !payload.items?.length) {
         setNewsError(payload.error ?? "No pude traer noticias ahora.");
         setHeadline(null);
         return;
@@ -125,6 +72,20 @@ export function FloatingRobotBot() {
       setIsLoadingNews(false);
     }
   }, []);
+
+  const handleRobotClick = () => {
+    setIsOpen((current) => !current);
+    setIsSmiling(true);
+
+    if (smileTimeoutRef.current) {
+      clearTimeout(smileTimeoutRef.current);
+    }
+
+    smileTimeoutRef.current = setTimeout(() => {
+      setIsSmiling(false);
+      smileTimeoutRef.current = null;
+    }, 1400);
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -147,7 +108,7 @@ export function FloatingRobotBot() {
 
       cycleTimeout = setTimeout(() => {
         void runCycle();
-      }, 30000);
+      }, 45000);
     };
 
     void runCycle();
@@ -160,24 +121,30 @@ export function FloatingRobotBot() {
     };
   }, [isOpen, loadNews]);
 
+  useEffect(() => {
+    return () => {
+      if (smileTimeoutRef.current) {
+        clearTimeout(smileTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="pointer-events-none fixed bottom-2 right-2 z-50 flex max-w-[260px] flex-col items-end gap-1.5 sm:bottom-3 sm:right-3 sm:max-w-[280px]">
+    <div className="pointer-events-none fixed bottom-6 right-4 z-50 flex flex-col items-end sm:bottom-8 sm:right-5">
       {isOpen ? (
-        <div className={`pointer-events-auto w-[220px] rounded-xl px-2.5 py-2 text-[11px] shadow-[0_14px_28px_-20px_rgba(14,165,233,0.7)] sm:w-[240px] ${bubbleClass}`}>
+        <div className={`pointer-events-auto mb-3 w-[170px] rounded-xl px-2.5 py-2 text-[11px] shadow-[0_16px_32px_-18px_rgba(14,165,233,0.7)] sm:mb-4 sm:w-[190px] ${bubbleClass}`}>
           <p className="font-semibold">Asistente</p>
           <p className="mt-0.5 opacity-90">Hola pana 👋</p>
 
-          <div className="mt-1.5 space-y-1">
+          <div className="mt-2">
             {isLoadingNews ? <p className="opacity-80">Buscando titulares...</p> : null}
-
             {!isLoadingNews && newsError ? <p className="opacity-80">{newsError}</p> : null}
-
             {!isLoadingNews && !newsError && headline ? (
               <a
                 href={headline.link}
                 target="_blank"
                 rel="noreferrer"
-                className="block rounded-lg bg-black/5 px-2 py-1.5 leading-snug transition hover:bg-black/10"
+                className="block rounded-lg bg-black/5 px-2 py-2 leading-snug transition hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10"
               >
                 {headline.title}
               </a>
@@ -189,13 +156,12 @@ export function FloatingRobotBot() {
       <button
         type="button"
         onClick={handleRobotClick}
-        aria-label="Abrir asistente"
-        className="pointer-events-auto relative h-16 w-16 rounded-2xl bg-transparent transition duration-150 hover:scale-[1.03] active:scale-95 sm:h-20 sm:w-20"
-        style={robotTransform}
+        aria-label={isOpen ? "Ocultar noticias" : "Mostrar noticias"}
+        className="pointer-events-auto relative h-36 w-36 overflow-visible rounded-2xl bg-transparent transition-transform duration-150 [transform:translateZ(0)] sm:h-40 sm:w-40"
       >
-        <span className="absolute -inset-2 rounded-full bg-cyan-400/20 blur-xl" />
-        <span className="absolute -inset-1 overflow-visible rounded-2xl">
-          <Robot3DScene lookX={cursorTilt.x} lookY={cursorTilt.y} theme={theme} isSmiling={isSmiling} />
+        <span className="absolute -inset-3 rounded-full bg-cyan-400/20 blur-xl" />
+        <span className="absolute -inset-3 overflow-visible rounded-2xl">
+          <Robot3DScene lookX={0} lookY={0} theme={theme} isSmiling={isSmiling} />
         </span>
       </button>
     </div>
