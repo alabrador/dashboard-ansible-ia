@@ -4,235 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-
-type Language = "es" | "en" | "it" | "pt";
-
-const speechLocales: Record<Language, string> = {
-  es: "es-ES",
-  en: "en-US",
-  it: "it-IT",
-  pt: "pt-PT",
-};
-
-const languageOptions: Array<{ code: Language; label: string }> = [
-  { code: "es", label: "ES" },
-  { code: "en", label: "EN" },
-  { code: "it", label: "IT" },
-  { code: "pt", label: "PT" },
-];
-
-const translations: Record<
-  Language,
-  {
-    themeLight: string;
-    themeDark: string;
-    themeToggleAria: string;
-    languageLabel: string;
-    languageSelectAria: string;
-    headerSubtitle: string;
-    pageDescription: string;
-    buttonProcessing: string;
-    buttonStop: string;
-    buttonSpeak: string;
-    statusProcessing: string;
-    statusListening: string;
-    statusCaptured: string;
-    statusReady: string;
-    sectionTranscript: string;
-    transcriptPlaceholder: string;
-    sectionResult: string;
-    commandDetected: string;
-    viewAwx: string;
-    noExecution: string;
-    availableCommands: string;
-    micAccessError: string;
-    unknownError: string;
-    invalidAudioCommand: string;
-    signOut: string;
-    signOutError: string;
-    localUsersTitle: string;
-    localUsersDescription: string;
-    localUsersEmail: string;
-    localUsersPassword: string;
-    localUsersSave: string;
-    localUsersReload: string;
-    localUsersEmpty: string;
-    localUsersDelete: string;
-    localUsersSaved: string;
-    localUsersDeleted: string;
-    localUsersLoadError: string;
-    localUsersSaveError: string;
-    localUsersDeleteError: string;
-  }
-> = {
-  es: {
-    themeLight: "☀️ Claro",
-    themeDark: "🌙 Oscuro",
-    themeToggleAria: "Cambiar tema",
-    languageLabel: "Idioma",
-    languageSelectAria: "Cambiar idioma",
-    headerSubtitle: "Dashboard Ansible - Whisper IA",
-    pageDescription:
-      "Presiona el botón, habla que tarea quieres ejecutar y se ejecutará automáticamente en AWX.",
-    buttonProcessing: "Procesando...",
-    buttonStop: "Detener grabación",
-    buttonSpeak: "Hablar ahora",
-    statusProcessing: "Procesando audio y ejecutando en AWX...",
-    statusListening: "Escuchando y transcribiendo en vivo...",
-    statusCaptured: "Audio capturado. Ejecutando comando...",
-    statusReady: "Listo para escuchar tu orden",
-    sectionTranscript: "Transcripción",
-    transcriptPlaceholder: "Aquí aparecerá el texto reconocido por Whisper.",
-    sectionResult: "Resultado AWX",
-    commandDetected: "Comando detectado",
-    viewAwx: "Ver ejecución en AWX",
-    noExecution: "Aún no hay ejecución.",
-    availableCommands: "Comandos disponibles:",
-    micAccessError: "No se pudo acceder al micrófono.",
-    unknownError: "Error inesperado.",
-    invalidAudioCommand: "No se encontró un comando válido en el audio.",
-    signOut: "Cerrar sesión",
-    signOutError: "No se pudo cerrar sesión.",
-    localUsersTitle: "Usuarios locales",
-    localUsersDescription: "Crear, actualizar o eliminar accesos locales por correo y contraseña.",
-    localUsersEmail: "Correo",
-    localUsersPassword: "Contraseña",
-    localUsersSave: "Guardar usuario",
-    localUsersReload: "Actualizar lista",
-    localUsersEmpty: "No hay usuarios locales guardados.",
-    localUsersDelete: "Eliminar",
-    localUsersSaved: "Usuario guardado correctamente.",
-    localUsersDeleted: "Usuario eliminado correctamente.",
-    localUsersLoadError: "No se pudo cargar la lista de usuarios locales.",
-    localUsersSaveError: "No se pudo guardar el usuario local.",
-    localUsersDeleteError: "No se pudo eliminar el usuario local.",
-  },
-  en: {
-    themeLight: "☀️ Light",
-    themeDark: "🌙 Dark",
-    themeToggleAria: "Toggle theme",
-    languageLabel: "Language",
-    languageSelectAria: "Change language",
-    headerSubtitle: "Ansible Dashboard - Whisper AI",
-    pageDescription: "Press the button, say the task you want to run, and it will execute automatically in AWX.",
-    buttonProcessing: "Processing...",
-    buttonStop: "Stop recording",
-    buttonSpeak: "Speak now",
-    statusProcessing: "Processing audio and executing in AWX...",
-    statusListening: "Listening and transcribing live...",
-    statusCaptured: "Audio captured. Executing command...",
-    statusReady: "Ready to listen to your command",
-    sectionTranscript: "Transcript",
-    transcriptPlaceholder: "Whisper transcript will appear here.",
-    sectionResult: "AWX Result",
-    commandDetected: "Detected command",
-    viewAwx: "View execution in AWX",
-    noExecution: "No execution yet.",
-    availableCommands: "Available commands:",
-    micAccessError: "Could not access the microphone.",
-    unknownError: "Unexpected error.",
-    invalidAudioCommand: "No valid command was found in the audio.",
-    signOut: "Sign out",
-    signOutError: "Could not sign out.",
-    localUsersTitle: "Local users",
-    localUsersDescription: "Create, update, or delete local credentials by email and password.",
-    localUsersEmail: "Email",
-    localUsersPassword: "Password",
-    localUsersSave: "Save user",
-    localUsersReload: "Refresh list",
-    localUsersEmpty: "No local users saved yet.",
-    localUsersDelete: "Delete",
-    localUsersSaved: "User saved successfully.",
-    localUsersDeleted: "User deleted successfully.",
-    localUsersLoadError: "Could not load local users list.",
-    localUsersSaveError: "Could not save local user.",
-    localUsersDeleteError: "Could not delete local user.",
-  },
-  it: {
-    themeLight: "☀️ Chiaro",
-    themeDark: "🌙 Scuro",
-    themeToggleAria: "Cambia tema",
-    languageLabel: "Lingua",
-    languageSelectAria: "Cambia lingua",
-    headerSubtitle: "Dashboard Ansible - Whisper IA",
-    pageDescription:
-      "Premi il pulsante, pronuncia l'attività da eseguire e verrà avviata automaticamente in AWX.",
-    buttonProcessing: "Elaborazione...",
-    buttonStop: "Ferma registrazione",
-    buttonSpeak: "Parla ora",
-    statusProcessing: "Elaborazione audio ed esecuzione in AWX...",
-    statusListening: "Ascolto e trascrizione in tempo reale...",
-    statusCaptured: "Audio acquisito. Esecuzione comando...",
-    statusReady: "Pronto ad ascoltare il tuo comando",
-    sectionTranscript: "Trascrizione",
-    transcriptPlaceholder: "Qui apparirà il testo riconosciuto da Whisper.",
-    sectionResult: "Risultato AWX",
-    commandDetected: "Comando rilevato",
-    viewAwx: "Vedi esecuzione in AWX",
-    noExecution: "Nessuna esecuzione ancora.",
-    availableCommands: "Comandi disponibili:",
-    micAccessError: "Impossibile accedere al microfono.",
-    unknownError: "Errore imprevisto.",
-    invalidAudioCommand: "Nessun comando valido trovato nell'audio.",
-    signOut: "Esci",
-    signOutError: "Impossibile uscire.",
-    localUsersTitle: "Utenti locali",
-    localUsersDescription: "Crea, aggiorna o elimina accessi locali con email e password.",
-    localUsersEmail: "Email",
-    localUsersPassword: "Password",
-    localUsersSave: "Salva utente",
-    localUsersReload: "Aggiorna elenco",
-    localUsersEmpty: "Nessun utente locale salvato.",
-    localUsersDelete: "Elimina",
-    localUsersSaved: "Utente salvato correttamente.",
-    localUsersDeleted: "Utente eliminato correttamente.",
-    localUsersLoadError: "Impossibile caricare l'elenco utenti locali.",
-    localUsersSaveError: "Impossibile salvare l'utente locale.",
-    localUsersDeleteError: "Impossibile eliminare l'utente locale.",
-  },
-  pt: {
-    themeLight: "☀️ Claro",
-    themeDark: "🌙 Escuro",
-    themeToggleAria: "Alternar tema",
-    languageLabel: "Idioma",
-    languageSelectAria: "Alterar idioma",
-    headerSubtitle: "Dashboard Ansible - Whisper IA",
-    pageDescription:
-      "Pressione o botão, diga a tarefa que deseja executar e ela será executada automaticamente no AWX.",
-    buttonProcessing: "Processando...",
-    buttonStop: "Parar gravação",
-    buttonSpeak: "Falar agora",
-    statusProcessing: "Processando áudio e executando no AWX...",
-    statusListening: "Ouvindo e transcrevendo ao vivo...",
-    statusCaptured: "Áudio capturado. Executando comando...",
-    statusReady: "Pronto para ouvir seu comando",
-    sectionTranscript: "Transcrição",
-    transcriptPlaceholder: "Aqui aparecerá o texto reconhecido pelo Whisper.",
-    sectionResult: "Resultado AWX",
-    commandDetected: "Comando detectado",
-    viewAwx: "Ver execução no AWX",
-    noExecution: "Ainda não há execução.",
-    availableCommands: "Comandos disponíveis:",
-    micAccessError: "Não foi possível acessar o microfone.",
-    unknownError: "Erro inesperado.",
-    invalidAudioCommand: "Nenhum comando válido foi encontrado no áudio.",
-    signOut: "Sair",
-    signOutError: "Não foi possível encerrar a sessão.",
-    localUsersTitle: "Usuários locais",
-    localUsersDescription: "Criar, atualizar ou remover acessos locais por e-mail e senha.",
-    localUsersEmail: "E-mail",
-    localUsersPassword: "Senha",
-    localUsersSave: "Salvar usuário",
-    localUsersReload: "Atualizar lista",
-    localUsersEmpty: "Ainda não há usuários locais salvos.",
-    localUsersDelete: "Excluir",
-    localUsersSaved: "Usuário salvo com sucesso.",
-    localUsersDeleted: "Usuário removido com sucesso.",
-    localUsersLoadError: "Não foi possível carregar a lista de usuários locais.",
-    localUsersSaveError: "Não foi possível salvar o usuário local.",
-    localUsersDeleteError: "Não foi possível remover o usuário local.",
-  },
-};
+import { isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
+import {
+  homeTranslations,
+  speechLocales,
+} from "@/lang/home";
 
 type ExecuteResponse = {
   transcript?: string;
@@ -324,7 +100,7 @@ export default function Home() {
   const [language, setLanguage] = useState<Language>("es");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const t = translations[language];
+  const t = homeTranslations[language];
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
@@ -366,7 +142,7 @@ export default function Home() {
     }
 
     const savedLanguage = window.localStorage.getItem("dashboard-language");
-    if (savedLanguage === "es" || savedLanguage === "en" || savedLanguage === "it" || savedLanguage === "pt") {
+    if (savedLanguage && isSupportedLanguage(savedLanguage)) {
       setLanguage(savedLanguage);
     }
   }, []);
@@ -659,7 +435,7 @@ export default function Home() {
             >
               <Image
                 src="/logo.png"
-                alt="Logo"
+                alt={t.logoAlt}
                 width={28}
                 height={28}
                 className="h-5 w-auto object-contain"
@@ -725,7 +501,7 @@ export default function Home() {
                 type="button"
                 onClick={() => setIsMenuOpen((current) => !current)}
                 className={menuButtonClass}
-                aria-label="Abrir menú"
+                aria-label={t.menuOpenAria}
                 aria-expanded={isMenuOpen}
               >
                 <svg
@@ -751,7 +527,7 @@ export default function Home() {
                     className={menuItemClass}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Gestión de usuarios
+                    {t.menuUsers}
                   </Link>
                   <button
                     type="button"
@@ -770,7 +546,7 @@ export default function Home() {
           </div>
           <p className={`text-center text-sm uppercase tracking-[0.2em] ${topLabelClass}`}>{t.headerSubtitle}</p>
           <h1 className={`${titleClass} text-center`}>
-            Whisper + AWX
+            {t.headerTitle}
           </h1>
           <p className={`mx-auto max-w-2xl text-center text-sm ${subtitleClass}`}>
             {t.pageDescription}
@@ -844,8 +620,8 @@ export default function Home() {
               <p>
                 {t.commandDetected}: <strong>{result.matchedCommand}</strong>
               </p>
-              <p>Template ID: {result.templateId}</p>
-              <p>Job ID: {result.jobId}</p>
+              <p>{t.templateIdLabel}: {result.templateId}</p>
+              <p>{t.jobIdLabel}: {result.jobId}</p>
               <a
                 href={result.awxUrl}
                 target="_blank"

@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
+import { loginTranslations } from "@/lang/login";
 
 type LoginResponse = {
   ok?: boolean;
@@ -16,8 +18,10 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [nextPath, setNextPath] = useState("/");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [language, setLanguage] = useState<Language>("es");
   const [isThemeInitialized, setIsThemeInitialized] = useState(false);
   const router = useRouter();
+  const t = loginTranslations[language];
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -44,6 +48,11 @@ export default function LoginPage() {
       return;
     }
 
+    const savedLanguage = window.localStorage.getItem("dashboard-language");
+    if (savedLanguage && isSupportedLanguage(savedLanguage)) {
+      setLanguage(savedLanguage);
+    }
+
     const savedTheme = window.localStorage.getItem("dashboard-theme");
     if (savedTheme === "dark" || savedTheme === "light") {
       setTheme(savedTheme);
@@ -51,6 +60,14 @@ export default function LoginPage() {
 
     setIsThemeInitialized(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem("dashboard-language", language);
+  }, [language]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -81,14 +98,14 @@ export default function LoginPage() {
       const payload = (await response.json()) as LoginResponse;
 
       if (!response.ok || !payload.ok) {
-        setError(payload.error ?? "No se pudo iniciar sesión.");
+        setError(payload.error ?? t.loginFailed);
         return;
       }
 
       router.replace(nextPath);
       router.refresh();
     } catch {
-      setError("No se pudo conectar con el servicio de autenticación.");
+      setError(t.authServiceError);
     } finally {
       setIsLoading(false);
     }
@@ -131,32 +148,75 @@ export default function LoginPage() {
             >
               <Image
                 src="/logo.png"
-                alt="Logo"
+                alt={t.logoAlt}
                 width={28}
                 height={28}
                 className="h-5 w-auto object-contain"
                 priority
               />
             </div>
-            <button
-              type="button"
-              onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-              className={
-                theme === "dark"
-                  ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/10 px-4 text-xs font-medium text-zinc-200 transition hover:bg-white/15"
-                  : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100"
-              }
-              aria-label="Cambiar tema"
-            >
-              {theme === "dark" ? "☀️ Claro" : "🌙 Oscuro"}
-            </button>
+            <div className="flex items-center gap-2">
+              <div
+                className={
+                  theme === "dark"
+                    ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/5 px-2"
+                    : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-2"
+                }
+              >
+                <div
+                  role="group"
+                  aria-label={t.languageSelectAria}
+                  className={
+                    theme === "dark"
+                      ? "inline-flex h-8 overflow-hidden rounded-full border border-white/15 bg-zinc-900/60"
+                      : "inline-flex h-8 overflow-hidden rounded-full border border-zinc-300 bg-zinc-100"
+                  }
+                >
+                  {languageOptions.map((option) => {
+                    const isActive = language === option.code;
+
+                    return (
+                      <button
+                        key={option.code}
+                        type="button"
+                        onClick={() => setLanguage(option.code)}
+                        className={
+                          isActive
+                            ? theme === "dark"
+                              ? "inline-flex h-8 items-center bg-sky-500/90 px-2.5 text-xs font-semibold text-white"
+                              : "inline-flex h-8 items-center bg-sky-600 px-2.5 text-xs font-semibold text-white"
+                            : theme === "dark"
+                              ? "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-300 transition hover:bg-white/10"
+                              : "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200"
+                        }
+                        aria-pressed={isActive}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+                className={
+                  theme === "dark"
+                    ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/10 px-4 text-xs font-medium text-zinc-200 transition hover:bg-white/15"
+                    : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100"
+                }
+                aria-label={t.themeToggleAria}
+              >
+                {theme === "dark" ? t.themeLight : t.themeDark}
+              </button>
+            </div>
           </div>
-          <p className={`mt-3 text-xs uppercase tracking-[0.2em] ${topLabelClass}`}>Dashboard Ansible IA</p>
-          <h1 className={`mt-2 text-2xl font-semibold tracking-tight ${titleClass}`}>Iniciar sesión</h1>
+          <p className={`mt-3 text-xs uppercase tracking-[0.2em] ${topLabelClass}`}>{t.appBadge}</p>
+          <h1 className={`mt-2 text-2xl font-semibold tracking-tight ${titleClass}`}>{t.pageTitle}</h1>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <label className="block">
-              <span className={`mb-1 block text-sm ${fieldLabelClass}`}>Correo</span>
+              <span className={`mb-1 block text-sm ${fieldLabelClass}`}>{t.emailLabel}</span>
               <input
                 type="email"
                 value={email}
@@ -164,12 +224,12 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 className={inputClass}
-                placeholder="usuario@empresa.com"
+                placeholder={t.emailPlaceholder}
               />
             </label>
 
             <label className="block">
-              <span className={`mb-1 block text-sm ${fieldLabelClass}`}>Contraseña</span>
+              <span className={`mb-1 block text-sm ${fieldLabelClass}`}>{t.passwordLabel}</span>
               <input
                 type="password"
                 value={password}
@@ -177,7 +237,7 @@ export default function LoginPage() {
                 required
                 autoComplete="current-password"
                 className={inputClass}
-                placeholder="••••••••"
+                placeholder={t.passwordPlaceholder}
               />
             </label>
 
@@ -192,7 +252,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 via-cyan-400 to-blue-500 px-4 text-sm font-semibold text-zinc-950 transition hover:from-sky-300 hover:to-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isLoading ? "Validando..." : "Entrar"}
+              {isLoading ? t.submitLoading : t.submitIdle}
             </button>
           </form>
         </section>

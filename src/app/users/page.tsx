@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
+import { usersTranslations } from "@/lang/users";
 
 type LocalUsersResponse = {
   users?: string[];
@@ -30,6 +32,7 @@ function formatError(error: unknown, fallback: string): string {
 export default function UsersPage() {
   const router = useRouter();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [language, setLanguage] = useState<Language>("es");
   const [isThemeInitialized, setIsThemeInitialized] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [localUsers, setLocalUsers] = useState<string[]>([]);
@@ -38,10 +41,16 @@ export default function UsersPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const t = usersTranslations[language];
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
+    }
+
+    const savedLanguage = window.localStorage.getItem("dashboard-language");
+    if (savedLanguage && isSupportedLanguage(savedLanguage)) {
+      setLanguage(savedLanguage);
     }
 
     const savedTheme = window.localStorage.getItem("dashboard-theme");
@@ -51,6 +60,14 @@ export default function UsersPage() {
 
     setIsThemeInitialized(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem("dashboard-language", language);
+  }, [language]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -73,12 +90,12 @@ export default function UsersPage() {
       const payload = (await response.json()) as LocalUsersResponse;
 
       if (!response.ok) {
-        throw new Error(payload.error ?? "No se pudo cargar la lista de usuarios locales.");
+        throw new Error(payload.error ?? t.localUsersLoadError);
       }
 
       setLocalUsers(payload.users ?? []);
     } catch (loadError) {
-      setError(formatError(loadError, "No se pudo cargar la lista de usuarios locales."));
+      setError(formatError(loadError, t.localUsersLoadError));
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +107,7 @@ export default function UsersPage() {
 
   const handleSaveLocalUser = async () => {
     if (!localUserEmail.trim() || !localUserPassword.trim()) {
-      setError("Debes ingresar correo y contraseña.");
+      setError(t.requiredCredentials);
       return;
     }
 
@@ -109,14 +126,14 @@ export default function UsersPage() {
 
       const payload = (await response.json()) as { error?: string };
       if (!response.ok) {
-        throw new Error(payload.error ?? "No se pudo guardar el usuario local.");
+        throw new Error(payload.error ?? t.localUsersSaveError);
       }
 
-      setMessage("Usuario guardado correctamente.");
+      setMessage(t.localUsersSaved);
       setLocalUserPassword("");
       await loadLocalUsers();
     } catch (saveError) {
-      setError(formatError(saveError, "No se pudo guardar el usuario local."));
+      setError(formatError(saveError, t.localUsersSaveError));
     } finally {
       setIsLoading(false);
     }
@@ -138,13 +155,13 @@ export default function UsersPage() {
 
       const payload = (await response.json()) as { error?: string };
       if (!response.ok) {
-        throw new Error(payload.error ?? "No se pudo eliminar el usuario local.");
+        throw new Error(payload.error ?? t.localUsersDeleteError);
       }
 
-      setMessage("Usuario eliminado correctamente.");
+      setMessage(t.localUsersDeleted);
       await loadLocalUsers();
     } catch (deleteError) {
-      setError(formatError(deleteError, "No se pudo eliminar el usuario local."));
+      setError(formatError(deleteError, t.localUsersDeleteError));
     } finally {
       setIsLoading(false);
     }
@@ -158,7 +175,7 @@ export default function UsersPage() {
       router.replace("/login");
       router.refresh();
     } catch {
-      setError("No se pudo cerrar sesión.");
+      setError(t.signOutError);
     }
   };
 
@@ -223,7 +240,7 @@ export default function UsersPage() {
             >
               <Image
                 src="/logo.png"
-                alt="Logo"
+                alt={t.logoAlt}
                 width={28}
                 height={28}
                 className="h-5 w-auto object-contain"
@@ -231,6 +248,47 @@ export default function UsersPage() {
               />
             </Link>
             <div className="flex flex-wrap items-center justify-end gap-2">
+              <div
+                className={
+                  theme === "dark"
+                    ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/5 px-2"
+                    : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-2"
+                }
+              >
+                <div
+                  role="group"
+                  aria-label={t.languageSelectAria}
+                  className={
+                    theme === "dark"
+                      ? "inline-flex h-8 overflow-hidden rounded-full border border-white/15 bg-zinc-900/60"
+                      : "inline-flex h-8 overflow-hidden rounded-full border border-zinc-300 bg-zinc-100"
+                  }
+                >
+                  {languageOptions.map((option) => {
+                    const isActive = language === option.code;
+
+                    return (
+                      <button
+                        key={option.code}
+                        type="button"
+                        onClick={() => setLanguage(option.code)}
+                        className={
+                          isActive
+                            ? theme === "dark"
+                              ? "inline-flex h-8 items-center bg-sky-500/90 px-2.5 text-xs font-semibold text-white"
+                              : "inline-flex h-8 items-center bg-sky-600 px-2.5 text-xs font-semibold text-white"
+                            : theme === "dark"
+                              ? "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-300 transition hover:bg-white/10"
+                              : "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200"
+                        }
+                        aria-pressed={isActive}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
@@ -239,15 +297,16 @@ export default function UsersPage() {
                     ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/10 px-4 text-xs font-medium text-zinc-200 transition hover:bg-white/15"
                     : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100"
                 }
+                aria-label={t.themeToggleAria}
               >
-                {theme === "dark" ? "☀️ Claro" : "🌙 Oscuro"}
+                {theme === "dark" ? t.themeLight : t.themeDark}
               </button>
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setIsMenuOpen((current) => !current)}
                   className={menuButtonClass}
-                  aria-label="Abrir menú"
+                  aria-label={t.menuOpenAria}
                   aria-expanded={isMenuOpen}
                 >
                   <svg
@@ -273,14 +332,14 @@ export default function UsersPage() {
                       className={menuItemClass}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Ir a la app
+                      {t.menuGoApp}
                     </Link>
                     <Link
                       href="/users"
                       className={menuItemClass}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Gestión de usuarios
+                      {t.menuUsers}
                     </Link>
                     <button
                       type="button"
@@ -290,23 +349,23 @@ export default function UsersPage() {
                       }}
                       className={`${menuItemClass} w-full`}
                     >
-                      Cerrar sesión
+                      {t.signOut}
                     </button>
                   </div>
                 ) : null}
               </div>
             </div>
           </div>
-          <p className={`text-center text-sm uppercase tracking-[0.2em] ${topLabelClass}`}>Administración</p>
-          <h1 className={`${titleClass} text-center`}>Gestión de usuarios locales</h1>
+          <p className={`text-center text-sm uppercase tracking-[0.2em] ${topLabelClass}`}>{t.headerTag}</p>
+          <h1 className={`${titleClass} text-center`}>{t.headerTitle}</h1>
           <p className={`mx-auto max-w-2xl text-center text-sm ${subtitleClass}`}>
-            Crea, actualiza o elimina usuarios locales de acceso.
+            {t.headerDescription}
           </p>
         </header>
 
         <section className={panelClass}>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className={`text-xs font-semibold uppercase tracking-wider ${topLabelClass}`}>Usuarios</h2>
+            <h2 className={`text-xs font-semibold uppercase tracking-wider ${topLabelClass}`}>{t.sectionUsers}</h2>
             <button
               type="button"
               onClick={() => void loadLocalUsers()}
@@ -317,7 +376,7 @@ export default function UsersPage() {
                   : "inline-flex h-8 items-center rounded-full border border-zinc-300 bg-white px-3 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
               }
             >
-              Actualizar lista
+              {t.reloadList}
             </button>
           </div>
 
@@ -326,7 +385,7 @@ export default function UsersPage() {
               type="email"
               value={localUserEmail}
               onChange={(event) => setLocalUserEmail(event.target.value)}
-              placeholder="Correo"
+              placeholder={t.emailPlaceholder}
               className={
                 theme === "dark"
                   ? "rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
@@ -337,7 +396,7 @@ export default function UsersPage() {
               type="password"
               value={localUserPassword}
               onChange={(event) => setLocalUserPassword(event.target.value)}
-              placeholder="Contraseña"
+              placeholder={t.passwordPlaceholder}
               className={
                 theme === "dark"
                   ? "rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
@@ -350,7 +409,7 @@ export default function UsersPage() {
               disabled={isLoading}
               className="inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 via-cyan-400 to-blue-500 px-4 text-sm font-semibold text-zinc-950 transition hover:from-sky-300 hover:to-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Guardar usuario
+              {t.saveUser}
             </button>
           </div>
 
@@ -378,13 +437,13 @@ export default function UsersPage() {
                       disabled={isLoading}
                       className="inline-flex h-8 items-center rounded-lg border border-red-500/40 bg-red-500/10 px-3 text-xs font-medium text-red-300 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Eliminar
+                      {t.deleteUser}
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <p>No hay usuarios locales guardados.</p>
+              <p>{t.emptyUsers}</p>
             )}
           </div>
         </section>
