@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
+import { detectBrowserLanguage, isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
 import { loginTranslations } from "@/lang/login";
 
 type LoginResponse = {
@@ -50,6 +51,12 @@ export default function LoginPage() {
     const savedLanguage = window.localStorage.getItem("dashboard-language");
     if (savedLanguage && isSupportedLanguage(savedLanguage)) {
       setLanguage(savedLanguage);
+    } else {
+      const browserLanguage = detectBrowserLanguage([
+        ...(window.navigator.languages ?? []),
+        window.navigator.language,
+      ]);
+      setLanguage(browserLanguage);
     }
 
     const savedTheme = window.localStorage.getItem("dashboard-theme");
@@ -112,8 +119,8 @@ export default function LoginPage() {
 
   const mainClass =
     theme === "dark"
-      ? "min-h-screen bg-zinc-950 px-4 py-6 text-zinc-100 sm:px-6 sm:py-10"
-      : "min-h-screen bg-zinc-50 px-4 py-6 text-zinc-900 sm:px-6 sm:py-10";
+      ? "min-h-screen bg-zinc-950 px-3 py-3 text-zinc-100 sm:px-6 sm:py-10"
+      : "min-h-screen bg-zinc-50 px-3 py-3 text-zinc-900 sm:px-6 sm:py-10";
 
   const cardClass =
     theme === "dark"
@@ -129,10 +136,20 @@ export default function LoginPage() {
       ? "w-full rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
       : "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring";
 
+  const languageSelectWrapperClass =
+    theme === "dark"
+      ? "relative w-20 sm:w-24"
+      : "relative w-20 sm:w-24";
+
   const languageSelectClass =
     theme === "dark"
-      ? "h-9 rounded-full border border-white/20 bg-zinc-900/70 px-3 text-xs font-medium text-zinc-200 outline-none ring-sky-400 transition focus:ring sm:h-10 sm:text-sm"
-      : "h-9 rounded-full border border-zinc-300 bg-white px-3 text-xs font-medium text-zinc-700 outline-none ring-sky-500 transition focus:ring sm:h-10 sm:text-sm";
+      ? "h-9 w-full appearance-none rounded-full border border-white/20 bg-zinc-900/75 pl-3 pr-8 text-xs font-semibold text-zinc-200 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/40 sm:h-10 sm:text-sm"
+      : "h-9 w-full appearance-none rounded-full border border-zinc-300 bg-white pl-3 pr-8 text-xs font-semibold text-zinc-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 sm:h-10 sm:text-sm";
+
+  const languageSelectChevronClass =
+    theme === "dark"
+      ? "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400"
+      : "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500";
 
   if (!isThemeInitialized) {
     return null;
@@ -140,29 +157,60 @@ export default function LoginPage() {
 
   return (
     <main className={mainClass}>
-      <div className="mx-auto flex min-h-[80vh] w-full max-w-md items-center">
+      <div className="mx-auto flex min-h-screen w-full max-w-md items-start pt-2 sm:items-center sm:pt-0">
         <section className={cardClass}>
-          <div className="flex items-center justify-end gap-2 sm:gap-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
+            <div
+              className={
+                theme === "dark"
+                  ? "inline-flex h-8 items-center rounded-full border border-white/20 bg-white/5 px-2 text-xs font-semibold tracking-wider text-zinc-200"
+                  : "inline-flex h-8 items-center rounded-full border border-zinc-300 bg-white px-2 text-xs font-semibold tracking-wider text-zinc-700"
+              }
+            >
+              <Image
+                src="/logo.png"
+                alt={t.logoAlt}
+                width={28}
+                height={28}
+                className="h-5 w-auto object-contain"
+                priority
+              />
+            </div>
             <div className="flex items-center gap-1.5 sm:gap-2">
               <label className="sr-only" htmlFor="language-select-login">{t.languageSelectAria}</label>
-              <select
-                id="language-select-login"
-                aria-label={t.languageSelectAria}
-                value={language}
-                onChange={(event) => {
-                  const nextLanguage = event.target.value;
-                  if (isSupportedLanguage(nextLanguage)) {
-                    setLanguage(nextLanguage);
-                  }
-                }}
-                className={languageSelectClass}
-              >
-                {languageOptions.map((option) => (
-                  <option key={option.code} value={option.code}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <div className={languageSelectWrapperClass}>
+                <select
+                  id="language-select-login"
+                  aria-label={t.languageSelectAria}
+                  value={language}
+                  onChange={(event) => {
+                    const nextLanguage = event.target.value;
+                    if (isSupportedLanguage(nextLanguage)) {
+                      setLanguage(nextLanguage);
+                    }
+                  }}
+                  className={languageSelectClass}
+                >
+                  {languageOptions.map((option) => (
+                    <option key={option.code} value={option.code}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className={languageSelectChevronClass}
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.171l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.24 4.5a.75.75 0 0 1-1.08 0l-4.24-4.5a.75.75 0 0 1 .02-1.06z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
               <button
                 type="button"
                 onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}

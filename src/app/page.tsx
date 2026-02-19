@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
+import { detectBrowserLanguage, isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
 import {
   homeTranslations,
   speechLocales,
@@ -154,7 +155,14 @@ export default function Home() {
     const savedLanguage = window.localStorage.getItem("dashboard-language");
     if (savedLanguage && isSupportedLanguage(savedLanguage)) {
       setLanguage(savedLanguage);
+      return;
     }
+
+    const browserLanguage = detectBrowserLanguage([
+      ...(window.navigator.languages ?? []),
+      window.navigator.language,
+    ]);
+    setLanguage(browserLanguage);
   }, []);
 
   useEffect(() => {
@@ -464,10 +472,20 @@ export default function Home() {
       ? "inline-flex h-9 items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 text-xs font-medium text-zinc-100 transition hover:bg-white/15 sm:h-10 sm:px-3"
       : "inline-flex h-9 items-center gap-1.5 rounded-full border border-zinc-300 bg-white px-2.5 text-xs font-medium text-zinc-800 transition hover:bg-zinc-100 sm:h-10 sm:px-3";
 
+  const languageSelectWrapperClass =
+    theme === "dark"
+      ? "relative w-20 sm:w-24"
+      : "relative w-20 sm:w-24";
+
   const languageSelectClass =
     theme === "dark"
-      ? "h-9 rounded-full border border-white/20 bg-zinc-900/70 px-3 text-xs font-medium text-zinc-200 outline-none ring-sky-400 transition focus:ring sm:h-10 sm:text-sm"
-      : "h-9 rounded-full border border-zinc-300 bg-white px-3 text-xs font-medium text-zinc-700 outline-none ring-sky-500 transition focus:ring sm:h-10 sm:text-sm";
+      ? "h-9 w-full appearance-none rounded-full border border-white/20 bg-zinc-900/75 pl-3 pr-8 text-xs font-semibold text-zinc-200 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/40 sm:h-10 sm:text-sm"
+      : "h-9 w-full appearance-none rounded-full border border-zinc-300 bg-white pl-3 pr-8 text-xs font-semibold text-zinc-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 sm:h-10 sm:text-sm";
+
+  const languageSelectChevronClass =
+    theme === "dark"
+      ? "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400"
+      : "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500";
 
   const menuItemClass =
     theme === "dark"
@@ -493,34 +511,60 @@ export default function Home() {
           <div className="absolute bottom-10 right-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
         </div>
       ) : null}
-      <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10">
+      <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-start gap-3 px-3 py-3 sm:justify-center sm:gap-6 sm:px-6 sm:py-10">
         <header className="space-y-2 sm:space-y-3">
-          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+            <div
+              className={
+                theme === "dark"
+                  ? "inline-flex h-8 items-center rounded-full border border-white/20 bg-white/5 px-2 text-xs font-semibold tracking-wider text-zinc-200"
+                  : "inline-flex h-8 items-center rounded-full border border-zinc-300 bg-white px-2 text-xs font-semibold tracking-wider text-zinc-700"
+              }
+            >
+              <Image
+                src="/logo.png"
+                alt={t.logoAlt}
+                width={28}
+                height={28}
+                className="h-5 w-auto object-contain"
+                priority
+              />
+            </div>
             <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
               <label className="sr-only" htmlFor="language-select-home">{t.languageSelectAria}</label>
-              <select
-                id="language-select-home"
-                aria-label={t.languageSelectAria}
-                value={language}
-                onChange={(event) => {
-                  const nextLanguage = event.target.value;
-                  if (isSupportedLanguage(nextLanguage)) {
-                    setLanguage(nextLanguage);
-                  }
-                }}
-                className={languageSelectClass}
-              >
-                {languageOptions.map((option) => {
-                  return (
-                    <option
-                      key={option.code}
-                      value={option.code}
-                    >
+              <div className={languageSelectWrapperClass}>
+                <select
+                  id="language-select-home"
+                  aria-label={t.languageSelectAria}
+                  value={language}
+                  onChange={(event) => {
+                    const nextLanguage = event.target.value;
+                    if (isSupportedLanguage(nextLanguage)) {
+                      setLanguage(nextLanguage);
+                    }
+                  }}
+                  className={languageSelectClass}
+                >
+                  {languageOptions.map((option) => (
+                    <option key={option.code} value={option.code}>
                       {option.label}
                     </option>
-                  );
-                })}
-              </select>
+                  ))}
+                </select>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className={languageSelectChevronClass}
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.171l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.24 4.5a.75.75 0 0 1-1.08 0l-4.24-4.5a.75.75 0 0 1 .02-1.06z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
             <button
               type="button"
               onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
