@@ -82,6 +82,8 @@ var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$extern
 var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/node:fs [external] (node:fs, cjs)");
 var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/node:path [external] (node:path, cjs)");
 var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$util__$5b$external$5d$__$28$node$3a$util$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/node:util [external] (node:util, cjs)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$vercel$2f$kv$2f$dist$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@vercel/kv/dist/index.js [app-route] (ecmascript)");
+;
 ;
 ;
 ;
@@ -89,6 +91,24 @@ var __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$util__$5b$external
 const scrypt = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$util__$5b$external$5d$__$28$node$3a$util$2c$__cjs$29$__["promisify"])(__TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["scrypt"]);
 const STORE_DIR = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__["join"])(process.cwd(), "uploads");
 const STORE_PATH = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__["join"])(STORE_DIR, "local-users.json");
+const KV_USERS_KEY = "dashboard:local-users";
+function isVercelKvConfigured() {
+    return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+async function readStoreFromKv() {
+    const payload = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$vercel$2f$kv$2f$dist$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["kv"].get(KV_USERS_KEY);
+    if (!payload || !Array.isArray(payload.users)) {
+        return {
+            users: []
+        };
+    }
+    return {
+        users: payload.users.filter((item)=>typeof item?.email === "string" && typeof item?.passwordHash === "string" && typeof item?.salt === "string")
+    };
+}
+async function writeStoreToKv(data) {
+    await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$vercel$2f$kv$2f$dist$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["kv"].set(KV_USERS_KEY, data);
+}
 async function ensureStoreFile() {
     await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].mkdir(STORE_DIR, {
         recursive: true
@@ -103,6 +123,9 @@ async function ensureStoreFile() {
     }
 }
 async function readStore() {
+    if (isVercelKvConfigured()) {
+        return readStoreFromKv();
+    }
     await ensureStoreFile();
     const raw = await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].readFile(STORE_PATH, "utf8");
     try {
@@ -122,6 +145,10 @@ async function readStore() {
     }
 }
 async function writeStore(data) {
+    if (isVercelKvConfigured()) {
+        await writeStoreToKv(data);
+        return;
+    }
     await ensureStoreFile();
     await __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$fs__$5b$external$5d$__$28$node$3a$fs$2c$__cjs$29$__["promises"].writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf8");
 }
