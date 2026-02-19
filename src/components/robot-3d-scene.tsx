@@ -76,7 +76,6 @@ export function Robot3DScene({ lookX, lookY, theme, isSmiling }: Robot3DScenePro
           adjustCamera={1.15}
           intensity={theme === "dark" ? 1.1 : 0.95}
           environment={theme === "dark" ? "city" : "studio"}
-          contactShadow={false}
         >
           <RobotModel lookX={lookX} lookY={lookY} isSmiling={isSmiling} />
         </Stage>

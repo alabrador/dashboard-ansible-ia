@@ -1,0 +1,16 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/local-users/route": "/api/auth/local-users",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/auth/logout/route": "/api/auth/logout",
+  "/api/auth/session/route": "/api/auth/session",
+  "/api/execute/route": "/api/execute",
+  "/api/health-awx/route": "/api/health-awx",
+  "/api/news/route": "/api/news",
+  "/api/transcribe/route": "/api/transcribe",
+  "/favicon.ico/route": "/favicon.ico",
+  "/login/page": "/login",
+  "/page": "/",
+  "/users/page": "/users"
+}
