@@ -20,6 +20,13 @@ type ExecuteResponse = {
   error?: string;
 };
 
+type AuthSessionResponse = {
+  authenticated?: boolean;
+  user?: {
+    email?: string;
+  };
+};
+
 type SpeechRecognitionAlternative = {
   transcript: string;
 };
@@ -98,13 +105,17 @@ export default function Home() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isThemeInitialized, setIsThemeInitialized] = useState(false);
   const [language, setLanguage] = useState<Language>("es");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   const t = homeTranslations[language];
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const speechRecognitionRef = useRef<BrowserSpeechRecognition | null>(null);
+  const settingsMenuRef = useRef<HTMLDivElement | null>(null);
+  const userMenuRef = useRef<HTMLDivElement | null>(null);
   const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const maxDurationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const speechDetectedRef = useRef(false);
@@ -154,6 +165,54 @@ export default function Home() {
 
     window.localStorage.setItem("dashboard-language", language);
   }, [language]);
+
+  useEffect(() => {
+    const handleDocumentPointerDown = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+
+      const clickedSettingsMenu = settingsMenuRef.current?.contains(target) ?? false;
+      const clickedUserMenu = userMenuRef.current?.contains(target) ?? false;
+
+      if (!clickedSettingsMenu && !clickedUserMenu) {
+        setIsSettingsMenuOpen(false);
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleDocumentPointerDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleDocumentPointerDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    const loadSession = async () => {
+      try {
+        const response = await fetch("/api/auth/session", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as AuthSessionResponse;
+        const email = payload.user?.email?.trim();
+        if (email) {
+          setUserEmail(email);
+        }
+      } catch {
+        setUserEmail("");
+      }
+    };
+
+    void loadSession();
+  }, []);
 
   const clearSilenceTimer = () => {
     if (silenceTimeoutRef.current) {
@@ -401,6 +460,11 @@ export default function Home() {
       ? "absolute right-0 top-12 z-20 w-56 rounded-xl border border-white/15 bg-zinc-900/95 p-2 shadow-xl"
       : "absolute right-0 top-12 z-20 w-56 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl";
 
+  const userButtonClass =
+    theme === "dark"
+      ? "inline-flex h-9 items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 text-xs font-medium text-zinc-100 transition hover:bg-white/15 sm:h-10 sm:px-3"
+      : "inline-flex h-9 items-center gap-1.5 rounded-full border border-zinc-300 bg-white px-2.5 text-xs font-medium text-zinc-800 transition hover:bg-zinc-100 sm:h-10 sm:px-3";
+
   const menuItemClass =
     theme === "dark"
       ? "flex h-9 items-center rounded-lg px-3 text-xs font-medium text-zinc-200 transition hover:bg-white/10"
@@ -410,6 +474,8 @@ export default function Home() {
     theme === "dark"
       ? "mt-4 rounded-lg border border-zinc-700 bg-zinc-950/70 p-3 text-xs text-zinc-300"
       : "mt-4 rounded-lg border border-zinc-200 bg-zinc-100 p-3 text-xs text-zinc-700";
+
+  const userName = userEmail ? userEmail.split("@")[0] : t.unknownUser;
 
   if (!isThemeInitialized) {
     return null;
@@ -496,13 +562,16 @@ export default function Home() {
             >
               {theme === "dark" ? t.themeLight : t.themeDark}
             </button>
-            <div className="relative">
+            <div ref={settingsMenuRef} className="relative">
               <button
                 type="button"
-                onClick={() => setIsMenuOpen((current) => !current)}
+                onClick={() => {
+                  setIsSettingsMenuOpen((current) => !current);
+                  setIsUserMenuOpen(false);
+                }}
                 className={menuButtonClass}
-                aria-label={t.menuOpenAria}
-                aria-expanded={isMenuOpen}
+                aria-label={t.settingsMenuAria}
+                aria-expanded={isSettingsMenuOpen}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -515,24 +584,58 @@ export default function Home() {
                   className="h-4 w-4"
                   aria-hidden="true"
                 >
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
                 </svg>
               </button>
-              {isMenuOpen ? (
+              {isSettingsMenuOpen ? (
                 <div className={menuPanelClass}>
                   <Link
                     href="/users"
                     className={menuItemClass}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => setIsSettingsMenuOpen(false)}
                   >
                     {t.menuUsers}
                   </Link>
+                </div>
+              ) : null}
+            </div>
+            <div ref={userMenuRef} className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsUserMenuOpen((current) => !current);
+                  setIsSettingsMenuOpen(false);
+                }}
+                className={userButtonClass}
+                aria-label={t.userMenuAria}
+                aria-expanded={isUserMenuOpen}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M20 21a8 8 0 0 0-16 0" />
+                  <circle cx="12" cy="8" r="4" />
+                </svg>
+                <span className="max-w-20 truncate sm:max-w-24">{userName}</span>
+              </button>
+              {isUserMenuOpen ? (
+                <div className={menuPanelClass}>
+                  <p className={`${menuItemClass} cursor-default`}>
+                    {t.currentUserLabel}: {userName}
+                  </p>
                   <button
                     type="button"
                     onClick={() => {
-                      setIsMenuOpen(false);
+                      setIsUserMenuOpen(false);
                       void handleSignOut();
                     }}
                     className={`${menuItemClass} w-full`}

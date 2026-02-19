@@ -3,9 +3,12 @@ import { type Language } from "@/lang/core";
 export type UsersTranslation = {
   logoAlt: string;
   languageSelectAria: string;
-  menuOpenAria: string;
+  settingsMenuAria: string;
+  userMenuAria: string;
   menuGoApp: string;
   menuUsers: string;
+  currentUserLabel: string;
+  unknownUser: string;
   signOut: string;
   signOutError: string;
   themeToggleAria: string;
@@ -33,9 +36,12 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
   es: {
     logoAlt: "Logo",
     languageSelectAria: "Cambiar idioma",
-    menuOpenAria: "Abrir menú",
+    settingsMenuAria: "Abrir menú de configuración",
+    userMenuAria: "Abrir menú de usuario",
     menuGoApp: "Ir a la app",
     menuUsers: "Gestión de usuarios",
+    currentUserLabel: "Usuario",
+    unknownUser: "Sin usuario",
     signOut: "Cerrar sesión",
     signOutError: "No se pudo cerrar sesión.",
     themeToggleAria: "Cambiar tema",
@@ -61,9 +67,12 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
   en: {
     logoAlt: "Logo",
     languageSelectAria: "Change language",
-    menuOpenAria: "Open menu",
+    settingsMenuAria: "Open settings menu",
+    userMenuAria: "Open user menu",
     menuGoApp: "Go to app",
     menuUsers: "User management",
+    currentUserLabel: "User",
+    unknownUser: "No user",
     signOut: "Sign out",
     signOutError: "Could not sign out.",
     themeToggleAria: "Toggle theme",
@@ -89,9 +98,12 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
   it: {
     logoAlt: "Logo",
     languageSelectAria: "Cambia lingua",
-    menuOpenAria: "Apri menu",
+    settingsMenuAria: "Apri menu impostazioni",
+    userMenuAria: "Apri menu utente",
     menuGoApp: "Vai all'app",
     menuUsers: "Gestione utenti",
+    currentUserLabel: "Utente",
+    unknownUser: "Nessun utente",
     signOut: "Esci",
     signOutError: "Impossibile uscire.",
     themeToggleAria: "Cambia tema",
@@ -117,9 +129,12 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
   pt: {
     logoAlt: "Logo",
     languageSelectAria: "Alterar idioma",
-    menuOpenAria: "Abrir menu",
+    settingsMenuAria: "Abrir menu de configurações",
+    userMenuAria: "Abrir menu do usuário",
     menuGoApp: "Ir para o app",
     menuUsers: "Gestão de usuários",
+    currentUserLabel: "Usuário",
+    unknownUser: "Sem usuário",
     signOut: "Sair",
     signOutError: "Não foi possível encerrar a sessão.",
     themeToggleAria: "Alternar tema",

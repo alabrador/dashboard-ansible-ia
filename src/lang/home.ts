@@ -28,8 +28,11 @@ export type HomeTranslation = {
   micAccessError: string;
   unknownError: string;
   invalidAudioCommand: string;
-  menuOpenAria: string;
+  settingsMenuAria: string;
+  userMenuAria: string;
   menuUsers: string;
+  currentUserLabel: string;
+  unknownUser: string;
   signOut: string;
   signOutError: string;
 };
@@ -71,8 +74,11 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     micAccessError: "No se pudo acceder al micrófono.",
     unknownError: "Error inesperado.",
     invalidAudioCommand: "No se encontró un comando válido en el audio.",
-    menuOpenAria: "Abrir menú",
+    settingsMenuAria: "Abrir menú de configuración",
+    userMenuAria: "Abrir menú de usuario",
     menuUsers: "Gestión de usuarios",
+    currentUserLabel: "Usuario",
+    unknownUser: "Sin usuario",
     signOut: "Cerrar sesión",
     signOutError: "No se pudo cerrar sesión.",
   },
@@ -104,8 +110,11 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     micAccessError: "Could not access the microphone.",
     unknownError: "Unexpected error.",
     invalidAudioCommand: "No valid command was found in the audio.",
-    menuOpenAria: "Open menu",
+    settingsMenuAria: "Open settings menu",
+    userMenuAria: "Open user menu",
     menuUsers: "User management",
+    currentUserLabel: "User",
+    unknownUser: "No user",
     signOut: "Sign out",
     signOutError: "Could not sign out.",
   },
@@ -138,8 +147,11 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     micAccessError: "Impossibile accedere al microfono.",
     unknownError: "Errore imprevisto.",
     invalidAudioCommand: "Nessun comando valido trovato nell'audio.",
-    menuOpenAria: "Apri menu",
+    settingsMenuAria: "Apri menu impostazioni",
+    userMenuAria: "Apri menu utente",
     menuUsers: "Gestione utenti",
+    currentUserLabel: "Utente",
+    unknownUser: "Nessun utente",
     signOut: "Esci",
     signOutError: "Impossibile uscire.",
   },
@@ -172,8 +184,11 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     micAccessError: "Não foi possível acessar o microfone.",
     unknownError: "Erro inesperado.",
     invalidAudioCommand: "Nenhum comando válido foi encontrado no áudio.",
-    menuOpenAria: "Abrir menu",
+    settingsMenuAria: "Abrir menu de configurações",
+    userMenuAria: "Abrir menu do usuário",
     menuUsers: "Gestão de usuários",
+    currentUserLabel: "Usuário",
+    unknownUser: "Sem usuário",
     signOut: "Sair",
     signOutError: "Não foi possível encerrar a sessão.",
   },

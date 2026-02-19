@@ -1,5 +1,9 @@
 {
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/auth/logout/route": "app/api/auth/logout/route.js",
+  "/api/auth/session/route": "app/api/auth/session/route.js",
   "/api/news/route": "app/api/news/route.js",
   "/api/weather/route": "app/api/weather/route.js",
+  "/login/page": "app/login/page.js",
   "/page": "app/page.js"
 }
