@@ -173,7 +173,7 @@ export function FloatingRobotBot() {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed bottom-6 right-4 z-50 flex flex-col items-end sm:bottom-8 sm:right-5">
+    <div className="pointer-events-none fixed bottom-6 right-4 z-50 hidden flex-col items-end sm:bottom-8 sm:right-5 sm:flex">
       {isOpen ? (
         <div className={`pointer-events-auto mb-3 w-[170px] rounded-xl px-2.5 py-2 text-[11px] shadow-[0_16px_32px_-18px_rgba(14,165,233,0.7)] sm:mb-4 sm:w-[190px] ${bubbleClass}`}>
           <p className="font-semibold">Asistente</p>
