@@ -191,6 +191,11 @@ function FloatingRobotBot() {
     const [newsError, setNewsError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [weatherTip, setWeatherTip] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [showWeatherTip, setShowWeatherTip] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [healthSummary, setHealthSummary] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isLoadingHealth, setIsLoadingHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [healthError, setHealthError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    const [showHealthView, setShowHealthView] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [isHealthViewInitialized, setIsHealthViewInitialized] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [theme, setTheme] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>{
         if ("TURBOPACK compile-time truthy", 1) {
             return "dark";
@@ -211,6 +216,24 @@ function FloatingRobotBot() {
         const onStorage = undefined;
         const intervalId = undefined;
     }, []);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if ("TURBOPACK compile-time truthy", 1) {
+            return;
+        }
+        //TURBOPACK unreachable
+        ;
+        const savedHealthView = undefined;
+    }, []);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if ("TURBOPACK compile-time truthy", 1) {
+            return;
+        }
+        //TURBOPACK unreachable
+        ;
+    }, [
+        isHealthViewInitialized,
+        showHealthView
+    ]);
     const bubbleClass = theme === "dark" ? "bg-zinc-900/95 text-zinc-100" : "bg-white/95 text-zinc-900";
     const pickHeadline = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])((items, currentLink)=>{
         if (!items.length) {
@@ -274,6 +297,27 @@ function FloatingRobotBot() {
             setWeatherTip(null);
         }
     }, []);
+    const loadHealthSummary = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async ()=>{
+        setIsLoadingHealth(true);
+        setHealthError("");
+        try {
+            const response = await fetch("/api/health-summary", {
+                cache: "no-store"
+            });
+            const payload = await response.json();
+            if (!response.ok || typeof payload.steps !== "number") {
+                setHealthSummary(null);
+                setHealthError(payload.error ?? "No pude obtener datos de salud.");
+                return;
+            }
+            setHealthSummary(payload);
+        } catch  {
+            setHealthSummary(null);
+            setHealthError("No pude conectar con el resumen de salud.");
+        } finally{
+            setIsLoadingHealth(false);
+        }
+    }, []);
     const handleRobotClick = ()=>{
         setIsOpen((current)=>!current);
         setIsSmiling(true);
@@ -291,6 +335,7 @@ function FloatingRobotBot() {
         }
         void loadNews();
         void loadWeather();
+        void loadHealthSummary();
         setShowWeatherTip(Math.random() < 0.45);
         const rotateInterval = window.setInterval(()=>{
             if (!newsItemsRef.current.length) {
@@ -305,13 +350,18 @@ function FloatingRobotBot() {
         const weatherRefreshInterval = window.setInterval(()=>{
             void loadWeather();
         }, 1800000);
+        const healthRefreshInterval = window.setInterval(()=>{
+            void loadHealthSummary();
+        }, 300000);
         return ()=>{
             window.clearInterval(rotateInterval);
             window.clearInterval(refreshInterval);
             window.clearInterval(weatherRefreshInterval);
+            window.clearInterval(healthRefreshInterval);
         };
     }, [
         isOpen,
+        loadHealthSummary,
         loadNews,
         loadWeather,
         pickHeadline
@@ -324,7 +374,7 @@ function FloatingRobotBot() {
         };
     }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "pointer-events-none fixed bottom-6 right-4 z-50 flex flex-col items-end sm:bottom-8 sm:right-5",
+        className: "pointer-events-none fixed bottom-6 right-4 z-50 hidden flex-col items-end sm:bottom-8 sm:right-5 sm:flex",
         children: [
             isOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: `pointer-events-auto mb-3 w-[170px] rounded-xl px-2.5 py-2 text-[11px] shadow-[0_16px_32px_-18px_rgba(14,165,233,0.7)] sm:mb-4 sm:w-[190px] ${bubbleClass}`,
@@ -334,7 +384,7 @@ function FloatingRobotBot() {
                         children: "Asistente"
                     }, void 0, false, {
                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                        lineNumber: 179,
+                        lineNumber: 246,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -342,7 +392,7 @@ function FloatingRobotBot() {
                         children: "Hola pana 👋"
                     }, void 0, false, {
                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                        lineNumber: 180,
+                        lineNumber: 247,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -353,7 +403,7 @@ function FloatingRobotBot() {
                                 children: "Buscando titulares..."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                lineNumber: 183,
+                                lineNumber: 250,
                                 columnNumber: 30
                             }, this) : null,
                             !isLoadingNews && newsError ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -361,7 +411,7 @@ function FloatingRobotBot() {
                                 children: newsError
                             }, void 0, false, {
                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                lineNumber: 184,
+                                lineNumber: 251,
                                 columnNumber: 44
                             }, this) : null,
                             !isLoadingNews && !newsError && headline ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -372,7 +422,7 @@ function FloatingRobotBot() {
                                 children: headline.title
                             }, void 0, false, {
                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                lineNumber: 186,
+                                lineNumber: 253,
                                 columnNumber: 15
                             }, this) : null,
                             !isLoadingNews && !newsError && weatherTip && showWeatherTip ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -380,19 +430,130 @@ function FloatingRobotBot() {
                                 children: weatherTip
                             }, void 0, false, {
                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                lineNumber: 196,
+                                lineNumber: 263,
                                 columnNumber: 15
-                            }, this) : null
+                            }, this) : null,
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "mt-2 rounded-lg bg-black/5 px-2 py-1.5 dark:bg-white/5",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "flex items-center justify-between gap-2",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "font-semibold opacity-90",
+                                                children: "Salud hoy"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                lineNumber: 267,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                type: "button",
+                                                onClick: ()=>setShowHealthView((current)=>!current),
+                                                className: "rounded-md border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide opacity-90 transition hover:opacity-100 dark:border-white/15",
+                                                children: showHealthView ? "Ocultar" : "Ver"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                lineNumber: 268,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                        lineNumber: 266,
+                                        columnNumber: 15
+                                    }, this),
+                                    showHealthView ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                        children: [
+                                            isLoadingHealth ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "mt-1 opacity-80",
+                                                children: "Cargando resumen..."
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                lineNumber: 278,
+                                                columnNumber: 38
+                                            }, this) : null,
+                                            !isLoadingHealth && healthError ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "mt-1 opacity-80",
+                                                children: healthError
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                lineNumber: 279,
+                                                columnNumber: 54
+                                            }, this) : null,
+                                            !isLoadingHealth && !healthError && healthSummary ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "mt-1 space-y-0.5 opacity-90",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        children: healthSummary.message
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                        lineNumber: 282,
+                                                        columnNumber: 23
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        children: [
+                                                            "Pasos: ",
+                                                            healthSummary.steps.toLocaleString("es-ES")
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                        lineNumber: 283,
+                                                        columnNumber: 23
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        children: [
+                                                            "FC reposo: ",
+                                                            healthSummary.restingHeartRate,
+                                                            " lpm"
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                        lineNumber: 284,
+                                                        columnNumber: 23
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        children: [
+                                                            "Sueño: ",
+                                                            healthSummary.sleepHours,
+                                                            " h"
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                        lineNumber: 285,
+                                                        columnNumber: 23
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                lineNumber: 281,
+                                                columnNumber: 21
+                                            }, this) : null
+                                        ]
+                                    }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 opacity-80",
+                                        children: "Vista de salud oculta."
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                        lineNumber: 290,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                lineNumber: 265,
+                                columnNumber: 13
+                            }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                        lineNumber: 182,
+                        lineNumber: 249,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                lineNumber: 178,
+                lineNumber: 245,
                 columnNumber: 9
             }, this) : null,
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -405,7 +566,7 @@ function FloatingRobotBot() {
                         className: "absolute -inset-3 rounded-full bg-cyan-400/20 blur-xl"
                     }, void 0, false, {
                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                        lineNumber: 208,
+                        lineNumber: 303,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -417,24 +578,24 @@ function FloatingRobotBot() {
                             isSmiling: isSmiling
                         }, void 0, false, {
                             fileName: "[project]/src/components/floating-robot-bot.tsx",
-                            lineNumber: 210,
+                            lineNumber: 305,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                        lineNumber: 209,
+                        lineNumber: 304,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                lineNumber: 202,
+                lineNumber: 297,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/floating-robot-bot.tsx",
-        lineNumber: 176,
+        lineNumber: 243,
         columnNumber: 5
     }, this);
 }

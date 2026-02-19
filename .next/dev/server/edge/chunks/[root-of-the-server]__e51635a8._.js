@@ -87,7 +87,8 @@ const PUBLIC_ROUTES = [
     "/api/auth/login",
     "/api/auth/logout",
     "/api/auth/session",
-    "/api/health-awx"
+    "/api/health-awx",
+    "/api/health-summary"
 ];
 function isPublicPath(pathname) {
     return PUBLIC_ROUTES.some((route)=>pathname === route || pathname.startsWith(`${route}/`));

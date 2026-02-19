@@ -10,6 +10,16 @@ type NewsItem = {
   pubDate?: string;
 };
 
+type HealthSummaryPayload = {
+  source: "mock";
+  date: string;
+  steps: number;
+  restingHeartRate: number;
+  sleepHours: number;
+  standHours: number;
+  message: string;
+};
+
 export function FloatingRobotBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSmiling, setIsSmiling] = useState(false);
@@ -18,6 +28,11 @@ export function FloatingRobotBot() {
   const [newsError, setNewsError] = useState("");
   const [weatherTip, setWeatherTip] = useState<string | null>(null);
   const [showWeatherTip, setShowWeatherTip] = useState(false);
+  const [healthSummary, setHealthSummary] = useState<HealthSummaryPayload | null>(null);
+  const [isLoadingHealth, setIsLoadingHealth] = useState(false);
+  const [healthError, setHealthError] = useState("");
+  const [showHealthView, setShowHealthView] = useState(true);
+  const [isHealthViewInitialized, setIsHealthViewInitialized] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     if (typeof window === "undefined") {
       return "dark";
@@ -50,6 +65,29 @@ export function FloatingRobotBot() {
       window.clearInterval(intervalId);
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const savedHealthView = window.localStorage.getItem("dashboard-health-view");
+    if (savedHealthView === "hidden") {
+      setShowHealthView(false);
+    } else {
+      setShowHealthView(true);
+    }
+
+    setIsHealthViewInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !isHealthViewInitialized) {
+      return;
+    }
+
+    window.localStorage.setItem("dashboard-health-view", showHealthView ? "visible" : "hidden");
+  }, [isHealthViewInitialized, showHealthView]);
 
   const bubbleClass = theme === "dark" ? "bg-zinc-900/95 text-zinc-100" : "bg-white/95 text-zinc-900";
 
@@ -117,6 +155,29 @@ export function FloatingRobotBot() {
     }
   }, []);
 
+  const loadHealthSummary = useCallback(async () => {
+    setIsLoadingHealth(true);
+    setHealthError("");
+
+    try {
+      const response = await fetch("/api/health-summary", { cache: "no-store" });
+      const payload = (await response.json()) as Partial<HealthSummaryPayload> & { error?: string };
+
+      if (!response.ok || typeof payload.steps !== "number") {
+        setHealthSummary(null);
+        setHealthError(payload.error ?? "No pude obtener datos de salud.");
+        return;
+      }
+
+      setHealthSummary(payload as HealthSummaryPayload);
+    } catch {
+      setHealthSummary(null);
+      setHealthError("No pude conectar con el resumen de salud.");
+    } finally {
+      setIsLoadingHealth(false);
+    }
+  }, []);
+
   const handleRobotClick = () => {
     setIsOpen((current) => !current);
     setIsSmiling(true);
@@ -138,6 +199,7 @@ export function FloatingRobotBot() {
 
     void loadNews();
     void loadWeather();
+    void loadHealthSummary();
     setShowWeatherTip(Math.random() < 0.45);
 
     const rotateInterval = window.setInterval(() => {
@@ -157,12 +219,17 @@ export function FloatingRobotBot() {
       void loadWeather();
     }, 1800000);
 
+    const healthRefreshInterval = window.setInterval(() => {
+      void loadHealthSummary();
+    }, 300000);
+
     return () => {
       window.clearInterval(rotateInterval);
       window.clearInterval(refreshInterval);
       window.clearInterval(weatherRefreshInterval);
+      window.clearInterval(healthRefreshInterval);
     };
-  }, [isOpen, loadNews, loadWeather, pickHeadline]);
+  }, [isOpen, loadHealthSummary, loadNews, loadWeather, pickHeadline]);
 
   useEffect(() => {
     return () => {
@@ -195,6 +262,34 @@ export function FloatingRobotBot() {
             {!isLoadingNews && !newsError && weatherTip && showWeatherTip ? (
               <p className="mt-2 rounded-lg bg-black/5 px-2 py-1.5 leading-snug opacity-90 dark:bg-white/5">{weatherTip}</p>
             ) : null}
+            <div className="mt-2 rounded-lg bg-black/5 px-2 py-1.5 dark:bg-white/5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-semibold opacity-90">Salud hoy</p>
+                <button
+                  type="button"
+                  onClick={() => setShowHealthView((current) => !current)}
+                  className="rounded-md border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide opacity-90 transition hover:opacity-100 dark:border-white/15"
+                >
+                  {showHealthView ? "Ocultar" : "Ver"}
+                </button>
+              </div>
+              {showHealthView ? (
+                <>
+                  {isLoadingHealth ? <p className="mt-1 opacity-80">Cargando resumen...</p> : null}
+                  {!isLoadingHealth && healthError ? <p className="mt-1 opacity-80">{healthError}</p> : null}
+                  {!isLoadingHealth && !healthError && healthSummary ? (
+                    <div className="mt-1 space-y-0.5 opacity-90">
+                      <p>{healthSummary.message}</p>
+                      <p>Pasos: {healthSummary.steps.toLocaleString("es-ES")}</p>
+                      <p>FC reposo: {healthSummary.restingHeartRate} lpm</p>
+                      <p>Sueño: {healthSummary.sleepHours} h</p>
+                    </div>
+                  ) : null}
+                </>
+              ) : (
+                <p className="mt-1 opacity-80">Vista de salud oculta.</p>
+              )}
+            </div>
           </div>
         </div>
       ) : null}

@@ -20,6 +20,7 @@ No hay botón manual de ejecutar: el flujo corre automático al terminar la grab
 	- `POST /api/transcribe` (proxy a Whisper)
 	- `POST /api/execute` (transcribe + match + launch en AWX)
 	- `GET /api/health-awx` (diagnóstico de conectividad/token AWX)
+	- `GET /api/health-summary` (resumen de salud para asistente)
 	- `POST /api/auth/login` (inicio de sesión)
 	- `POST /api/auth/logout` (cierre de sesión)
 	- `GET /api/auth/session` (estado de sesión)
@@ -59,6 +60,15 @@ LDAP_TIMEOUT_MS=5000
 # Vercel KV / Upstash Redis (recomendado en producción)
 KV_REST_API_URL=<url-rest-kv>
 KV_REST_API_TOKEN=<token-rest-kv>
+
+# Resumen de salud mock (opcional)
+HEALTH_STEPS=7350
+HEALTH_RESTING_HR=64
+HEALTH_SLEEP_HOURS=7.1
+HEALTH_STAND_HOURS=9
+
+# Ingesta externa de salud (atajo iPhone / app puente)
+HEALTH_INGEST_TOKEN=<token-largo-y-seguro>
 ```
 
 Notas:
@@ -166,6 +176,31 @@ Verifica:
 - Presencia de `AWX_BASE_URL` y `AWX_API_TOKEN`
 - Conectividad a `AWX_BASE_URL/api/v2/ping/`
 - Estado HTTP y body devuelto por AWX
+
+### `GET /api/health-summary`
+
+Devuelve un resumen de salud del día para el asistente flotante.
+
+Actualmente usa datos mock configurables por variables de entorno y está listo para conectar una fuente real (por ejemplo, integración iOS/HealthKit vía backend).
+
+### `POST /api/health-summary`
+
+Permite actualizar el resumen de salud desde una fuente externa (por ejemplo, un Shortcut en iPhone).
+
+- Autenticación requerida por header:
+	- `x-health-ingest-token: <HEALTH_INGEST_TOKEN>`
+	- o `Authorization: Bearer <HEALTH_INGEST_TOKEN>`
+- Payload JSON (se aceptan campos parciales):
+
+```json
+{
+	"steps": 8420,
+	"restingHeartRate": 61,
+	"sleepHours": 7.4,
+	"standHours": 10,
+	"message": "Resumen desde Apple Health"
+}
+```
 
 ## UI actual
 

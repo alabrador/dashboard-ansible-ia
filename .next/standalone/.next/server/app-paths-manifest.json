@@ -7,6 +7,7 @@
   "/api/auth/session/route": "app/api/auth/session/route.js",
   "/api/execute/route": "app/api/execute/route.js",
   "/api/health-awx/route": "app/api/health-awx/route.js",
+  "/api/health-summary/route": "app/api/health-summary/route.js",
   "/api/news/route": "app/api/news/route.js",
   "/api/transcribe/route": "app/api/transcribe/route.js",
   "/api/weather/route": "app/api/weather/route.js",
