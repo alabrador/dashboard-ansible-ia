@@ -268,9 +268,22 @@ export function FloatingRobotBot() {
                 <button
                   type="button"
                   onClick={() => setShowHealthView((current) => !current)}
-                  className="rounded-md border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide opacity-90 transition hover:opacity-100 dark:border-white/15"
+                  aria-label={showHealthView ? "Ocultar salud" : "Mostrar salud"}
+                  title={showHealthView ? "Ocultar salud" : "Mostrar salud"}
+                  role="switch"
+                  aria-checked={showHealthView}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full border transition-colors ${
+                    showHealthView
+                      ? "border-emerald-400/80 bg-emerald-500/25"
+                      : "border-zinc-500/70 bg-zinc-500/20"
+                  }`}
                 >
-                  {showHealthView ? "Ocultar" : "Ver"}
+                  <span
+                    className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                      showHealthView ? "translate-x-[18px]" : "translate-x-[2px]"
+                    }`}
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
               {showHealthView ? (
@@ -286,9 +299,7 @@ export function FloatingRobotBot() {
                     </div>
                   ) : null}
                 </>
-              ) : (
-                <p className="mt-1 opacity-80">Vista de salud oculta.</p>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

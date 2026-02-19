@@ -450,8 +450,19 @@ function FloatingRobotBot() {
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 type: "button",
                                                 onClick: ()=>setShowHealthView((current)=>!current),
-                                                className: "rounded-md border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide opacity-90 transition hover:opacity-100 dark:border-white/15",
-                                                children: showHealthView ? "Ocultar" : "Ver"
+                                                "aria-label": showHealthView ? "Ocultar salud" : "Mostrar salud",
+                                                title: showHealthView ? "Ocultar salud" : "Mostrar salud",
+                                                role: "switch",
+                                                "aria-checked": showHealthView,
+                                                className: `relative inline-flex h-5 w-9 items-center rounded-full border transition-colors ${showHealthView ? "border-emerald-400/80 bg-emerald-500/25" : "border-zinc-500/70 bg-zinc-500/20"}`,
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: `inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${showHealthView ? "translate-x-[18px]" : "translate-x-[2px]"}`,
+                                                    "aria-hidden": "true"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/floating-robot-bot.tsx",
+                                                    lineNumber: 281,
+                                                    columnNumber: 19
+                                                }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
                                                 lineNumber: 268,
@@ -470,7 +481,7 @@ function FloatingRobotBot() {
                                                 children: "Cargando resumen..."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                                lineNumber: 278,
+                                                lineNumber: 291,
                                                 columnNumber: 38
                                             }, this) : null,
                                             !isLoadingHealth && healthError ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -478,7 +489,7 @@ function FloatingRobotBot() {
                                                 children: healthError
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                                lineNumber: 279,
+                                                lineNumber: 292,
                                                 columnNumber: 54
                                             }, this) : null,
                                             !isLoadingHealth && !healthError && healthSummary ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -488,7 +499,7 @@ function FloatingRobotBot() {
                                                         children: healthSummary.message
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                                        lineNumber: 282,
+                                                        lineNumber: 295,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -498,7 +509,7 @@ function FloatingRobotBot() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                                        lineNumber: 283,
+                                                        lineNumber: 296,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -509,7 +520,7 @@ function FloatingRobotBot() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                                        lineNumber: 284,
+                                                        lineNumber: 297,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -520,24 +531,17 @@ function FloatingRobotBot() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                                        lineNumber: 285,
+                                                        lineNumber: 298,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                                lineNumber: 281,
+                                                lineNumber: 294,
                                                 columnNumber: 21
                                             }, this) : null
                                         ]
-                                    }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: "mt-1 opacity-80",
-                                        children: "Vista de salud oculta."
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/floating-robot-bot.tsx",
-                                        lineNumber: 290,
-                                        columnNumber: 17
-                                    }, this)
+                                    }, void 0, true) : null
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/floating-robot-bot.tsx",
@@ -566,7 +570,7 @@ function FloatingRobotBot() {
                         className: "absolute -inset-3 rounded-full bg-cyan-400/20 blur-xl"
                     }, void 0, false, {
                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                        lineNumber: 303,
+                        lineNumber: 314,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -578,18 +582,18 @@ function FloatingRobotBot() {
                             isSmiling: isSmiling
                         }, void 0, false, {
                             fileName: "[project]/src/components/floating-robot-bot.tsx",
-                            lineNumber: 305,
+                            lineNumber: 316,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/floating-robot-bot.tsx",
-                        lineNumber: 304,
+                        lineNumber: 315,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/floating-robot-bot.tsx",
-                lineNumber: 297,
+                lineNumber: 308,
                 columnNumber: 7
             }, this)
         ]
