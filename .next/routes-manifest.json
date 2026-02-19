@@ -77,6 +77,12 @@
       "namedRegex": "^/api/health\\-awx(?:/)?$"
     },
     {
+      "page": "/api/news",
+      "regex": "^/api/news(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/news(?:/)?$"
+    },
+    {
       "page": "/api/transcribe",
       "regex": "^/api/transcribe(?:/)?$",
       "routeKeys": {},

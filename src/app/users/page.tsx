@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
 import { usersTranslations } from "@/lang/users";
@@ -81,7 +81,7 @@ export default function UsersPage() {
     window.localStorage.setItem("dashboard-theme", theme);
   }, [isThemeInitialized, theme]);
 
-  const loadLocalUsers = async () => {
+  const loadLocalUsers = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
@@ -99,11 +99,11 @@ export default function UsersPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t.localUsersLoadError]);
 
   useEffect(() => {
     void loadLocalUsers();
-  }, []);
+  }, [loadLocalUsers]);
 
   const handleSaveLocalUser = async () => {
     if (!localUserEmail.trim() || !localUserPassword.trim()) {
@@ -181,8 +181,8 @@ export default function UsersPage() {
 
   const panelClass =
     theme === "dark"
-      ? "rounded-2xl border border-white/15 bg-white/5 p-5 shadow-[0_8px_24px_-16px_rgba(59,130,246,0.35)] backdrop-blur-2xl"
-      : "rounded-2xl border border-zinc-200 bg-white p-5 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.2)]";
+      ? "rounded-xl border border-white/15 bg-white/5 p-4 shadow-[0_8px_24px_-16px_rgba(59,130,246,0.35)] backdrop-blur-2xl sm:rounded-2xl sm:p-5"
+      : "rounded-xl border border-zinc-200 bg-white p-4 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.2)] sm:rounded-2xl sm:p-5";
 
   const mainClass =
     theme === "dark" ? "min-h-screen bg-zinc-950 text-zinc-100" : "min-h-screen bg-zinc-50 text-zinc-900";
@@ -191,13 +191,13 @@ export default function UsersPage() {
   const subtitleClass = theme === "dark" ? "text-zinc-300" : "text-zinc-600";
   const titleClass =
     theme === "dark"
-      ? "bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl"
-      : "bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl";
+      ? "bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-2xl font-semibold tracking-tight text-transparent sm:text-4xl"
+      : "bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 bg-clip-text text-2xl font-semibold tracking-tight text-transparent sm:text-4xl";
 
   const menuButtonClass =
     theme === "dark"
-      ? "inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-zinc-200 transition hover:bg-white/15"
-      : "inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-700 transition hover:bg-zinc-100";
+      ? "inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-zinc-200 transition hover:bg-white/15 sm:h-10 sm:w-10"
+      : "inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-700 transition hover:bg-zinc-100 sm:h-10 sm:w-10";
 
   const menuPanelClass =
     theme === "dark"
@@ -221,15 +221,15 @@ export default function UsersPage() {
   return (
     <main className={mainClass}>
       {theme === "dark" ? (
-        <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="pointer-events-none fixed inset-0 -z-10 hidden md:block">
           <div className="absolute left-1/2 top-16 h-72 w-72 -translate-x-1/2 rounded-full bg-sky-500/10 blur-3xl" />
           <div className="absolute bottom-10 right-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
         </div>
       ) : null}
 
-      <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center gap-6 px-6 py-10">
-        <header className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10">
+        <header className="space-y-2 sm:space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             <Link
               href="/"
               className={
@@ -247,12 +247,12 @@ export default function UsersPage() {
                 priority
               />
             </Link>
-            <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
               <div
                 className={
                   theme === "dark"
-                    ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/5 px-2"
-                    : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-2"
+                    ? "inline-flex h-9 items-center overflow-hidden rounded-full border border-white/20 bg-white/5 sm:h-10"
+                    : "inline-flex h-9 items-center overflow-hidden rounded-full border border-zinc-300 bg-white sm:h-10"
                 }
               >
                 <div
@@ -260,8 +260,8 @@ export default function UsersPage() {
                   aria-label={t.languageSelectAria}
                   className={
                     theme === "dark"
-                      ? "inline-flex h-8 overflow-hidden rounded-full border border-white/15 bg-zinc-900/60"
-                      : "inline-flex h-8 overflow-hidden rounded-full border border-zinc-300 bg-zinc-100"
+                      ? "inline-flex h-full overflow-hidden bg-zinc-900/60"
+                      : "inline-flex h-full overflow-hidden bg-zinc-100"
                   }
                 >
                   {languageOptions.map((option) => {
@@ -275,11 +275,11 @@ export default function UsersPage() {
                         className={
                           isActive
                             ? theme === "dark"
-                              ? "inline-flex h-8 items-center bg-sky-500/90 px-2.5 text-xs font-semibold text-white"
-                              : "inline-flex h-8 items-center bg-sky-600 px-2.5 text-xs font-semibold text-white"
+                              ? "inline-flex h-full items-center bg-sky-500/90 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
+                              : "inline-flex h-full items-center bg-sky-600 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
                             : theme === "dark"
-                              ? "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-300 transition hover:bg-white/10"
-                              : "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200"
+                              ? "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-300 transition hover:bg-white/10 sm:px-2.5 sm:text-xs"
+                              : "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-200 sm:px-2.5 sm:text-xs"
                         }
                         aria-pressed={isActive}
                       >
@@ -294,8 +294,8 @@ export default function UsersPage() {
                 onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
                 className={
                   theme === "dark"
-                    ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/10 px-4 text-xs font-medium text-zinc-200 transition hover:bg-white/15"
-                    : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100"
+                    ? "inline-flex h-9 items-center rounded-full border border-white/20 bg-white/10 px-3 text-[11px] font-medium text-zinc-200 transition hover:bg-white/15 sm:h-10 sm:px-4 sm:text-xs"
+                    : "inline-flex h-9 items-center rounded-full border border-zinc-300 bg-white px-3 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-100 sm:h-10 sm:px-4 sm:text-xs"
                 }
                 aria-label={t.themeToggleAria}
               >
@@ -356,9 +356,9 @@ export default function UsersPage() {
               </div>
             </div>
           </div>
-          <p className={`text-center text-sm uppercase tracking-[0.2em] ${topLabelClass}`}>{t.headerTag}</p>
+          <p className={`hidden text-center text-sm uppercase tracking-[0.2em] sm:block ${topLabelClass}`}>{t.headerTag}</p>
           <h1 className={`${titleClass} text-center`}>{t.headerTitle}</h1>
-          <p className={`mx-auto max-w-2xl text-center text-sm ${subtitleClass}`}>
+          <p className={`mx-auto max-w-2xl text-center text-xs sm:text-sm ${subtitleClass}`}>
             {t.headerDescription}
           </p>
         </header>
@@ -414,13 +414,13 @@ export default function UsersPage() {
           </div>
 
           {error ? (
-            <p className="mt-3 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+            <p className="mt-2 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-300 sm:mt-3 sm:text-sm">
               {error}
             </p>
           ) : null}
 
           {message ? (
-            <p className="mt-3 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+            <p className="mt-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300 sm:mt-3 sm:text-sm">
               {message}
             </p>
           ) : null}

@@ -113,13 +113,13 @@ export default function LoginPage() {
 
   const mainClass =
     theme === "dark"
-      ? "min-h-screen bg-zinc-950 px-6 py-10 text-zinc-100"
-      : "min-h-screen bg-zinc-50 px-6 py-10 text-zinc-900";
+      ? "min-h-screen bg-zinc-950 px-4 py-6 text-zinc-100 sm:px-6 sm:py-10"
+      : "min-h-screen bg-zinc-50 px-4 py-6 text-zinc-900 sm:px-6 sm:py-10";
 
   const cardClass =
     theme === "dark"
-      ? "w-full rounded-2xl border border-white/15 bg-white/5 p-6 shadow-[0_10px_28px_-18px_rgba(56,189,248,0.45)] backdrop-blur-2xl"
-      : "w-full rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_10px_28px_-18px_rgba(15,23,42,0.25)]";
+      ? "w-full rounded-xl border border-white/15 bg-white/5 p-4 shadow-[0_10px_28px_-18px_rgba(56,189,248,0.45)] backdrop-blur-2xl sm:rounded-2xl sm:p-6"
+      : "w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-[0_10px_28px_-18px_rgba(15,23,42,0.25)] sm:rounded-2xl sm:p-6";
 
   const topLabelClass = theme === "dark" ? "text-zinc-400" : "text-zinc-500";
   const titleClass = theme === "dark" ? "text-white" : "text-zinc-900";
@@ -138,7 +138,7 @@ export default function LoginPage() {
     <main className={mainClass}>
       <div className="mx-auto flex min-h-[80vh] w-full max-w-md items-center">
         <section className={cardClass}>
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
             <div
               className={
                 theme === "dark"
@@ -155,12 +155,12 @@ export default function LoginPage() {
                 priority
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <div
                 className={
                   theme === "dark"
-                    ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/5 px-2"
-                    : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-2"
+                    ? "inline-flex h-9 items-center overflow-hidden rounded-full border border-white/20 bg-white/5 sm:h-10"
+                    : "inline-flex h-9 items-center overflow-hidden rounded-full border border-zinc-300 bg-white sm:h-10"
                 }
               >
                 <div
@@ -168,8 +168,8 @@ export default function LoginPage() {
                   aria-label={t.languageSelectAria}
                   className={
                     theme === "dark"
-                      ? "inline-flex h-8 overflow-hidden rounded-full border border-white/15 bg-zinc-900/60"
-                      : "inline-flex h-8 overflow-hidden rounded-full border border-zinc-300 bg-zinc-100"
+                      ? "inline-flex h-full overflow-hidden bg-zinc-900/60"
+                      : "inline-flex h-full overflow-hidden bg-zinc-100"
                   }
                 >
                   {languageOptions.map((option) => {
@@ -183,11 +183,11 @@ export default function LoginPage() {
                         className={
                           isActive
                             ? theme === "dark"
-                              ? "inline-flex h-8 items-center bg-sky-500/90 px-2.5 text-xs font-semibold text-white"
-                              : "inline-flex h-8 items-center bg-sky-600 px-2.5 text-xs font-semibold text-white"
+                              ? "inline-flex h-full items-center bg-sky-500/90 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
+                              : "inline-flex h-full items-center bg-sky-600 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs"
                             : theme === "dark"
-                              ? "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-300 transition hover:bg-white/10"
-                              : "inline-flex h-8 items-center px-2.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200"
+                              ? "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-300 transition hover:bg-white/10 sm:px-2.5 sm:text-xs"
+                              : "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-200 sm:px-2.5 sm:text-xs"
                         }
                         aria-pressed={isActive}
                       >
@@ -202,8 +202,8 @@ export default function LoginPage() {
                 onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
                 className={
                   theme === "dark"
-                    ? "inline-flex h-10 items-center rounded-full border border-white/20 bg-white/10 px-4 text-xs font-medium text-zinc-200 transition hover:bg-white/15"
-                    : "inline-flex h-10 items-center rounded-full border border-zinc-300 bg-white px-4 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100"
+                    ? "inline-flex h-9 items-center rounded-full border border-white/20 bg-white/10 px-3 text-[11px] font-medium text-zinc-200 transition hover:bg-white/15 sm:h-10 sm:px-4 sm:text-xs"
+                    : "inline-flex h-9 items-center rounded-full border border-zinc-300 bg-white px-3 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-100 sm:h-10 sm:px-4 sm:text-xs"
                 }
                 aria-label={t.themeToggleAria}
               >
@@ -211,10 +211,10 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
-          <p className={`mt-3 text-xs uppercase tracking-[0.2em] ${topLabelClass}`}>{t.appBadge}</p>
-          <h1 className={`mt-2 text-2xl font-semibold tracking-tight ${titleClass}`}>{t.pageTitle}</h1>
+          <p className={`mt-2 text-[11px] uppercase tracking-[0.18em] sm:mt-3 sm:text-xs sm:tracking-[0.2em] ${topLabelClass}`}>{t.appBadge}</p>
+          <h1 className={`mt-1.5 text-xl font-semibold tracking-tight sm:mt-2 sm:text-2xl ${titleClass}`}>{t.pageTitle}</h1>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <form onSubmit={handleSubmit} className="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
             <label className="block">
               <span className={`mb-1 block text-sm ${fieldLabelClass}`}>{t.emailLabel}</span>
               <input

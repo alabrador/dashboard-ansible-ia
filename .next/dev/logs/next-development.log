@@ -1,2 +1,143 @@
-[00:00:00.767] Server  LOG     ✓ Ready in 569ms
-[00:00:03.822] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:00.771] Server  LOG     ✓ Ready in 566ms
+[00:00:04.764] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:51.508] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:50:32.668] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:21:55.891] Server  LOG     ✓ Compiled in 176ms
+[01:22:16.762] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:23:06.978] Server  LOG     ✓ Compiled in 53ms
+[01:42:13.019] Server  LOG     ✓ Compiled in 121ms
+[01:42:30.258] Server  LOG     ✓ Compiled in 50ms
+[01:43:03.236] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:44:45.220] Server  LOG     ✓ Compiled in 45ms
+[01:45:08.986] Server  LOG     ✓ Compiled in 101ms
+[01:45:14.536] Server  LOG     ✓ Compiled in 147ms
+[01:45:14.883] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:45:30.745] Server  LOG     ✓ Compiled in 28ms
+[01:47:49.276] Server  LOG     ✓ Compiled in 97ms
+[01:52:41.840] Server  LOG     ✓ Compiled in 1261ms
+[01:52:42.654] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:55:29.117] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[01:55:32.696] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:55:32.916] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[01:57:40.858] Server  LOG     ✓ Compiled in 108ms
+[02:01:12.269] Server  LOG     ✓ Compiled in 0ms
+[02:01:32.203] Server  LOG     ✓ Compiled in 75ms
+[02:01:32.489] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:01:32.802] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[02:02:12.405] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:02:12.729] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:04:05.126] Server  LOG     ✓ Compiled in 77ms
+[02:04:05.269] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:04:05.714] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[02:06:28.715] Server  LOG     ✓ Compiled in 52ms
+[02:06:38.836] Server  LOG     ✓ Compiled in 70ms
+[02:06:38.948] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:06:39.397] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[02:07:26.788] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:07:26.929] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="es">
+                          <body className="geist_a715...">
+                            <OuterLayoutRouter>
+                            <FloatingRobotBot>
+                              <div className="pointer-ev...">
+                                <div
++                                 className="pointer-events-auto w-[305px] rounded-2xl px-3 py-2 text-xs shadow-[0_16p..."
+-                                 className="pointer-events-auto w-[305px] rounded-2xl px-3 py-2 text-xs shadow-[0_16p..."
+                                >
+                                ...
+                  ...
+
+[02:07:27.060] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:09:08.452] Server  LOG     ✓ Compiled in 44ms
+[02:09:10.739] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[02:11:31.181] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:11:34.521] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:11:34.773] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="es">
+                          <body className="geist_a715...">
+                            <OuterLayoutRouter>
+                            <FloatingRobotBot>
+                              <div className="pointer-ev...">
+                                <div
++                                 className="pointer-events-auto w-[305px] rounded-2xl px-3 py-2 text-xs shadow-[0_16p..."
+-                                 className="pointer-events-auto w-[305px] rounded-2xl px-3 py-2 text-xs shadow-[0_16p..."
+                                >
+                                ...
+                  ...
+
+[02:11:34.773] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:13:24.041] Server  LOG     ✓ Compiled in 90ms
+[02:13:24.162] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:13:24.621] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[02:14:39.979] Server  LOG     ✓ Compiled in 55ms
+[02:15:43.122] Server  LOG     ✓ Compiled in 42ms
+[02:17:24.799] Server  LOG     ✓ Compiled in 70ms
+[02:17:24.935] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[02:17:25.392] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[02:17:35.433] Server  LOG     ✓ Compiled in 61ms
