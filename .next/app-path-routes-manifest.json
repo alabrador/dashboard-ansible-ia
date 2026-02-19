@@ -9,6 +9,7 @@
   "/api/health-awx/route": "/api/health-awx",
   "/api/news/route": "/api/news",
   "/api/transcribe/route": "/api/transcribe",
+  "/api/weather/route": "/api/weather",
   "/favicon.ico/route": "/favicon.ico",
   "/login/page": "/login",
   "/page": "/",

@@ -16,6 +16,8 @@ export function FloatingRobotBot() {
   const [headline, setHeadline] = useState<NewsItem | null>(null);
   const [isLoadingNews, setIsLoadingNews] = useState(false);
   const [newsError, setNewsError] = useState("");
+  const [weatherTip, setWeatherTip] = useState<string | null>(null);
+  const [showWeatherTip, setShowWeatherTip] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     if (typeof window === "undefined") {
       return "dark";
@@ -25,6 +27,8 @@ export function FloatingRobotBot() {
     return savedTheme === "light" ? "light" : "dark";
   });
   const smileTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const recentHeadlineKeysRef = useRef<string[]>([]);
+  const newsItemsRef = useRef<NewsItem[]>([]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -49,6 +53,27 @@ export function FloatingRobotBot() {
 
   const bubbleClass = theme === "dark" ? "bg-zinc-900/95 text-zinc-100" : "bg-white/95 text-zinc-900";
 
+  const pickHeadline = useCallback((items: NewsItem[], currentLink?: string) => {
+    if (!items.length) {
+      return null;
+    }
+
+    const recentKeys = recentHeadlineKeysRef.current;
+    const availableItems = items.filter((item) => !recentKeys.includes(item.link) && item.link !== currentLink);
+    const pool = availableItems.length > 0 ? availableItems : items.filter((item) => item.link !== currentLink);
+    const finalPool = pool.length > 0 ? pool : items;
+    const randomIndex = Math.floor(Math.random() * finalPool.length);
+    const selectedItem = finalPool[randomIndex] ?? null;
+
+    if (selectedItem) {
+      const nextRecentKeys = [...recentKeys, selectedItem.link];
+      const maxRemembered = Math.min(items.length, 12);
+      recentHeadlineKeysRef.current = nextRecentKeys.slice(-maxRemembered);
+    }
+
+    return selectedItem;
+  }, []);
+
   const loadNews = useCallback(async () => {
     setIsLoadingNews(true);
     setNewsError("");
@@ -59,17 +84,36 @@ export function FloatingRobotBot() {
 
       if (!response.ok || !payload.items?.length) {
         setNewsError(payload.error ?? "No pude traer noticias ahora.");
+        newsItemsRef.current = [];
         setHeadline(null);
         return;
       }
 
-      const randomIndex = Math.floor(Math.random() * payload.items.length);
-      setHeadline(payload.items[randomIndex] ?? null);
+      const items = payload.items;
+      newsItemsRef.current = items;
+      setHeadline((current) => pickHeadline(items, current?.link));
     } catch {
       setNewsError("No pude conectar con el servicio de noticias.");
+      newsItemsRef.current = [];
       setHeadline(null);
     } finally {
       setIsLoadingNews(false);
+    }
+  }, [pickHeadline]);
+
+  const loadWeather = useCallback(async () => {
+    try {
+      const response = await fetch("/api/weather", { cache: "no-store" });
+      const payload = (await response.json()) as { tip?: string };
+
+      if (!response.ok || !payload.tip) {
+        setWeatherTip(null);
+        return;
+      }
+
+      setWeatherTip(payload.tip);
+    } catch {
+      setWeatherTip(null);
     }
   }, []);
 
@@ -92,34 +136,33 @@ export function FloatingRobotBot() {
       return;
     }
 
-    let isMounted = true;
-    let cycleTimeout: ReturnType<typeof setTimeout> | null = null;
+    void loadNews();
+    void loadWeather();
+    setShowWeatherTip(Math.random() < 0.45);
 
-    const runCycle = async () => {
-      if (!isMounted) {
+    const rotateInterval = window.setInterval(() => {
+      if (!newsItemsRef.current.length) {
         return;
       }
 
-      await loadNews();
+      setHeadline((current) => pickHeadline(newsItemsRef.current, current?.link));
+      setShowWeatherTip(Math.random() < 0.45);
+    }, 12000);
 
-      if (!isMounted) {
-        return;
-      }
+    const refreshInterval = window.setInterval(() => {
+      void loadNews();
+    }, 90000);
 
-      cycleTimeout = setTimeout(() => {
-        void runCycle();
-      }, 45000);
-    };
-
-    void runCycle();
+    const weatherRefreshInterval = window.setInterval(() => {
+      void loadWeather();
+    }, 1800000);
 
     return () => {
-      isMounted = false;
-      if (cycleTimeout) {
-        clearTimeout(cycleTimeout);
-      }
+      window.clearInterval(rotateInterval);
+      window.clearInterval(refreshInterval);
+      window.clearInterval(weatherRefreshInterval);
     };
-  }, [isOpen, loadNews]);
+  }, [isOpen, loadNews, loadWeather, pickHeadline]);
 
   useEffect(() => {
     return () => {
@@ -148,6 +191,9 @@ export function FloatingRobotBot() {
               >
                 {headline.title}
               </a>
+            ) : null}
+            {!isLoadingNews && !newsError && weatherTip && showWeatherTip ? (
+              <p className="mt-2 rounded-lg bg-black/5 px-2 py-1.5 leading-snug opacity-90 dark:bg-white/5">{weatherTip}</p>
             ) : null}
           </div>
         </div>

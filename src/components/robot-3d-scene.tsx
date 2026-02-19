@@ -18,6 +18,8 @@ type RobotModelProps = {
   isSmiling: boolean;
 };
 
+const BASE_MODEL_SCALE = 0.8;
+
 function RobotModel({ lookX, lookY, isSmiling }: RobotModelProps) {
   const robotRef = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF("/models/robot-draco.glb");
@@ -47,7 +49,7 @@ function RobotModel({ lookX, lookY, isSmiling }: RobotModelProps) {
     if (robotRef.current) {
       const targetY = lookX * 0.22;
       const targetX = lookY * -0.14;
-      const targetScale = isSmiling ? 1.045 : 1;
+      const targetScale = BASE_MODEL_SCALE * (isSmiling ? 1.045 : 1);
 
       robotRef.current.rotation.y = THREE.MathUtils.lerp(robotRef.current.rotation.y, targetY, delta * 4.5);
       robotRef.current.rotation.x = THREE.MathUtils.lerp(robotRef.current.rotation.x, targetX, delta * 4.5);
@@ -57,7 +59,7 @@ function RobotModel({ lookX, lookY, isSmiling }: RobotModelProps) {
     }
   });
 
-  return <primitive ref={robotRef} object={scene} position={[0, -0.12, 0]} scale={0.8} />;
+  return <primitive ref={robotRef} object={scene} position={[0, -0.12, 0]} scale={BASE_MODEL_SCALE} />;
 }
 
 useGLTF.preload("/models/robot-draco.glb");
