@@ -490,11 +490,6 @@ export default function Home() {
       ? "rounded-xl border border-white/15 bg-white/5 p-4 shadow-[0_10px_28px_-18px_rgba(56,189,248,0.45)] backdrop-blur-2xl sm:rounded-3xl sm:p-6 md:min-h-[260px]"
       : "rounded-xl border border-zinc-200 bg-white p-4 shadow-[0_10px_28px_-18px_rgba(15,23,42,0.25)] sm:rounded-3xl sm:p-6 md:min-h-[260px]";
 
-  const titleClass =
-    theme === "dark"
-      ? "bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-2xl font-semibold tracking-tight text-transparent sm:text-4xl"
-      : "bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 bg-clip-text text-2xl font-semibold tracking-tight text-transparent sm:text-4xl";
-
   const topLabelClass = theme === "dark" ? "text-zinc-400" : "text-zinc-500";
 
   const statusTextClass = theme === "dark" ? "text-zinc-200" : "text-zinc-700";
@@ -564,7 +559,7 @@ export default function Home() {
         </div>
       ) : null}
       <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 py-2 sm:min-h-screen sm:justify-start sm:gap-6 sm:px-6 sm:py-10">
-        <header className={`sticky top-0 z-30 space-y-2 border-b px-1 py-2 backdrop-blur sm:space-y-3 ${theme === "dark" ? "border-white/10 bg-zinc-950/80" : "border-zinc-200 bg-zinc-50/90"}`}>
+        <header className={`sticky top-0 z-30 space-y-2 px-1 py-2 backdrop-blur sm:space-y-3 ${theme === "dark" ? "bg-zinc-950/80" : "bg-zinc-50/90"}`}>
           <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             <div
               className={
@@ -737,10 +732,9 @@ export default function Home() {
             </div>
             </div>
           </div>
-          <p className={`hidden text-center text-sm uppercase tracking-[0.2em] sm:block ${topLabelClass}`}>{t.headerSubtitle}</p>
-          <h1 className={`${titleClass} text-center`}>
-            {t.headerTitle}
-          </h1>
+          <p className={`text-center text-sm font-semibold tracking-[0.16em] sm:text-base ${topLabelClass}`}>
+            {t.headerSubtitle}
+          </p>
         </header>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">

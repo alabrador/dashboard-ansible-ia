@@ -64,7 +64,7 @@ function decodeEntities(value) {
     return value.replace(/<!\[CDATA\[(.*?)\]\]>/g, "$1").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
 }
 function extractTag(content, tag) {
-    const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i");
+    const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, "i");
     const match = content.match(regex);
     return match ? decodeEntities(match[1]) : "";
 }
@@ -100,9 +100,6 @@ async function GET(request) {
         const response = await fetch(rssUrl, {
             headers: {
                 "User-Agent": "dashboard-ansible-ia/1.0"
-            },
-            next: {
-                revalidate: 300
             }
         });
         if (!response.ok) {

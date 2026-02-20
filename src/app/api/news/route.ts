@@ -33,7 +33,7 @@ function decodeEntities(value: string): string {
 }
 
 function extractTag(content: string, tag: string): string {
-  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i");
+  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, "i");
   const match = content.match(regex);
   return match ? decodeEntities(match[1]) : "";
 }
@@ -73,7 +73,6 @@ export async function GET(request: Request) {
       headers: {
         "User-Agent": "dashboard-ansible-ia/1.0",
       },
-      next: { revalidate: 300 },
     });
 
     if (!response.ok) {

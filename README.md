@@ -207,6 +207,10 @@ Permite actualizar el resumen de salud desde una fuente externa (por ejemplo, un
 }
 ```
 
+### `GET /api/news`
+
+Obtiene titulares desde Google News RSS por tema (`general`, `politica`, `economia`, `tecnologia`, `deportes`) y devuelve hasta 5 items normalizados.
+
 ## UI actual
 
 - Header con logo (`public/logo.png`) a la izquierda.
