@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import { applyTranscriptCorrections } from "@/lib/transcript-corrections";
-
-const whisperUrl = process.env.WHISPER_SERVER_URL ?? "http://127.0.0.1:5000";
+import { buildWhisperTranscribeUrl, getWhisperRuntimeConfig } from "@/lib/whisper-config-store";
 
 export async function POST(request: Request) {
   try {
+    const whisperConfig = await getWhisperRuntimeConfig();
+    const whisperTranscribeUrl = buildWhisperTranscribeUrl(whisperConfig.baseUrl);
+    if (!whisperTranscribeUrl) {
+      return NextResponse.json(
+        { error: "La URL de Whisper configurada no es válida." },
+        { status: 500 },
+      );
+    }
+
     const inputForm = await request.formData();
     const audioFile = inputForm.get("audio");
 
@@ -18,16 +26,27 @@ export async function POST(request: Request) {
     const formData = new FormData();
     formData.append("audio", audioFile, audioFile.name || "voice-command.webm");
 
-    const response = await fetch(`${whisperUrl}/transcribe`, {
+    const response = await fetch(whisperTranscribeUrl, {
       method: "POST",
       body: formData,
     });
 
-    const data = (await response.json()) as { text?: string; error?: string };
+    const raw = await response.text();
+    let data: { text?: string; error?: string } = {};
+
+    try {
+      data = JSON.parse(raw) as { text?: string; error?: string };
+    } catch {
+      data = { error: raw.slice(0, 300) };
+    }
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: data.error ?? "Fallo en el servidor Whisper." },
+        {
+          error:
+            data.error ??
+            `Fallo en el servidor Whisper (HTTP ${response.status}).`,
+        },
         { status: response.status },
       );
     }

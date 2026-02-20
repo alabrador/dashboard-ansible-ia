@@ -3,6 +3,7 @@ export type CommandMapping = {
       aliases: string[];
       templateId: number;
       templateType: "job" | "workflow";
+      templateName?: string;
       extraVars?: Record<string, string>;
 };
 
@@ -18,6 +19,7 @@ export const commandMappings: CommandMapping[] = [
             ],
             templateId: 10,
             templateType: "job",
+            templateName: "actualizacion-cyberpanel",
       },
       {
             id: "actualizacion-wordpress",
@@ -30,6 +32,7 @@ export const commandMappings: CommandMapping[] = [
             ],
             templateId: 11,
             templateType: "job",
+            templateName: "actualizacion-wordpress",
       },
       {
             id: "mantenimiento-preventivo-web",
@@ -42,6 +45,7 @@ export const commandMappings: CommandMapping[] = [
             ],
             templateId: 9,
             templateType: "job",
+            templateName: "mantenimiento-preventivo-web",
       },
       {
             id: "revision-maquinas-citrix",
@@ -54,6 +58,7 @@ export const commandMappings: CommandMapping[] = [
             ],
             templateId: 17,
             templateType: "workflow",
+            templateName: "revision-maquinas-citrix",
       },
       {
             id: "revision-servidor-agv",
@@ -67,5 +72,6 @@ export const commandMappings: CommandMapping[] = [
             ],
             templateId: 22,
             templateType: "workflow",
+            templateName: "revision-servidor-agv",
       },
 ];

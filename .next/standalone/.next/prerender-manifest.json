@@ -127,6 +127,30 @@
         "x-next-revalidate-tag-token"
       ]
     },
+    "/settings/ansible": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/settings/ansible",
+      "dataRoute": "/settings/ansible.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
     "/settings/ldap": {
       "experimentalBypassFor": [
         {
@@ -142,6 +166,30 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/settings/ldap",
       "dataRoute": "/settings/ldap.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/settings/whisper": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/settings/whisper",
+      "dataRoute": "/settings/whisper.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",

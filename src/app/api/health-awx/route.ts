@@ -1,27 +1,27 @@
 import { NextResponse } from "next/server";
-
-const awxBaseUrl = process.env.AWX_BASE_URL;
-const awxToken = process.env.AWX_API_TOKEN;
+import { getAwxRuntimeConfig } from "@/lib/awx-config-store";
 
 export async function GET() {
-  if (!awxBaseUrl || !awxToken) {
+  const awxConfig = await getAwxRuntimeConfig();
+
+  if (!awxConfig) {
     return NextResponse.json(
       {
         ok: false,
-        error: "Faltan AWX_BASE_URL o AWX_API_TOKEN en .env.local",
+        error: "Faltan AWX_BASE_URL o AWX_API_TOKEN, o configúralas en el menú administrativo de Ansible.",
       },
       { status: 500 },
     );
   }
 
-  const baseUrl = awxBaseUrl.replace(/\/$/, "");
+  const baseUrl = awxConfig.baseUrl.replace(/\/$/, "");
   const pingUrl = `${baseUrl}/api/v2/ping/`;
 
   try {
     const response = await fetch(pingUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${awxToken}`,
+        Authorization: `Bearer ${awxConfig.apiToken}`,
       },
       signal: AbortSignal.timeout(10000),
     });

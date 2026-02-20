@@ -8,6 +8,8 @@ export type UsersTranslation = {
   menuGoApp: string;
   menuUsers: string;
   menuLdapSettings: string;
+  menuAnsibleSettings: string;
+  menuWhisperSettings: string;
   currentUserLabel: string;
   unknownUser: string;
   signOut: string;
@@ -51,6 +53,8 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
     menuGoApp: "Ir a la app",
     menuUsers: "Gestión de usuarios",
     menuLdapSettings: "Configuración LDAP",
+    menuAnsibleSettings: "Configuración Ansible",
+    menuWhisperSettings: "Configuración Whisper",
     currentUserLabel: "Usuario",
     unknownUser: "Sin usuario",
     signOut: "Cerrar sesión",
@@ -92,6 +96,8 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
     menuGoApp: "Go to app",
     menuUsers: "User management",
     menuLdapSettings: "LDAP settings",
+    menuAnsibleSettings: "Ansible settings",
+    menuWhisperSettings: "Whisper settings",
     currentUserLabel: "User",
     unknownUser: "No user",
     signOut: "Sign out",
@@ -133,6 +139,8 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
     menuGoApp: "Vai all'app",
     menuUsers: "Gestione utenti",
     menuLdapSettings: "Configurazione LDAP",
+    menuAnsibleSettings: "Configurazione Ansible",
+    menuWhisperSettings: "Configurazione Whisper",
     currentUserLabel: "Utente",
     unknownUser: "Nessun utente",
     signOut: "Esci",
@@ -174,6 +182,8 @@ export const usersTranslations: Record<Language, UsersTranslation> = {
     menuGoApp: "Ir para o app",
     menuUsers: "Gestão de usuários",
     menuLdapSettings: "Configuração LDAP",
+    menuAnsibleSettings: "Configuração Ansible",
+    menuWhisperSettings: "Configuração Whisper",
     currentUserLabel: "Usuário",
     unknownUser: "Sem usuário",
     signOut: "Sair",

@@ -395,6 +395,8 @@ export default function LdapSettingsPage() {
                     <Link href="/" className={menuItemClass} onClick={() => setIsSettingsMenuOpen(false)}>{t.menuGoApp}</Link>
                     <Link href="/users" className={menuItemClass} onClick={() => setIsSettingsMenuOpen(false)}>{t.menuUsers}</Link>
                     <Link href="/settings/ldap" className={menuItemClass} onClick={() => setIsSettingsMenuOpen(false)}>{t.menuLdapSettings}</Link>
+                    <Link href="/settings/ansible" className={menuItemClass} onClick={() => setIsSettingsMenuOpen(false)}>{t.menuAnsibleSettings}</Link>
+                    <Link href="/settings/whisper" className={menuItemClass} onClick={() => setIsSettingsMenuOpen(false)}>{t.menuWhisperSettings}</Link>
                   </div>
                 ) : null}
               </div>

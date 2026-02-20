@@ -1,12 +1,16 @@
 {
   "/_global-error/page": "app/_global-error/page.js",
   "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/awx-config/route": "app/api/auth/awx-config/route.js",
+  "/api/auth/awx-config/test/route": "app/api/auth/awx-config/test/route.js",
   "/api/auth/ldap-config/route": "app/api/auth/ldap-config/route.js",
   "/api/auth/ldap-config/test/route": "app/api/auth/ldap-config/test/route.js",
   "/api/auth/local-users/route": "app/api/auth/local-users/route.js",
   "/api/auth/login/route": "app/api/auth/login/route.js",
   "/api/auth/logout/route": "app/api/auth/logout/route.js",
   "/api/auth/session/route": "app/api/auth/session/route.js",
+  "/api/auth/whisper-config/route": "app/api/auth/whisper-config/route.js",
+  "/api/auth/whisper-config/test/route": "app/api/auth/whisper-config/test/route.js",
   "/api/execute/route": "app/api/execute/route.js",
   "/api/health-awx/route": "app/api/health-awx/route.js",
   "/api/health-summary/route": "app/api/health-summary/route.js",
@@ -16,6 +20,8 @@
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/login/page": "app/login/page.js",
   "/page": "app/page.js",
+  "/settings/ansible/page": "app/settings/ansible/page.js",
   "/settings/ldap/page": "app/settings/ldap/page.js",
+  "/settings/whisper/page": "app/settings/whisper/page.js",
   "/users/page": "app/users/page.js"
 }

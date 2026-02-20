@@ -72,6 +72,7 @@ HEALTH_INGEST_TOKEN=<token-largo-y-seguro>
 ```
 
 Notas:
+- `WHISPER_SERVER_URL` debe ser la URL base del servicio (ejemplo: `http://127.0.0.1:5000`), sin `/transcribe`.
 - `AWX_BASE_URL` debe usar el protocolo real configurado en tu instancia (`http` o `https`).
 - El backend elimina slash final automáticamente.
 - `AUTH_JWT_SECRET` es obligatorio para emitir sesiones.
@@ -130,16 +131,20 @@ Archivos de despliegue incluidos:
 
 La app está limitada a 5 ejecuciones configuradas en `src/config/command-mappings.ts`:
 
-| Comando interno | Tipo | Template ID |
+| Comando interno | Tipo | Template ID (referencia) | Template Name |
 |---|---|---|
-| `actualizacion-cyberpanel` | job | 10 |
-| `actualizacion-wordpress` | job | 11 |
-| `mantenimiento-preventivo-web` | job | 9 |
-| `revision-maquinas-citrix` | workflow | 17 |
-| `revision-servidor-agv` | workflow | 22 |
+| `actualizacion-cyberpanel` | job | 10 | `actualizacion-cyberpanel` |
+| `actualizacion-wordpress` | job | 11 | `actualizacion-wordpress` |
+| `mantenimiento-preventivo-web` | job | 9 | `mantenimiento-preventivo-web` |
+| `revision-maquinas-citrix` | workflow | 17 | `revision-maquinas-citrix` |
+| `revision-servidor-agv` | workflow | 22 | `revision-servidor-agv` |
 
 También soporta un modo directo por voz:
 - “`plantilla 123`” o “`template id 123`” → intenta lanzar ese ID como job template.
+
+Compatibilidad multi-AWX:
+- Si el `templateId` configurado no existe en otra instancia AWX (404), el backend intenta resolver por `templateName` y reintenta el launch con el ID encontrado en esa instancia.
+- Recomendación: mantener nombres de templates estables entre entornos (dev/qa/prod).
 
 ## Comportamiento importante del launch
 
@@ -223,6 +228,11 @@ Para audio del navegador (`MediaRecorder`), el backend de Whisper debe aceptar `
 
 Si usas el servidor incluido en este workspace, verifica que en `whisper-server/app.py` esté habilitada esa extensión.
 
+En la UI de configuración Whisper:
+- Ingresa solo URL base (ejemplo: `http://127.0.0.1:5000`).
+- No agregues `/transcribe`; la app lo construye automáticamente.
+- La prueba de conexión valida primero `GET /health` para evitar falsos negativos.
+
 ## Problemas frecuentes
 
 ### 1) `npm run dev` en carpeta incorrecta (`ENOENT package.json`)
@@ -256,3 +266,14 @@ Revisa:
 ### 4) Errores 400 de AWX
 
 Normalmente es rechazo de payload o permisos del token. En esta app, workflows ya se lanzan sin `extra_vars`; revisa detalle exacto devuelto por AWX en la respuesta de error.
+
+### 5) `AWX rechazó la ejecución del template (HTTP 404)`
+
+Suele ocurrir al cambiar de instancia AWX con IDs diferentes.
+
+Revisa:
+- Que exista el template/workflow con el mismo `templateName` en la nueva instancia.
+- Que el token tenga permisos sobre ese recurso.
+- Que el tipo coincida (`job` vs `workflow`).
+
+La app ya incluye fallback por nombre cuando el ID no existe.

@@ -20,8 +20,14 @@ function requiresAdminRole(pathname: string): boolean {
     pathname.startsWith("/users/") ||
     pathname === "/settings/ldap" ||
     pathname.startsWith("/settings/ldap/") ||
+    pathname === "/settings/ansible" ||
+    pathname.startsWith("/settings/ansible/") ||
+    pathname === "/settings/whisper" ||
+    pathname.startsWith("/settings/whisper/") ||
     pathname.startsWith("/api/auth/local-users") ||
-    pathname.startsWith("/api/auth/ldap-config")
+    pathname.startsWith("/api/auth/ldap-config") ||
+    pathname.startsWith("/api/auth/awx-config") ||
+    pathname.startsWith("/api/auth/whisper-config")
   );
 }
 

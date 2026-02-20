@@ -318,7 +318,16 @@ export default function Home() {
         body: formData,
       });
 
-      const payload = (await response.json()) as ExecuteResponse;
+      const rawPayload = await response.text();
+      let payload: ExecuteResponse = {};
+
+      try {
+        payload = JSON.parse(rawPayload) as ExecuteResponse;
+      } catch {
+        payload = {
+          error: rawPayload.slice(0, 300) || t.unknownError,
+        };
+      }
 
       if (payload.transcript) {
         setTranscript(payload.transcript);
@@ -470,8 +479,6 @@ export default function Home() {
     theme === "dark"
       ? "min-h-[100dvh] bg-zinc-950 text-zinc-100 sm:min-h-screen"
       : "min-h-[100dvh] bg-zinc-50 text-zinc-900 sm:min-h-screen";
-
-  const subtitleClass = theme === "dark" ? "text-zinc-300" : "text-zinc-600";
 
   const helperCardClass =
     theme === "dark"
@@ -665,6 +672,20 @@ export default function Home() {
                   >
                     {t.menuLdapSettings}
                   </Link>
+                  <Link
+                    href="/settings/ansible"
+                    className={menuItemClass}
+                    onClick={() => setIsSettingsMenuOpen(false)}
+                  >
+                    {t.menuAnsibleSettings}
+                  </Link>
+                  <Link
+                    href="/settings/whisper"
+                    className={menuItemClass}
+                    onClick={() => setIsSettingsMenuOpen(false)}
+                  >
+                    {t.menuWhisperSettings}
+                  </Link>
                 </div>
               ) : null}
             </div>
@@ -720,9 +741,6 @@ export default function Home() {
           <h1 className={`${titleClass} text-center`}>
             {t.headerTitle}
           </h1>
-          <p className={`mx-auto max-w-2xl text-center text-xs sm:text-sm ${subtitleClass}`}>
-            {t.pageDescription}
-          </p>
         </header>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">

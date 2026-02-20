@@ -109,7 +109,7 @@ function isPublicPath(pathname) {
     return PUBLIC_ROUTES.some((route)=>pathname === route || pathname.startsWith(`${route}/`));
 }
 function requiresAdminRole(pathname) {
-    return pathname === "/users" || pathname.startsWith("/users/") || pathname === "/settings/ldap" || pathname.startsWith("/settings/ldap/") || pathname.startsWith("/api/auth/local-users") || pathname.startsWith("/api/auth/ldap-config");
+    return pathname === "/users" || pathname.startsWith("/users/") || pathname === "/settings/ldap" || pathname.startsWith("/settings/ldap/") || pathname === "/settings/ansible" || pathname.startsWith("/settings/ansible/") || pathname === "/settings/whisper" || pathname.startsWith("/settings/whisper/") || pathname.startsWith("/api/auth/local-users") || pathname.startsWith("/api/auth/ldap-config") || pathname.startsWith("/api/auth/awx-config") || pathname.startsWith("/api/auth/whisper-config");
 }
 async function middleware(request) {
     const { pathname, search } = request.nextUrl;

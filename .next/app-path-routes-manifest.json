@@ -1,12 +1,16 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
+  "/api/auth/awx-config/route": "/api/auth/awx-config",
+  "/api/auth/awx-config/test/route": "/api/auth/awx-config/test",
   "/api/auth/ldap-config/route": "/api/auth/ldap-config",
   "/api/auth/ldap-config/test/route": "/api/auth/ldap-config/test",
   "/api/auth/local-users/route": "/api/auth/local-users",
   "/api/auth/login/route": "/api/auth/login",
   "/api/auth/logout/route": "/api/auth/logout",
   "/api/auth/session/route": "/api/auth/session",
+  "/api/auth/whisper-config/route": "/api/auth/whisper-config",
+  "/api/auth/whisper-config/test/route": "/api/auth/whisper-config/test",
   "/api/execute/route": "/api/execute",
   "/api/health-awx/route": "/api/health-awx",
   "/api/health-summary/route": "/api/health-summary",
@@ -16,6 +20,8 @@
   "/favicon.ico/route": "/favicon.ico",
   "/login/page": "/login",
   "/page": "/",
+  "/settings/ansible/page": "/settings/ansible",
   "/settings/ldap/page": "/settings/ldap",
+  "/settings/whisper/page": "/settings/whisper",
   "/users/page": "/users"
 }

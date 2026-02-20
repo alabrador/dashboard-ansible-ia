@@ -65,6 +65,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../src/app/settings/ansible/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/settings/ansible">> = Specific
+  const handler = {} as typeof import("../../src/app/settings/ansible/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/settings/ldap/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/settings/ldap">> = Specific
@@ -74,10 +83,37 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../src/app/settings/whisper/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/settings/whisper">> = Specific
+  const handler = {} as typeof import("../../src/app/settings/whisper/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/users/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/users">> = Specific
   const handler = {} as typeof import("../../src/app/users/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/auth/awx-config/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/auth/awx-config">> = Specific
+  const handler = {} as typeof import("../../src/app/api/auth/awx-config/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/auth/awx-config/test/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/auth/awx-config/test">> = Specific
+  const handler = {} as typeof import("../../src/app/api/auth/awx-config/test/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
@@ -132,6 +168,24 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/auth/session">> = Specific
   const handler = {} as typeof import("../../src/app/api/auth/session/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/auth/whisper-config/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/auth/whisper-config">> = Specific
+  const handler = {} as typeof import("../../src/app/api/auth/whisper-config/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/auth/whisper-config/test/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/auth/whisper-config/test">> = Specific
+  const handler = {} as typeof import("../../src/app/api/auth/whisper-config/test/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

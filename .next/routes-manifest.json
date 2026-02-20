@@ -41,6 +41,18 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
+      "page": "/api/auth/awx-config",
+      "regex": "^/api/auth/awx\\-config(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/awx\\-config(?:/)?$"
+    },
+    {
+      "page": "/api/auth/awx-config/test",
+      "regex": "^/api/auth/awx\\-config/test(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/awx\\-config/test(?:/)?$"
+    },
+    {
       "page": "/api/auth/ldap-config",
       "regex": "^/api/auth/ldap\\-config(?:/)?$",
       "routeKeys": {},
@@ -75,6 +87,18 @@
       "regex": "^/api/auth/session(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/auth/session(?:/)?$"
+    },
+    {
+      "page": "/api/auth/whisper-config",
+      "regex": "^/api/auth/whisper\\-config(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/whisper\\-config(?:/)?$"
+    },
+    {
+      "page": "/api/auth/whisper-config/test",
+      "regex": "^/api/auth/whisper\\-config/test(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/whisper\\-config/test(?:/)?$"
     },
     {
       "page": "/api/execute",
@@ -125,10 +149,22 @@
       "namedRegex": "^/login(?:/)?$"
     },
     {
+      "page": "/settings/ansible",
+      "regex": "^/settings/ansible(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings/ansible(?:/)?$"
+    },
+    {
       "page": "/settings/ldap",
       "regex": "^/settings/ldap(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/settings/ldap(?:/)?$"
+    },
+    {
+      "page": "/settings/whisper",
+      "regex": "^/settings/whisper(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings/whisper(?:/)?$"
     },
     {
       "page": "/users",

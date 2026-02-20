@@ -512,6 +512,20 @@ export default function UsersPage() {
                     >
                       {t.menuLdapSettings}
                     </Link>
+                    <Link
+                      href="/settings/ansible"
+                      className={menuItemClass}
+                      onClick={() => setIsSettingsMenuOpen(false)}
+                    >
+                      {t.menuAnsibleSettings}
+                    </Link>
+                    <Link
+                      href="/settings/whisper"
+                      className={menuItemClass}
+                      onClick={() => setIsSettingsMenuOpen(false)}
+                    >
+                      {t.menuWhisperSettings}
+                    </Link>
                   </div>
                 ) : null}
               </div>

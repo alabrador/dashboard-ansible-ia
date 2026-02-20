@@ -32,6 +32,8 @@ export type HomeTranslation = {
   userMenuAria: string;
   menuUsers: string;
   menuLdapSettings: string;
+  menuAnsibleSettings: string;
+  menuWhisperSettings: string;
   currentUserLabel: string;
   unknownUser: string;
   signOut: string;
@@ -79,6 +81,8 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     userMenuAria: "Abrir menú de usuario",
     menuUsers: "Gestión de usuarios",
     menuLdapSettings: "Configuración LDAP",
+    menuAnsibleSettings: "Configuración Ansible",
+    menuWhisperSettings: "Configuración Whisper",
     currentUserLabel: "Usuario",
     unknownUser: "Sin usuario",
     signOut: "Cerrar sesión",
@@ -116,6 +120,8 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     userMenuAria: "Open user menu",
     menuUsers: "User management",
     menuLdapSettings: "LDAP settings",
+    menuAnsibleSettings: "Ansible settings",
+    menuWhisperSettings: "Whisper settings",
     currentUserLabel: "User",
     unknownUser: "No user",
     signOut: "Sign out",
@@ -154,6 +160,8 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     userMenuAria: "Apri menu utente",
     menuUsers: "Gestione utenti",
     menuLdapSettings: "Configurazione LDAP",
+    menuAnsibleSettings: "Configurazione Ansible",
+    menuWhisperSettings: "Configurazione Whisper",
     currentUserLabel: "Utente",
     unknownUser: "Nessun utente",
     signOut: "Esci",
@@ -192,6 +200,8 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     userMenuAria: "Abrir menu do usuário",
     menuUsers: "Gestão de usuários",
     menuLdapSettings: "Configuração LDAP",
+    menuAnsibleSettings: "Configuração Ansible",
+    menuWhisperSettings: "Configuração Whisper",
     currentUserLabel: "Usuário",
     unknownUser: "Sem usuário",
     signOut: "Sair",

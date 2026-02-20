@@ -70,6 +70,8 @@ const ldapSettingsTranslations = {
         menuGoApp: "Ir a la app",
         menuUsers: "Gestión de usuarios",
         menuLdapSettings: "Configuración LDAP",
+        menuAnsibleSettings: "Configuración Ansible",
+        menuWhisperSettings: "Configuración Whisper",
         currentUserLabel: "Usuario",
         unknownUser: "Sin usuario",
         signOut: "Cerrar sesión",
@@ -105,6 +107,8 @@ const ldapSettingsTranslations = {
         menuGoApp: "Go to app",
         menuUsers: "User management",
         menuLdapSettings: "LDAP settings",
+        menuAnsibleSettings: "Ansible settings",
+        menuWhisperSettings: "Whisper settings",
         currentUserLabel: "User",
         unknownUser: "No user",
         signOut: "Sign out",
@@ -140,6 +144,8 @@ const ldapSettingsTranslations = {
         menuGoApp: "Vai all'app",
         menuUsers: "Gestione utenti",
         menuLdapSettings: "Configurazione LDAP",
+        menuAnsibleSettings: "Configurazione Ansible",
+        menuWhisperSettings: "Configurazione Whisper",
         currentUserLabel: "Utente",
         unknownUser: "Nessun utente",
         signOut: "Esci",
@@ -175,6 +181,8 @@ const ldapSettingsTranslations = {
         menuGoApp: "Ir para o app",
         menuUsers: "Gestão de usuários",
         menuLdapSettings: "Configuração LDAP",
+        menuAnsibleSettings: "Configuração Ansible",
+        menuWhisperSettings: "Configuração Whisper",
         currentUserLabel: "Usuário",
         unknownUser: "Sem usuário",
         signOut: "Sair",
@@ -659,6 +667,26 @@ function LdapSettingsPage() {
                                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
                                                             lineNumber: 397,
                                                             columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                                            href: "/settings/ansible",
+                                                            className: menuItemClass,
+                                                            onClick: ()=>setIsSettingsMenuOpen(false),
+                                                            children: t.menuAnsibleSettings
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/ldap/page.tsx",
+                                                            lineNumber: 398,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                                            href: "/settings/whisper",
+                                                            className: menuItemClass,
+                                                            onClick: ()=>setIsSettingsMenuOpen(false),
+                                                            children: t.menuWhisperSettings
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/ldap/page.tsx",
+                                                            lineNumber: 399,
+                                                            columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
@@ -701,7 +729,7 @@ function LdapSettingsPage() {
                                                                     d: "M20 21a8 8 0 0 0-16 0"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                                    lineNumber: 414,
+                                                                    lineNumber: 416,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -710,13 +738,13 @@ function LdapSettingsPage() {
                                                                     r: "4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                                    lineNumber: 415,
+                                                                    lineNumber: 417,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                            lineNumber: 413,
+                                                            lineNumber: 415,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -724,13 +752,13 @@ function LdapSettingsPage() {
                                                             children: userName
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                            lineNumber: 417,
+                                                            lineNumber: 419,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                    lineNumber: 403,
+                                                    lineNumber: 405,
                                                     columnNumber: 17
                                                 }, this),
                                                 isUserMenuOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -745,7 +773,7 @@ function LdapSettingsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                            lineNumber: 421,
+                                                            lineNumber: 423,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -758,19 +786,19 @@ function LdapSettingsPage() {
                                                             children: t.signOut
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                            lineNumber: 422,
+                                                            lineNumber: 424,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                                    lineNumber: 420,
+                                                    lineNumber: 422,
                                                     columnNumber: 19
                                                 }, this) : null
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 402,
+                                            lineNumber: 404,
                                             columnNumber: 15
                                         }, this)
                                     ]
@@ -790,7 +818,7 @@ function LdapSettingsPage() {
                             children: t.headerTag
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 431,
+                            lineNumber: 433,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -798,7 +826,7 @@ function LdapSettingsPage() {
                             children: t.headerTitle
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 432,
+                            lineNumber: 434,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -806,7 +834,7 @@ function LdapSettingsPage() {
                             children: t.headerDescription
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 433,
+                            lineNumber: 435,
                             columnNumber: 11
                         }, this)
                     ]
@@ -823,7 +851,7 @@ function LdapSettingsPage() {
                             children: t.sectionConfig
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 437,
+                            lineNumber: 439,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -837,7 +865,7 @@ function LdapSettingsPage() {
                                             children: t.ldapUrlLabel
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 441,
+                                            lineNumber: 443,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -846,13 +874,13 @@ function LdapSettingsPage() {
                                             className: inputClass
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 442,
+                                            lineNumber: 444,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 440,
+                                    lineNumber: 442,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -863,7 +891,7 @@ function LdapSettingsPage() {
                                             children: t.baseDnLabel
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 445,
+                                            lineNumber: 447,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -872,13 +900,13 @@ function LdapSettingsPage() {
                                             className: inputClass
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 446,
+                                            lineNumber: 448,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 444,
+                                    lineNumber: 446,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -889,7 +917,7 @@ function LdapSettingsPage() {
                                             children: t.userFilterLabel
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 449,
+                                            lineNumber: 451,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -898,13 +926,13 @@ function LdapSettingsPage() {
                                             className: inputClass
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 450,
+                                            lineNumber: 452,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 448,
+                                    lineNumber: 450,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -915,7 +943,7 @@ function LdapSettingsPage() {
                                             children: t.bindDnLabel
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 453,
+                                            lineNumber: 455,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -924,13 +952,13 @@ function LdapSettingsPage() {
                                             className: inputClass
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 454,
+                                            lineNumber: 456,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 452,
+                                    lineNumber: 454,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -941,7 +969,7 @@ function LdapSettingsPage() {
                                             children: t.bindPasswordLabel
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 457,
+                                            lineNumber: 459,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -951,13 +979,13 @@ function LdapSettingsPage() {
                                             className: inputClass
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 458,
+                                            lineNumber: 460,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 456,
+                                    lineNumber: 458,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -968,7 +996,7 @@ function LdapSettingsPage() {
                                             children: t.timeoutLabel
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 461,
+                                            lineNumber: 463,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -981,13 +1009,13 @@ function LdapSettingsPage() {
                                             className: inputClass
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 462,
+                                            lineNumber: 464,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 460,
+                                    lineNumber: 462,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -998,7 +1026,7 @@ function LdapSettingsPage() {
                                             children: t.adminEmailsLabel
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 465,
+                                            lineNumber: 467,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1007,19 +1035,19 @@ function LdapSettingsPage() {
                                             className: inputClass
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                            lineNumber: 466,
+                                            lineNumber: 468,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 464,
+                                    lineNumber: 466,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 439,
+                            lineNumber: 441,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1033,7 +1061,7 @@ function LdapSettingsPage() {
                                     children: isLoading ? t.loading : t.save
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 471,
+                                    lineNumber: 473,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1044,13 +1072,13 @@ function LdapSettingsPage() {
                                     children: t.testConnection
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                                    lineNumber: 479,
+                                    lineNumber: 481,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 470,
+                            lineNumber: 472,
                             columnNumber: 11
                         }, this),
                         error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1058,7 +1086,7 @@ function LdapSettingsPage() {
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 494,
+                            lineNumber: 496,
                             columnNumber: 13
                         }, this) : null,
                         message ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1066,13 +1094,13 @@ function LdapSettingsPage() {
                             children: message
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/ldap/page.tsx",
-                            lineNumber: 498,
+                            lineNumber: 500,
                             columnNumber: 13
                         }, this) : null
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/settings/ldap/page.tsx",
-                    lineNumber: 436,
+                    lineNumber: 438,
                     columnNumber: 9
                 }, this)
             ]

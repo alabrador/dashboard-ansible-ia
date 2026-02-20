@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSupportedCommands, matchCommand } from "@/lib/command-parser";
 import { applyTranscriptCorrections } from "@/lib/transcript-corrections";
-
-const whisperUrl = process.env.WHISPER_SERVER_URL ?? "http://127.0.0.1:5000";
-const awxBaseUrl = process.env.AWX_BASE_URL;
-const awxToken = process.env.AWX_API_TOKEN;
+import { getAwxRuntimeConfig } from "@/lib/awx-config-store";
+import { buildWhisperTranscribeUrl, getWhisperRuntimeConfig } from "@/lib/whisper-config-store";
+import type { CommandMapping } from "@/config/command-mappings";
 
 type AwxLaunchResponse = {
   id?: number;
@@ -14,7 +13,22 @@ type AwxLaunchResponse = {
   error?: string;
 };
 
-function buildAuthHeaders() {
+type WhisperTranscriptionPayload = {
+  text?: string;
+  error?: string;
+};
+
+type AwxListResultItem = {
+  id?: number;
+  name?: string;
+};
+
+type AwxListResponse = {
+  count?: number;
+  results?: AwxListResultItem[];
+};
+
+function buildAuthHeaders(awxToken: string) {
   if (!awxToken) {
     return null;
   }
@@ -71,13 +85,134 @@ function extractAwxErrorDetail(payload: unknown): string | null {
   return null;
 }
 
+function buildAwxTemplateLaunchPath(templateType: "job" | "workflow", templateId: number): string {
+  return templateType === "workflow"
+    ? `/api/v2/workflow_job_templates/${templateId}/launch/`
+    : `/api/v2/job_templates/${templateId}/launch/`;
+}
+
+function buildAwxTemplateQueryPath(templateType: "job" | "workflow", params: URLSearchParams): string {
+  const basePath =
+    templateType === "workflow"
+      ? "/api/v2/workflow_job_templates/"
+      : "/api/v2/job_templates/";
+
+  return `${basePath}?${params.toString()}`;
+}
+
+function parseAwxListResponse(payload: unknown): AwxListResultItem[] {
+  if (!payload || typeof payload !== "object") {
+    return [];
+  }
+
+  const data = payload as AwxListResponse;
+  if (!Array.isArray(data.results)) {
+    return [];
+  }
+
+  return data.results;
+}
+
+function normalizeLookupCandidates(matched: CommandMapping): string[] {
+  const candidates = [
+    matched.templateName,
+    matched.id,
+    ...matched.aliases,
+  ];
+
+  const normalized = candidates
+    .map((item) => item?.trim())
+    .filter((item): item is string => Boolean(item));
+
+  return Array.from(new Set(normalized));
+}
+
+async function findAwxTemplateIdByName(
+  baseUrl: string,
+  headers: Record<string, string>,
+  matched: CommandMapping,
+): Promise<number | null> {
+  const candidates = normalizeLookupCandidates(matched);
+
+  for (const candidate of candidates) {
+    const exactParams = new URLSearchParams({
+      name__iexact: candidate,
+      page_size: "1",
+      order_by: "id",
+    });
+
+    const exactUrl = `${baseUrl}${buildAwxTemplateQueryPath(matched.templateType, exactParams)}`;
+    const exactResponse = await fetch(exactUrl, {
+      method: "GET",
+      headers,
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (exactResponse.ok) {
+      const exactRaw = await exactResponse.text();
+      let exactPayload: unknown = exactRaw;
+
+      try {
+        exactPayload = JSON.parse(exactRaw);
+      } catch {
+        exactPayload = exactRaw;
+      }
+
+      const exactResults = parseAwxListResponse(exactPayload);
+      const exactMatchId = exactResults.find((item) => Number.isInteger(item.id) && (item.id ?? 0) > 0)?.id;
+
+      if (typeof exactMatchId === "number") {
+        return exactMatchId;
+      }
+    }
+
+    const containsParams = new URLSearchParams({
+      search: candidate,
+      page_size: "5",
+      order_by: "id",
+    });
+
+    const containsUrl = `${baseUrl}${buildAwxTemplateQueryPath(matched.templateType, containsParams)}`;
+    const containsResponse = await fetch(containsUrl, {
+      method: "GET",
+      headers,
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (!containsResponse.ok) {
+      continue;
+    }
+
+    const containsRaw = await containsResponse.text();
+    let containsPayload: unknown = containsRaw;
+
+    try {
+      containsPayload = JSON.parse(containsRaw);
+    } catch {
+      containsPayload = containsRaw;
+    }
+
+    const containsResults = parseAwxListResponse(containsPayload);
+    const containsMatchId = containsResults.find((item) => Number.isInteger(item.id) && (item.id ?? 0) > 0)?.id;
+
+    if (typeof containsMatchId === "number") {
+      return containsMatchId;
+    }
+  }
+
+  return null;
+}
+
 export async function POST(request: Request) {
   try {
-    if (!awxBaseUrl || !awxToken) {
+    const awxConfig = await getAwxRuntimeConfig();
+    const whisperConfig = await getWhisperRuntimeConfig();
+
+    if (!awxConfig) {
       return NextResponse.json(
         {
           error:
-            "Faltan variables AWX_BASE_URL o AWX_API_TOKEN. Revisa el archivo .env.local.",
+            "Faltan variables AWX_BASE_URL o AWX_API_TOKEN, o configúralas en el menú administrativo de Ansible.",
         },
         { status: 500 },
       );
@@ -101,19 +236,35 @@ export async function POST(request: Request) {
     const whisperForm = new FormData();
     whisperForm.append("audio", audioFile, audioFile.name || "voice-command.webm");
 
-    const transcriptionResponse = await fetch(`${whisperUrl}/transcribe`, {
+    const whisperTranscribeUrl = buildWhisperTranscribeUrl(whisperConfig.baseUrl);
+    if (!whisperTranscribeUrl) {
+      return NextResponse.json(
+        { error: "La URL de Whisper configurada no es válida." },
+        { status: 500 },
+      );
+    }
+
+    const transcriptionResponse = await fetch(whisperTranscribeUrl, {
       method: "POST",
       body: whisperForm,
     });
 
-    const transcriptionData = (await transcriptionResponse.json()) as {
-      text?: string;
-      error?: string;
-    };
+    const transcriptionRaw = await transcriptionResponse.text();
+    let transcriptionData: WhisperTranscriptionPayload = {};
+
+    try {
+      transcriptionData = JSON.parse(transcriptionRaw) as WhisperTranscriptionPayload;
+    } catch {
+      transcriptionData = { error: transcriptionRaw.slice(0, 300) };
+    }
 
     if (!transcriptionResponse.ok) {
       return NextResponse.json(
-        { error: transcriptionData.error ?? "Error transcribiendo audio." },
+        {
+          error:
+            transcriptionData.error ??
+            `Error transcribiendo audio (HTTP ${transcriptionResponse.status}).`,
+        },
         { status: transcriptionResponse.status },
       );
     }
@@ -148,7 +299,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const headers = buildAuthHeaders();
+    const headers = buildAuthHeaders(awxConfig.apiToken);
     if (!headers) {
       return NextResponse.json(
         { error: "No se pudo construir autenticación para AWX." },
@@ -156,12 +307,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const baseUrl = awxBaseUrl.replace(/\/$/, "");
-    const launchPath =
-      matched.templateType === "workflow"
-        ? `/api/v2/workflow_job_templates/${matched.templateId}/launch/`
-        : `/api/v2/job_templates/${matched.templateId}/launch/`;
-    const launchUrl = `${baseUrl}${launchPath}`;
+    const baseUrl = awxConfig.baseUrl.replace(/\/$/, "");
+    let effectiveTemplateId = matched.templateId;
+    let launchUrl = `${baseUrl}${buildAwxTemplateLaunchPath(matched.templateType, effectiveTemplateId)}`;
     const launchPayload =
       matched.templateType === "workflow"
         ? {}
@@ -198,6 +346,23 @@ export async function POST(request: Request) {
       );
     }
 
+    if (
+      !directTemplateId &&
+      launchResponse.status === 404
+    ) {
+      const discoveredTemplateId = await findAwxTemplateIdByName(baseUrl, headers, matched);
+      if (discoveredTemplateId && discoveredTemplateId !== effectiveTemplateId) {
+        effectiveTemplateId = discoveredTemplateId;
+        launchUrl = `${baseUrl}${buildAwxTemplateLaunchPath(matched.templateType, effectiveTemplateId)}`;
+        launchResponse = await fetch(launchUrl, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(launchPayload),
+          signal: AbortSignal.timeout(15000),
+        });
+      }
+    }
+
     const launchRaw = await launchResponse.text();
     let launchData: AwxLaunchResponse = {};
     let launchResponsePayload: unknown = launchRaw;
@@ -221,7 +386,7 @@ export async function POST(request: Request) {
           error: `AWX rechazó la ejecución del template (HTTP ${launchResponse.status}). ${awxDetail ?? fallbackBody}`,
           transcript,
           matchedCommand: matched.id,
-          templateId: matched.templateId,
+          templateId: effectiveTemplateId,
         },
         { status: launchResponse.status || 500 },
       );
@@ -230,7 +395,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       transcript,
       matchedCommand: matched.id,
-      templateId: matched.templateId,
+      templateId: effectiveTemplateId,
       templateType: matched.templateType,
       jobId: launchData.id,
       awxUrl:
