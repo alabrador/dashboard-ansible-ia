@@ -73,7 +73,12 @@ async function createSessionToken(user) {
     const secret = getJwtSecret();
     return new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$sign$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["SignJWT"]({
         email: user.email,
-        source: user.source
+        source: user.source,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        displayName: user.displayName,
+        role: user.role
     }).setProtectedHeader({
         alg: "HS256"
     }).setSubject(user.email).setIssuedAt().setExpirationTime(`${SESSION_DURATION_SECONDS}s`).sign(secret);
@@ -84,12 +89,22 @@ async function verifySessionToken(token) {
         const { payload } = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$verify$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["jwtVerify"])(token, secret);
         const email = typeof payload.email === "string" ? payload.email : null;
         const source = payload.source === "ldap" || payload.source === "local" ? payload.source : null;
+        const username = typeof payload.username === "string" ? payload.username : undefined;
+        const firstName = typeof payload.firstName === "string" ? payload.firstName : undefined;
+        const lastName = typeof payload.lastName === "string" ? payload.lastName : undefined;
+        const displayName = typeof payload.displayName === "string" ? payload.displayName : undefined;
+        const role = payload.role === "administrativo" || payload.role === "tecnico" ? payload.role : undefined;
         if (!email || !source) {
             return null;
         }
         return {
             email,
-            source
+            source,
+            username,
+            firstName,
+            lastName,
+            displayName,
+            role
         };
     } catch  {
         return null;

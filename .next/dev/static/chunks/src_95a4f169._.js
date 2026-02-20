@@ -3,6 +3,8 @@
 "use strict";
 
 __turbopack_context__.s([
+    "detectBrowserLanguage",
+    ()=>detectBrowserLanguage,
     "isSupportedLanguage",
     ()=>isSupportedLanguage,
     "languageOptions",
@@ -11,19 +13,19 @@ __turbopack_context__.s([
 const languageOptions = [
     {
         code: "es",
-        label: "ES"
+        label: "🇪🇸 ES"
     },
     {
         code: "en",
-        label: "EN"
+        label: "🇺🇸 EN"
     },
     {
         code: "it",
-        label: "IT"
+        label: "🇮🇹 IT"
     },
     {
         code: "pt",
-        label: "PT"
+        label: "🇵🇹 PT"
     }
 ];
 const supportedLanguages = [
@@ -34,6 +36,19 @@ const supportedLanguages = [
 ];
 function isSupportedLanguage(value) {
     return supportedLanguages.includes(value);
+}
+function detectBrowserLanguage(preferredLanguages = []) {
+    for (const candidate of preferredLanguages){
+        const normalized = candidate.trim().toLowerCase();
+        if (!normalized) {
+            continue;
+        }
+        const primaryCode = normalized.split("-")[0];
+        if (isSupportedLanguage(primaryCode)) {
+            return primaryCode;
+        }
+    }
+    return "es";
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -51,8 +66,8 @@ const loginTranslations = {
         logoAlt: "Logo",
         appBadge: "Dashboard Ansible IA",
         pageTitle: "Iniciar sesión",
-        emailLabel: "Correo",
-        emailPlaceholder: "usuario@empresa.com",
+        emailLabel: "Usuario o correo",
+        emailPlaceholder: "admin o usuario@empresa.com",
         passwordLabel: "Contraseña",
         passwordPlaceholder: "••••••••",
         submitIdle: "Entrar",
@@ -68,8 +83,8 @@ const loginTranslations = {
         logoAlt: "Logo",
         appBadge: "Ansible AI Dashboard",
         pageTitle: "Sign in",
-        emailLabel: "Email",
-        emailPlaceholder: "user@company.com",
+        emailLabel: "Username or email",
+        emailPlaceholder: "admin or user@company.com",
         passwordLabel: "Password",
         passwordPlaceholder: "••••••••",
         submitIdle: "Sign in",
@@ -85,8 +100,8 @@ const loginTranslations = {
         logoAlt: "Logo",
         appBadge: "Dashboard Ansible IA",
         pageTitle: "Accedi",
-        emailLabel: "Email",
-        emailPlaceholder: "utente@azienda.com",
+        emailLabel: "Utente o email",
+        emailPlaceholder: "admin o utente@azienda.com",
         passwordLabel: "Password",
         passwordPlaceholder: "••••••••",
         submitIdle: "Accedi",
@@ -102,8 +117,8 @@ const loginTranslations = {
         logoAlt: "Logo",
         appBadge: "Dashboard Ansible IA",
         pageTitle: "Entrar",
-        emailLabel: "E-mail",
-        emailPlaceholder: "usuario@empresa.com",
+        emailLabel: "Usuário ou e-mail",
+        emailPlaceholder: "admin ou usuario@empresa.com",
         passwordLabel: "Senha",
         passwordPlaceholder: "••••••••",
         submitIdle: "Entrar",
@@ -176,6 +191,12 @@ function LoginPage() {
             const savedLanguage = window.localStorage.getItem("dashboard-language");
             if (savedLanguage && (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lang$2f$core$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isSupportedLanguage"])(savedLanguage)) {
                 setLanguage(savedLanguage);
+            } else {
+                const browserLanguage = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lang$2f$core$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["detectBrowserLanguage"])([
+                    ...window.navigator.languages ?? [],
+                    window.navigator.language
+                ]);
+                setLanguage(browserLanguage);
             }
             const savedTheme = window.localStorage.getItem("dashboard-theme");
             if (savedTheme === "dark" || savedTheme === "light") {
@@ -234,19 +255,22 @@ function LoginPage() {
             setIsLoading(false);
         }
     };
-    const mainClass = theme === "dark" ? "min-h-screen bg-zinc-950 px-4 py-6 text-zinc-100 sm:px-6 sm:py-10" : "min-h-screen bg-zinc-50 px-4 py-6 text-zinc-900 sm:px-6 sm:py-10";
+    const mainClass = theme === "dark" ? "min-h-[100dvh] bg-zinc-950 px-3 py-2 text-zinc-100 sm:min-h-screen sm:px-6 sm:py-10" : "min-h-[100dvh] bg-zinc-50 px-3 py-2 text-zinc-900 sm:min-h-screen sm:px-6 sm:py-10";
     const cardClass = theme === "dark" ? "w-full rounded-xl border border-white/15 bg-white/5 p-4 shadow-[0_10px_28px_-18px_rgba(56,189,248,0.45)] backdrop-blur-2xl sm:rounded-2xl sm:p-6" : "w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-[0_10px_28px_-18px_rgba(15,23,42,0.25)] sm:rounded-2xl sm:p-6";
     const topLabelClass = theme === "dark" ? "text-zinc-400" : "text-zinc-500";
     const titleClass = theme === "dark" ? "text-white" : "text-zinc-900";
     const fieldLabelClass = theme === "dark" ? "text-zinc-300" : "text-zinc-600";
     const inputClass = theme === "dark" ? "w-full rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring" : "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring";
+    const languageSelectWrapperClass = theme === "dark" ? "relative w-24 sm:w-28" : "relative w-24 sm:w-28";
+    const languageSelectClass = theme === "dark" ? "h-9 w-full appearance-none rounded-full border border-white/20 bg-zinc-900/75 pl-3 pr-8 text-xs font-semibold text-zinc-200 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/40 sm:h-10 sm:text-sm" : "h-9 w-full appearance-none rounded-full border border-zinc-300 bg-white pl-3 pr-8 text-xs font-semibold text-zinc-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 sm:h-10 sm:text-sm";
+    const languageSelectChevronClass = theme === "dark" ? "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" : "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500";
     if (!isThemeInitialized) {
         return null;
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
         className: mainClass,
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "mx-auto flex min-h-[80vh] w-full max-w-md items-center",
+            className: "mx-auto flex min-h-[100dvh] w-full max-w-md items-start pt-1 sm:min-h-screen sm:items-center sm:pt-0",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
                 className: cardClass,
                 children: [
@@ -264,45 +288,77 @@ function LoginPage() {
                                     priority: true
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.tsx",
-                                    lineNumber: 149,
+                                    lineNumber: 170,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/login/page.tsx",
-                                lineNumber: 142,
+                                lineNumber: 163,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex items-center gap-1.5 sm:gap-2",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: theme === "dark" ? "inline-flex h-9 items-center overflow-hidden rounded-full border border-white/20 bg-white/5 sm:h-10" : "inline-flex h-9 items-center overflow-hidden rounded-full border border-zinc-300 bg-white sm:h-10",
-                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            role: "group",
-                                            "aria-label": t.languageSelectAria,
-                                            className: theme === "dark" ? "inline-flex h-full overflow-hidden bg-zinc-900/60" : "inline-flex h-full overflow-hidden bg-zinc-100",
-                                            children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lang$2f$core$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["languageOptions"].map((option)=>{
-                                                const isActive = language === option.code;
-                                                return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                    type: "button",
-                                                    onClick: ()=>setLanguage(option.code),
-                                                    className: isActive ? theme === "dark" ? "inline-flex h-full items-center bg-sky-500/90 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs" : "inline-flex h-full items-center bg-sky-600 px-2 text-[11px] font-semibold text-white sm:px-2.5 sm:text-xs" : theme === "dark" ? "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-300 transition hover:bg-white/10 sm:px-2.5 sm:text-xs" : "inline-flex h-full items-center px-2 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-200 sm:px-2.5 sm:text-xs",
-                                                    "aria-pressed": isActive,
-                                                    children: option.label
-                                                }, option.code, false, {
-                                                    fileName: "[project]/src/app/login/page.tsx",
-                                                    lineNumber: 179,
-                                                    columnNumber: 23
-                                                }, this);
-                                            })
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/login/page.tsx",
-                                            lineNumber: 166,
-                                            columnNumber: 17
-                                        }, this)
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "sr-only",
+                                        htmlFor: "language-select-login",
+                                        children: t.languageSelectAria
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 159,
+                                        lineNumber: 180,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: languageSelectWrapperClass,
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                                id: "language-select-login",
+                                                "aria-label": t.languageSelectAria,
+                                                value: language,
+                                                onChange: (event)=>{
+                                                    const nextLanguage = event.target.value;
+                                                    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lang$2f$core$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isSupportedLanguage"])(nextLanguage)) {
+                                                        setLanguage(nextLanguage);
+                                                    }
+                                                },
+                                                className: languageSelectClass,
+                                                children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lang$2f$core$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["languageOptions"].map((option)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: option.code,
+                                                        children: option.label
+                                                    }, option.code, false, {
+                                                        fileName: "[project]/src/app/login/page.tsx",
+                                                        lineNumber: 195,
+                                                        columnNumber: 21
+                                                    }, this))
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/login/page.tsx",
+                                                lineNumber: 182,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                                xmlns: "http://www.w3.org/2000/svg",
+                                                viewBox: "0 0 20 20",
+                                                fill: "currentColor",
+                                                className: languageSelectChevronClass,
+                                                "aria-hidden": "true",
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                    fillRule: "evenodd",
+                                                    d: "M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.171l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.24 4.5a.75.75 0 0 1-1.08 0l-4.24-4.5a.75.75 0 0 1 .02-1.06z",
+                                                    clipRule: "evenodd"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/login/page.tsx",
+                                                    lineNumber: 207,
+                                                    columnNumber: 19
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/login/page.tsx",
+                                                lineNumber: 200,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/login/page.tsx",
+                                        lineNumber: 181,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -313,19 +369,19 @@ function LoginPage() {
                                         children: theme === "dark" ? t.themeLight : t.themeDark
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 200,
+                                        lineNumber: 214,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/login/page.tsx",
-                                lineNumber: 158,
+                                lineNumber: 179,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/login/page.tsx",
-                        lineNumber: 141,
+                        lineNumber: 162,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -333,7 +389,7 @@ function LoginPage() {
                         children: t.appBadge
                     }, void 0, false, {
                         fileName: "[project]/src/app/login/page.tsx",
-                        lineNumber: 214,
+                        lineNumber: 228,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -341,7 +397,7 @@ function LoginPage() {
                         children: t.pageTitle
                     }, void 0, false, {
                         fileName: "[project]/src/app/login/page.tsx",
-                        lineNumber: 215,
+                        lineNumber: 229,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -356,26 +412,26 @@ function LoginPage() {
                                         children: t.emailLabel
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 219,
+                                        lineNumber: 233,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "email",
+                                        type: "text",
                                         value: email,
                                         onChange: (event)=>setEmail(event.target.value),
                                         required: true,
-                                        autoComplete: "email",
+                                        autoComplete: "username",
                                         className: inputClass,
                                         placeholder: t.emailPlaceholder
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 220,
+                                        lineNumber: 234,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/login/page.tsx",
-                                lineNumber: 218,
+                                lineNumber: 232,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -386,7 +442,7 @@ function LoginPage() {
                                         children: t.passwordLabel
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 232,
+                                        lineNumber: 246,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -399,13 +455,13 @@ function LoginPage() {
                                         placeholder: t.passwordPlaceholder
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/login/page.tsx",
-                                        lineNumber: 233,
+                                        lineNumber: 247,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/login/page.tsx",
-                                lineNumber: 231,
+                                lineNumber: 245,
                                 columnNumber: 13
                             }, this),
                             error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -413,7 +469,7 @@ function LoginPage() {
                                 children: error
                             }, void 0, false, {
                                 fileName: "[project]/src/app/login/page.tsx",
-                                lineNumber: 245,
+                                lineNumber: 259,
                                 columnNumber: 15
                             }, this) : null,
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -423,29 +479,29 @@ function LoginPage() {
                                 children: isLoading ? t.submitLoading : t.submitIdle
                             }, void 0, false, {
                                 fileName: "[project]/src/app/login/page.tsx",
-                                lineNumber: 250,
+                                lineNumber: 264,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/login/page.tsx",
-                        lineNumber: 217,
+                        lineNumber: 231,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/login/page.tsx",
-                lineNumber: 140,
+                lineNumber: 161,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/login/page.tsx",
-            lineNumber: 139,
+            lineNumber: 160,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/login/page.tsx",
-        lineNumber: 138,
+        lineNumber: 159,
         columnNumber: 5
     }, this);
 }

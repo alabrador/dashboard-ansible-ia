@@ -1,6 +1,8 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
+  "/api/auth/ldap-config/route": "/api/auth/ldap-config",
+  "/api/auth/ldap-config/test/route": "/api/auth/ldap-config/test",
   "/api/auth/local-users/route": "/api/auth/local-users",
   "/api/auth/login/route": "/api/auth/login",
   "/api/auth/logout/route": "/api/auth/logout",
@@ -14,5 +16,6 @@
   "/favicon.ico/route": "/favicon.ico",
   "/login/page": "/login",
   "/page": "/",
+  "/settings/ldap/page": "/settings/ldap",
   "/users/page": "/users"
 }

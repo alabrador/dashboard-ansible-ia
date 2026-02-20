@@ -9,6 +9,7 @@ import {
   homeTranslations,
   speechLocales,
 } from "@/lang/home";
+import type { UserRole } from "@/lib/auth/types";
 
 type ExecuteResponse = {
   transcript?: string;
@@ -24,6 +25,8 @@ type AuthSessionResponse = {
   authenticated?: boolean;
   user?: {
     email?: string;
+    displayName?: string;
+    role?: UserRole;
   };
 };
 
@@ -108,6 +111,9 @@ export default function Home() {
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [userDisplayName, setUserDisplayName] = useState("");
+  const [userRole, setUserRole] = useState<UserRole | "">("");
+  const [isSessionReady, setIsSessionReady] = useState(false);
 
   const t = homeTranslations[language];
 
@@ -205,21 +211,57 @@ export default function Home() {
         });
 
         if (!response.ok) {
+          setUserEmail("");
+          setUserDisplayName("");
+          setUserRole("");
+          setIsSessionReady(true);
+          router.replace("/login");
           return;
         }
 
         const payload = (await response.json()) as AuthSessionResponse;
+        if (!payload.authenticated) {
+          setUserEmail("");
+          setUserDisplayName("");
+          setUserRole("");
+          setIsSessionReady(true);
+          router.replace("/login");
+          return;
+        }
+
+        const displayName = payload.user?.displayName?.trim();
+        if (displayName) {
+          setUserDisplayName(displayName);
+        }
+
+        const role = payload.user?.role;
+        if (role === "administrativo" || role === "tecnico") {
+          setUserRole(role);
+        }
+
         const email = payload.user?.email?.trim();
         if (email) {
           setUserEmail(email);
+          setIsSessionReady(true);
+          return;
         }
+
+        setUserEmail("");
+        setUserDisplayName("");
+        setUserRole("");
+        setIsSessionReady(true);
+        router.replace("/login");
       } catch {
         setUserEmail("");
+        setUserDisplayName("");
+        setUserRole("");
+        setIsSessionReady(true);
+        router.replace("/login");
       }
     };
 
     void loadSession();
-  }, []);
+  }, [router]);
 
   const clearSilenceTimer = () => {
     if (silenceTimeoutRef.current) {
@@ -476,8 +518,8 @@ export default function Home() {
 
   const languageSelectWrapperClass =
     theme === "dark"
-      ? "relative w-20 sm:w-24"
-      : "relative w-20 sm:w-24";
+      ? "relative w-24 sm:w-28"
+      : "relative w-24 sm:w-28";
 
   const languageSelectClass =
     theme === "dark"
@@ -499,9 +541,10 @@ export default function Home() {
       ? "mt-4 rounded-lg border border-zinc-700 bg-zinc-950/70 p-3 text-xs text-zinc-300"
       : "mt-4 rounded-lg border border-zinc-200 bg-zinc-100 p-3 text-xs text-zinc-700";
 
-  const userName = userEmail ? userEmail.split("@")[0] : t.unknownUser;
+  const userName = userDisplayName || (userEmail ? userEmail.split("@")[0] : t.unknownUser);
+  const isAdmin = userRole === "administrativo";
 
-  if (!isThemeInitialized) {
+  if (!isThemeInitialized || !isSessionReady) {
     return null;
   }
 
@@ -513,8 +556,8 @@ export default function Home() {
           <div className="absolute bottom-10 right-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
         </div>
       ) : null}
-      <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 py-2 sm:min-h-screen sm:justify-center sm:gap-6 sm:px-6 sm:py-10">
-        <header className="space-y-2 sm:space-y-3">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 py-2 sm:min-h-screen sm:justify-start sm:gap-6 sm:px-6 sm:py-10">
+        <header className={`sticky top-0 z-30 space-y-2 border-b px-1 py-2 backdrop-blur sm:space-y-3 ${theme === "dark" ? "border-white/10 bg-zinc-950/80" : "border-zinc-200 bg-zinc-50/90"}`}>
           <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             <div
               className={
@@ -579,6 +622,7 @@ export default function Home() {
             >
               {theme === "dark" ? t.themeLight : t.themeDark}
             </button>
+            {isAdmin ? (
             <div ref={settingsMenuRef} className="relative">
               <button
                 type="button"
@@ -614,9 +658,17 @@ export default function Home() {
                   >
                     {t.menuUsers}
                   </Link>
+                  <Link
+                    href="/settings/ldap"
+                    className={menuItemClass}
+                    onClick={() => setIsSettingsMenuOpen(false)}
+                  >
+                    {t.menuLdapSettings}
+                  </Link>
                 </div>
               ) : null}
             </div>
+            ) : null}
             <div ref={userMenuRef} className="relative">
               <button
                 type="button"

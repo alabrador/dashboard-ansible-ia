@@ -3,7 +3,9 @@ import { verifyStoredLocalUser } from "@/lib/auth/local-user-store";
 
 type LocalCredential = {
   email: string;
+  username: string;
   password: string;
+  role: "administrativo";
 };
 
 function parseLocalUsers(): LocalCredential[] {
@@ -22,41 +24,77 @@ function parseLocalUsers(): LocalCredential[] {
         return null;
       }
 
-      const email = entry.slice(0, separator).trim().toLowerCase();
+      const loginValue = entry.slice(0, separator).trim().toLowerCase();
       const password = entry.slice(separator + 1).trim();
 
-      if (!email || !password) {
+      if (!loginValue || !password) {
         return null;
       }
 
-      return { email, password };
+      if (loginValue.includes("@")) {
+        return {
+          email: loginValue,
+          username: loginValue.split("@")[0] ?? "",
+          password,
+          role: "administrativo",
+        };
+      }
+
+      return {
+        email: `${loginValue}@local`,
+        username: loginValue,
+        password,
+        role: "administrativo",
+      };
     })
     .filter((item): item is LocalCredential => item !== null);
 }
 
-export async function authenticateLocal(email: string, password: string): Promise<AuthResult> {
-  const normalizedEmail = email.trim().toLowerCase();
-  let storedUserOk = false;
+export async function authenticateLocal(identifier: string, password: string): Promise<AuthResult> {
+  const normalizedIdentifier = identifier.trim().toLowerCase();
+  let storedUser = null;
 
   try {
-    storedUserOk = await verifyStoredLocalUser(normalizedEmail, password);
+    storedUser = await verifyStoredLocalUser(normalizedIdentifier, password);
   } catch {
-    storedUserOk = false;
+    storedUser = null;
   }
 
-  if (!storedUserOk) {
+  if (storedUser) {
+    const displayName = [storedUser.firstName, storedUser.lastName].filter(Boolean).join(" ");
+
+    return {
+      ok: true,
+      user: {
+        email: storedUser.email,
+        username: storedUser.username,
+        firstName: storedUser.firstName,
+        lastName: storedUser.lastName,
+        displayName: displayName || storedUser.username,
+        role: storedUser.role,
+        source: "local",
+      },
+    };
+  }
+
+  {
     const users = parseLocalUsers();
-    const localUser = users.find((user) => user.email === normalizedEmail);
+    const localUser = users.find(
+      (user) => user.email === normalizedIdentifier || user.username === normalizedIdentifier,
+    );
 
     if (!localUser || localUser.password !== password) {
       return { ok: false, error: "Credenciales locales inválidas." };
     }
+
+    const user: AuthUser = {
+      email: localUser.email,
+      username: localUser.username,
+      displayName: localUser.username,
+      role: localUser.role,
+      source: "local",
+    };
+
+    return { ok: true, user };
   }
-
-  const user: AuthUser = {
-    email: normalizedEmail,
-    source: "local",
-  };
-
-  return { ok: true, user };
 }

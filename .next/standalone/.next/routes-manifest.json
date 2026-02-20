@@ -41,6 +41,18 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
+      "page": "/api/auth/ldap-config",
+      "regex": "^/api/auth/ldap\\-config(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/ldap\\-config(?:/)?$"
+    },
+    {
+      "page": "/api/auth/ldap-config/test",
+      "regex": "^/api/auth/ldap\\-config/test(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/ldap\\-config/test(?:/)?$"
+    },
+    {
       "page": "/api/auth/local-users",
       "regex": "^/api/auth/local\\-users(?:/)?$",
       "routeKeys": {},
@@ -111,6 +123,12 @@
       "regex": "^/login(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/settings/ldap",
+      "regex": "^/settings/ldap(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings/ldap(?:/)?$"
     },
     {
       "page": "/users",

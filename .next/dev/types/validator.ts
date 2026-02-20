@@ -65,10 +65,37 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../../src/app/settings/ldap/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/settings/ldap">> = Specific
+  const handler = {} as typeof import("../../../src/app/settings/ldap/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../src/app/users/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/users">> = Specific
   const handler = {} as typeof import("../../../src/app/users/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../src/app/api/auth/ldap-config/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/auth/ldap-config">> = Specific
+  const handler = {} as typeof import("../../../src/app/api/auth/ldap-config/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../src/app/api/auth/ldap-config/test/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/auth/ldap-config/test">> = Specific
+  const handler = {} as typeof import("../../../src/app/api/auth/ldap-config/test/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

@@ -20,7 +20,15 @@ export function getSessionCookieName(): string {
 export async function createSessionToken(user: AuthUser): Promise<string> {
   const secret = getJwtSecret();
 
-  return new SignJWT({ email: user.email, source: user.source })
+  return new SignJWT({
+    email: user.email,
+    source: user.source,
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    displayName: user.displayName,
+    role: user.role,
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(user.email)
     .setIssuedAt()
@@ -35,12 +43,17 @@ export async function verifySessionToken(token: string): Promise<AuthUser | null
 
     const email = typeof payload.email === "string" ? payload.email : null;
     const source = payload.source === "ldap" || payload.source === "local" ? payload.source : null;
+    const username = typeof payload.username === "string" ? payload.username : undefined;
+    const firstName = typeof payload.firstName === "string" ? payload.firstName : undefined;
+    const lastName = typeof payload.lastName === "string" ? payload.lastName : undefined;
+    const displayName = typeof payload.displayName === "string" ? payload.displayName : undefined;
+    const role = payload.role === "administrativo" || payload.role === "tecnico" ? payload.role : undefined;
 
     if (!email || !source) {
       return null;
     }
 
-    return { email, source };
+    return { email, source, username, firstName, lastName, displayName, role };
   } catch {
     return null;
   }

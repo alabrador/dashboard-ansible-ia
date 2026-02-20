@@ -1,0 +1,3 @@
+{
+  "/api/auth/ldap-config/route": "app/api/auth/ldap-config/route.js"
+}

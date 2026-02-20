@@ -138,8 +138,8 @@ export default function LoginPage() {
 
   const languageSelectWrapperClass =
     theme === "dark"
-      ? "relative w-20 sm:w-24"
-      : "relative w-20 sm:w-24";
+      ? "relative w-24 sm:w-28"
+      : "relative w-24 sm:w-28";
 
   const languageSelectClass =
     theme === "dark"
@@ -232,11 +232,11 @@ export default function LoginPage() {
             <label className="block">
               <span className={`mb-1 block text-sm ${fieldLabelClass}`}>{t.emailLabel}</span>
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
-                autoComplete="email"
+                autoComplete="username"
                 className={inputClass}
                 placeholder={t.emailPlaceholder}
               />

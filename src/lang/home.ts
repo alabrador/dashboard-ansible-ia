@@ -31,6 +31,7 @@ export type HomeTranslation = {
   settingsMenuAria: string;
   userMenuAria: string;
   menuUsers: string;
+  menuLdapSettings: string;
   currentUserLabel: string;
   unknownUser: string;
   signOut: string;
@@ -77,6 +78,7 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     settingsMenuAria: "Abrir menú de configuración",
     userMenuAria: "Abrir menú de usuario",
     menuUsers: "Gestión de usuarios",
+    menuLdapSettings: "Configuración LDAP",
     currentUserLabel: "Usuario",
     unknownUser: "Sin usuario",
     signOut: "Cerrar sesión",
@@ -113,6 +115,7 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     settingsMenuAria: "Open settings menu",
     userMenuAria: "Open user menu",
     menuUsers: "User management",
+    menuLdapSettings: "LDAP settings",
     currentUserLabel: "User",
     unknownUser: "No user",
     signOut: "Sign out",
@@ -150,6 +153,7 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     settingsMenuAria: "Apri menu impostazioni",
     userMenuAria: "Apri menu utente",
     menuUsers: "Gestione utenti",
+    menuLdapSettings: "Configurazione LDAP",
     currentUserLabel: "Utente",
     unknownUser: "Nessun utente",
     signOut: "Esci",
@@ -187,6 +191,7 @@ export const homeTranslations: Record<Language, HomeTranslation> = {
     settingsMenuAria: "Abrir menu de configurações",
     userMenuAria: "Abrir menu do usuário",
     menuUsers: "Gestão de usuários",
+    menuLdapSettings: "Configuração LDAP",
     currentUserLabel: "Usuário",
     unknownUser: "Sem usuário",
     signOut: "Sair",

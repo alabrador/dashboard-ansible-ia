@@ -6,9 +6,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { detectBrowserLanguage, isSupportedLanguage, languageOptions, type Language } from "@/lang/core";
 import { usersTranslations } from "@/lang/users";
+import type { UserRole } from "@/lib/auth/types";
 
 type LocalUsersResponse = {
-  users?: string[];
+  users?: Array<{
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: UserRole;
+  }>;
   error?: string;
 };
 
@@ -16,6 +23,8 @@ type AuthSessionResponse = {
   authenticated?: boolean;
   user?: {
     email?: string;
+    displayName?: string;
+    role?: UserRole;
   };
 };
 
@@ -44,9 +53,17 @@ export default function UsersPage() {
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [userDisplayName, setUserDisplayName] = useState("");
+  const [userRole, setUserRole] = useState<UserRole | "">("");
+  const [isSessionReady, setIsSessionReady] = useState(false);
   const settingsMenuRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
-  const [localUsers, setLocalUsers] = useState<string[]>([]);
+  const [localUsers, setLocalUsers] = useState<NonNullable<LocalUsersResponse["users"]>>([]);
+  const [editingUserIdentifier, setEditingUserIdentifier] = useState("");
+  const [localUsername, setLocalUsername] = useState("");
+  const [localFirstName, setLocalFirstName] = useState("");
+  const [localLastName, setLocalLastName] = useState("");
+  const [localRole, setLocalRole] = useState<UserRole>("tecnico");
   const [localUserEmail, setLocalUserEmail] = useState("");
   const [localUserPassword, setLocalUserPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -130,21 +147,40 @@ export default function UsersPage() {
         });
 
         if (!response.ok) {
+          setIsSessionReady(true);
+          router.replace("/");
           return;
         }
 
         const payload = (await response.json()) as AuthSessionResponse;
+        const displayName = payload.user?.displayName?.trim();
         const email = payload.user?.email?.trim();
+        const role = payload.user?.role;
+
+        if (role !== "administrativo") {
+          setIsSessionReady(true);
+          router.replace("/");
+          return;
+        }
+
+        setUserRole(role);
+        if (displayName) {
+          setUserDisplayName(displayName);
+        }
         if (email) {
           setUserEmail(email);
         }
+        setIsSessionReady(true);
       } catch {
         setUserEmail("");
+        setUserDisplayName("");
+        setUserRole("");
+        setIsSessionReady(true);
       }
     };
 
     void loadSession();
-  }, []);
+  }, [router]);
 
   const loadLocalUsers = useCallback(async () => {
     setIsLoading(true);
@@ -170,8 +206,28 @@ export default function UsersPage() {
     void loadLocalUsers();
   }, [loadLocalUsers]);
 
+  const resetUserForm = () => {
+    setEditingUserIdentifier("");
+    setLocalUsername("");
+    setLocalFirstName("");
+    setLocalLastName("");
+    setLocalRole("tecnico");
+    setLocalUserEmail("");
+    setLocalUserPassword("");
+  };
+
   const handleSaveLocalUser = async () => {
-    if (!localUserEmail.trim() || !localUserPassword.trim()) {
+    if (
+      !localUsername.trim() ||
+      !localFirstName.trim() ||
+      !localLastName.trim() ||
+      !localUserEmail.trim()
+    ) {
+      setError(t.requiredCredentials);
+      return;
+    }
+
+    if (!editingUserIdentifier && !localUserPassword.trim()) {
       setError(t.requiredCredentials);
       return;
     }
@@ -182,11 +238,19 @@ export default function UsersPage() {
 
     try {
       const response = await fetch("/api/auth/local-users", {
-        method: "POST",
+        method: editingUserIdentifier ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: localUserEmail, password: localUserPassword }),
+        body: JSON.stringify({
+          identifier: editingUserIdentifier || undefined,
+          username: localUsername,
+          firstName: localFirstName,
+          lastName: localLastName,
+          role: localRole,
+          email: localUserEmail,
+          password: localUserPassword.trim() ? localUserPassword : undefined,
+        }),
       });
 
       const payload = (await response.json()) as { error?: string };
@@ -194,8 +258,8 @@ export default function UsersPage() {
         throw new Error(payload.error ?? t.localUsersSaveError);
       }
 
-      setMessage(t.localUsersSaved);
-      setLocalUserPassword("");
+      setMessage(editingUserIdentifier ? t.localUsersSaved : t.localUsersSaved);
+      resetUserForm();
       await loadLocalUsers();
     } catch (saveError) {
       setError(formatError(saveError, t.localUsersSaveError));
@@ -204,7 +268,19 @@ export default function UsersPage() {
     }
   };
 
-  const handleDeleteLocalUser = async (email: string) => {
+  const handleEditLocalUser = (user: NonNullable<LocalUsersResponse["users"]>[number]) => {
+    setEditingUserIdentifier(user.username);
+    setLocalUsername(user.username);
+    setLocalFirstName(user.firstName);
+    setLocalLastName(user.lastName);
+    setLocalRole(user.role);
+    setLocalUserEmail(user.email);
+    setLocalUserPassword("");
+    setError("");
+    setMessage("");
+  };
+
+  const handleDeleteLocalUser = async (identifier: string) => {
     setIsLoading(true);
     setError("");
     setMessage("");
@@ -215,7 +291,7 @@ export default function UsersPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ identifier }),
       });
 
       const payload = (await response.json()) as { error?: string };
@@ -224,6 +300,9 @@ export default function UsersPage() {
       }
 
       setMessage(t.localUsersDeleted);
+      if (editingUserIdentifier === identifier) {
+        resetUserForm();
+      }
       await loadLocalUsers();
     } catch (deleteError) {
       setError(formatError(deleteError, t.localUsersDeleteError));
@@ -278,8 +357,8 @@ export default function UsersPage() {
 
   const languageSelectWrapperClass =
     theme === "dark"
-      ? "relative w-20 sm:w-24"
-      : "relative w-20 sm:w-24";
+      ? "relative w-24 sm:w-28"
+      : "relative w-24 sm:w-28";
 
   const languageSelectClass =
     theme === "dark"
@@ -301,9 +380,10 @@ export default function UsersPage() {
       ? "mt-4 rounded-lg border border-zinc-700 bg-zinc-950/70 p-3 text-xs text-zinc-300"
       : "mt-4 rounded-lg border border-zinc-200 bg-zinc-100 p-3 text-xs text-zinc-700";
 
-  const userName = userEmail ? userEmail.split("@")[0] : t.unknownUser;
+  const userName = userDisplayName || (userEmail ? userEmail.split("@")[0] : t.unknownUser);
+  const isAdmin = userRole === "administrativo";
 
-  if (!isThemeInitialized) {
+  if (!isThemeInitialized || !isSessionReady || !isAdmin) {
     return null;
   }
 
@@ -316,8 +396,8 @@ export default function UsersPage() {
         </div>
       ) : null}
 
-      <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 py-2 sm:min-h-screen sm:justify-center sm:gap-6 sm:px-6 sm:py-10">
-        <header className="space-y-2 sm:space-y-3">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 py-2 sm:min-h-screen sm:justify-start sm:gap-6 sm:px-6 sm:py-10">
+        <header className={`sticky top-0 z-30 space-y-2 border-b px-1 py-2 backdrop-blur sm:space-y-3 ${theme === "dark" ? "border-white/10 bg-zinc-950/80" : "border-zinc-200 bg-zinc-50/90"}`}>
           <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             <Link
               href="/"
@@ -425,6 +505,13 @@ export default function UsersPage() {
                     >
                       {t.menuUsers}
                     </Link>
+                    <Link
+                      href="/settings/ldap"
+                      className={menuItemClass}
+                      onClick={() => setIsSettingsMenuOpen(false)}
+                    >
+                      {t.menuLdapSettings}
+                    </Link>
                   </div>
                 ) : null}
               </div>
@@ -499,7 +586,58 @@ export default function UsersPage() {
             </button>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-7">
+            <input
+              type="text"
+              value={localUsername}
+              onChange={(event) => setLocalUsername(event.target.value)}
+              placeholder={t.usernamePlaceholder}
+              className={
+                theme === "dark"
+                  ? "rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
+                  : "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring"
+              }
+            />
+            <input
+              type="text"
+              value={localFirstName}
+              onChange={(event) => setLocalFirstName(event.target.value)}
+              placeholder={t.firstNamePlaceholder}
+              className={
+                theme === "dark"
+                  ? "rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
+                  : "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring"
+              }
+            />
+            <input
+              type="text"
+              value={localLastName}
+              onChange={(event) => setLocalLastName(event.target.value)}
+              placeholder={t.lastNamePlaceholder}
+              className={
+                theme === "dark"
+                  ? "rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
+                  : "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring"
+              }
+            />
+            <select
+              value={localRole}
+              onChange={(event) => {
+                const nextRole = event.target.value;
+                if (nextRole === "administrativo" || nextRole === "tecnico") {
+                  setLocalRole(nextRole);
+                }
+              }}
+              className={
+                theme === "dark"
+                  ? "rounded-lg border border-white/15 bg-zinc-900/70 px-3 py-2 text-sm text-zinc-100 outline-none ring-sky-400 transition focus:ring"
+                  : "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 outline-none ring-sky-500 transition focus:ring"
+              }
+              aria-label={t.roleLabel}
+            >
+              <option value="administrativo">{t.roleAdmin}</option>
+              <option value="tecnico">{t.roleTech}</option>
+            </select>
             <input
               type="email"
               value={localUserEmail}
@@ -528,8 +666,22 @@ export default function UsersPage() {
               disabled={isLoading}
               className="inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 via-cyan-400 to-blue-500 px-4 text-sm font-semibold text-zinc-950 transition hover:from-sky-300 hover:to-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {t.saveUser}
+              {editingUserIdentifier ? t.updateUser : t.saveUser}
             </button>
+            {editingUserIdentifier ? (
+              <button
+                type="button"
+                onClick={resetUserForm}
+                disabled={isLoading}
+                className={
+                  theme === "dark"
+                    ? "inline-flex h-10 items-center justify-center rounded-lg border border-white/20 bg-white/10 px-4 text-sm font-medium text-zinc-100 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60"
+                    : "inline-flex h-10 items-center justify-center rounded-lg border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+                }
+              >
+                {t.cancelEdit}
+              </button>
+            ) : null}
           </div>
 
           {error ? (
@@ -547,17 +699,36 @@ export default function UsersPage() {
           <div className={hintBoxClass}>
             {localUsers.length ? (
               <div className="space-y-2">
-                {localUsers.map((email) => (
-                  <div key={email} className="flex items-center justify-between gap-3">
-                    <span className="truncate">{email}</span>
-                    <button
-                      type="button"
-                      onClick={() => void handleDeleteLocalUser(email)}
-                      disabled={isLoading}
-                      className="inline-flex h-8 items-center rounded-lg border border-red-500/40 bg-red-500/10 px-3 text-xs font-medium text-red-300 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      {t.deleteUser}
-                    </button>
+                {localUsers.map((localUser) => (
+                  <div key={localUser.username} className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate font-medium">
+                        {localUser.firstName} {localUser.lastName} (@{localUser.username}) · {localUser.role === "administrativo" ? t.roleAdmin : t.roleTech}
+                      </p>
+                      <p className="truncate text-[11px] opacity-80">{localUser.email}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleEditLocalUser(localUser)}
+                        disabled={isLoading}
+                        className={
+                          theme === "dark"
+                            ? "inline-flex h-8 items-center rounded-lg border border-white/20 bg-white/10 px-3 text-xs font-medium text-zinc-100 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60"
+                            : "inline-flex h-8 items-center rounded-lg border border-zinc-300 bg-white px-3 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        }
+                      >
+                        {t.editUser}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleDeleteLocalUser(localUser.username)}
+                        disabled={isLoading}
+                        className="inline-flex h-8 items-center rounded-lg border border-red-500/40 bg-red-500/10 px-3 text-xs font-medium text-red-300 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {t.deleteUser}
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -14,6 +14,17 @@ function isPublicPath(pathname: string): boolean {
   return PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 }
 
+function requiresAdminRole(pathname: string): boolean {
+  return (
+    pathname === "/users" ||
+    pathname.startsWith("/users/") ||
+    pathname === "/settings/ldap" ||
+    pathname.startsWith("/settings/ldap/") ||
+    pathname.startsWith("/api/auth/local-users") ||
+    pathname.startsWith("/api/auth/ldap-config")
+  );
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
@@ -56,6 +67,14 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === "/login") {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (requiresAdminRole(pathname) && session.role !== "administrativo") {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "No autorizado." }, { status: 403 });
+    }
+
     return NextResponse.redirect(new URL("/", request.url));
   }
 

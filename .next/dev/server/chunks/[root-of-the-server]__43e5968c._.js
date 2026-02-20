@@ -71,6 +71,8 @@ module.exports = mod;
 __turbopack_context__.s([
     "listStoredLocalUserEmails",
     ()=>listStoredLocalUserEmails,
+    "listStoredLocalUsers",
+    ()=>listStoredLocalUsers,
     "removeStoredLocalUser",
     ()=>removeStoredLocalUser,
     "upsertStoredLocalUser",
@@ -92,6 +94,49 @@ const scrypt = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$uti
 const STORE_DIR = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__["join"])(process.cwd(), "uploads");
 const STORE_PATH = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$path__$5b$external$5d$__$28$node$3a$path$2c$__cjs$29$__["join"])(STORE_DIR, "local-users.json");
 const KV_USERS_KEY = "dashboard:local-users";
+function normalizeEmail(email) {
+    return email.trim().toLowerCase();
+}
+function normalizeUsername(username) {
+    return username.trim().toLowerCase();
+}
+function normalizeName(value) {
+    return value.trim().replace(/\s+/g, " ");
+}
+function usernameFromEmail(email) {
+    const localPart = normalizeEmail(email).split("@")[0] ?? "";
+    return normalizeUsername(localPart || "usuario");
+}
+function normalizeRole(role) {
+    return role === "tecnico" ? "tecnico" : "administrativo";
+}
+function normalizeStoredUser(item) {
+    if (typeof item?.email !== "string" || typeof item?.passwordHash !== "string" || typeof item?.salt !== "string") {
+        return null;
+    }
+    const email = normalizeEmail(item.email);
+    if (!email) {
+        return null;
+    }
+    const username = typeof item.username === "string" && item.username.trim() ? normalizeUsername(item.username) : usernameFromEmail(email);
+    const firstName = typeof item.firstName === "string" ? normalizeName(item.firstName) : "";
+    const lastName = typeof item.lastName === "string" ? normalizeName(item.lastName) : "";
+    const role = normalizeRole(item.role);
+    return {
+        email,
+        username,
+        firstName,
+        lastName,
+        role,
+        passwordHash: item.passwordHash,
+        salt: item.salt
+    };
+}
+function sortUsers(users) {
+    return [
+        ...users
+    ].sort((a, b)=>a.username.localeCompare(b.username) || a.email.localeCompare(b.email));
+}
 function isVercelKvConfigured() {
     return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 }
@@ -103,7 +148,7 @@ async function readStoreFromKv() {
         };
     }
     return {
-        users: payload.users.filter((item)=>typeof item?.email === "string" && typeof item?.passwordHash === "string" && typeof item?.salt === "string")
+        users: payload.users.map((item)=>normalizeStoredUser(item)).filter((item)=>item !== null)
     };
 }
 async function writeStoreToKv(data) {
@@ -136,7 +181,7 @@ async function readStore() {
             };
         }
         return {
-            users: parsed.users.filter((item)=>typeof item?.email === "string" && typeof item?.passwordHash === "string" && typeof item?.salt === "string")
+            users: parsed.users.map((item)=>normalizeStoredUser(item)).filter((item)=>item !== null)
         };
     } catch  {
         return {
@@ -158,49 +203,85 @@ async function hashPassword(password, salt) {
 }
 async function listStoredLocalUserEmails() {
     const store = await readStore();
-    return store.users.map((user)=>user.email).sort((a, b)=>a.localeCompare(b));
+    return sortUsers(store.users).map((user)=>user.email);
 }
-async function upsertStoredLocalUser(email, password) {
-    const normalizedEmail = email.trim().toLowerCase();
-    const salt = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["randomBytes"])(16).toString("hex");
-    const passwordHash = await hashPassword(password, salt);
+async function listStoredLocalUsers() {
     const store = await readStore();
-    const nextUsers = store.users.filter((user)=>user.email !== normalizedEmail);
+    return sortUsers(store.users).map((user)=>({
+            email: user.email,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role
+        }));
+}
+async function upsertStoredLocalUser(profile, password, previousIdentifier) {
+    const normalizedEmail = normalizeEmail(profile.email);
+    const normalizedUsername = normalizeUsername(profile.username);
+    const normalizedFirstName = normalizeName(profile.firstName);
+    const normalizedLastName = normalizeName(profile.lastName);
+    const normalizedRole = normalizeRole(profile.role);
+    const normalizedPreviousIdentifier = previousIdentifier?.trim().toLowerCase() ?? "";
+    const store = await readStore();
+    const existingUser = store.users.find((user)=>user.email === normalizedEmail || user.username === normalizedUsername);
+    let salt = existingUser?.salt;
+    let passwordHash = existingUser?.passwordHash;
+    if (password && password.trim()) {
+        salt = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["randomBytes"])(16).toString("hex");
+        passwordHash = await hashPassword(password, salt);
+    }
+    if (!salt || !passwordHash) {
+        throw new Error("Password is required for new local users.");
+    }
+    const nextUsers = store.users.filter((user)=>user.email !== normalizedEmail && user.username !== normalizedUsername && user.email !== normalizedPreviousIdentifier && user.username !== normalizedPreviousIdentifier);
     nextUsers.push({
         email: normalizedEmail,
+        username: normalizedUsername,
+        firstName: normalizedFirstName,
+        lastName: normalizedLastName,
+        role: normalizedRole,
         passwordHash,
         salt
     });
     await writeStore({
-        users: nextUsers
+        users: sortUsers(nextUsers)
     });
 }
-async function removeStoredLocalUser(email) {
-    const normalizedEmail = email.trim().toLowerCase();
+async function removeStoredLocalUser(identifier) {
+    const normalizedIdentifier = identifier.trim().toLowerCase();
     const store = await readStore();
-    const nextUsers = store.users.filter((user)=>user.email !== normalizedEmail);
+    const nextUsers = store.users.filter((user)=>user.email !== normalizedIdentifier && user.username !== normalizedIdentifier);
     if (nextUsers.length === store.users.length) {
         return false;
     }
     await writeStore({
-        users: nextUsers
+        users: sortUsers(nextUsers)
     });
     return true;
 }
-async function verifyStoredLocalUser(email, password) {
-    const normalizedEmail = email.trim().toLowerCase();
+async function verifyStoredLocalUser(identifier, password) {
+    const normalizedIdentifier = identifier.trim().toLowerCase();
     const store = await readStore();
-    const user = store.users.find((item)=>item.email === normalizedEmail);
+    const user = store.users.find((item)=>item.email === normalizedIdentifier || item.username === normalizedIdentifier);
     if (!user) {
-        return false;
+        return null;
     }
     const providedHash = await hashPassword(password, user.salt);
     const expected = Buffer.from(user.passwordHash, "hex");
     const actual = Buffer.from(providedHash, "hex");
     if (expected.length !== actual.length) {
-        return false;
+        return null;
     }
-    return (0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["timingSafeEqual"])(expected, actual);
+    if (!(0, __TURBOPACK__imported__module__$5b$externals$5d2f$node$3a$crypto__$5b$external$5d$__$28$node$3a$crypto$2c$__cjs$29$__["timingSafeEqual"])(expected, actual)) {
+        return null;
+    }
+    return {
+        email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role
+    };
 }
 }),
 "[project]/src/lib/auth/local-auth.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
@@ -222,43 +303,74 @@ function parseLocalUsers() {
         if (separator <= 0) {
             return null;
         }
-        const email = entry.slice(0, separator).trim().toLowerCase();
+        const loginValue = entry.slice(0, separator).trim().toLowerCase();
         const password = entry.slice(separator + 1).trim();
-        if (!email || !password) {
+        if (!loginValue || !password) {
             return null;
         }
+        if (loginValue.includes("@")) {
+            return {
+                email: loginValue,
+                username: loginValue.split("@")[0] ?? "",
+                password,
+                role: "administrativo"
+            };
+        }
         return {
-            email,
-            password
+            email: `${loginValue}@local`,
+            username: loginValue,
+            password,
+            role: "administrativo"
         };
     }).filter((item)=>item !== null);
 }
-async function authenticateLocal(email, password) {
-    const normalizedEmail = email.trim().toLowerCase();
-    let storedUserOk = false;
+async function authenticateLocal(identifier, password) {
+    const normalizedIdentifier = identifier.trim().toLowerCase();
+    let storedUser = null;
     try {
-        storedUserOk = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$user$2d$store$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["verifyStoredLocalUser"])(normalizedEmail, password);
+        storedUser = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$user$2d$store$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["verifyStoredLocalUser"])(normalizedIdentifier, password);
     } catch  {
-        storedUserOk = false;
+        storedUser = null;
     }
-    if (!storedUserOk) {
+    if (storedUser) {
+        const displayName = [
+            storedUser.firstName,
+            storedUser.lastName
+        ].filter(Boolean).join(" ");
+        return {
+            ok: true,
+            user: {
+                email: storedUser.email,
+                username: storedUser.username,
+                firstName: storedUser.firstName,
+                lastName: storedUser.lastName,
+                displayName: displayName || storedUser.username,
+                role: storedUser.role,
+                source: "local"
+            }
+        };
+    }
+    {
         const users = parseLocalUsers();
-        const localUser = users.find((user)=>user.email === normalizedEmail);
+        const localUser = users.find((user)=>user.email === normalizedIdentifier || user.username === normalizedIdentifier);
         if (!localUser || localUser.password !== password) {
             return {
                 ok: false,
                 error: "Credenciales locales inválidas."
             };
         }
+        const user = {
+            email: localUser.email,
+            username: localUser.username,
+            displayName: localUser.username,
+            role: localUser.role,
+            source: "local"
+        };
+        return {
+            ok: true,
+            user
+        };
     }
-    const user = {
-        email: normalizedEmail,
-        source: "local"
-    };
-    return {
-        ok: true,
-        user
-    };
 }
 }),
 "[externals]/node:assert [external] (node:assert, cjs)", ((__turbopack_context__, module, exports) => {
@@ -314,6 +426,10 @@ function getLdapConfig() {
 function buildFilter(template, email) {
     return template.replace(/\{\{\s*email\s*\}\}/gi, email);
 }
+function resolveLdapRole(email) {
+    const adminList = (process.env.LDAP_ADMIN_EMAILS ?? "").split(";").map((item)=>item.trim().toLowerCase()).filter(Boolean);
+    return adminList.includes(email.trim().toLowerCase()) ? "administrativo" : "tecnico";
+}
 function isLdapEnabled() {
     return getLdapConfig() !== null;
 }
@@ -338,6 +454,7 @@ async function authenticateLdap(email, password) {
             await client.bind(normalizedEmail, password);
             const directUser = {
                 email: normalizedEmail,
+                role: resolveLdapRole(normalizedEmail),
                 source: "ldap"
             };
             return {
@@ -373,6 +490,7 @@ async function authenticateLdap(email, password) {
             await authClient.bind(userDn, password);
             const user = {
                 email: typeof entry.mail === "string" && entry.mail.trim() ? entry.mail.toLowerCase() : normalizedEmail,
+                role: resolveLdapRole(typeof entry.mail === "string" && entry.mail.trim() ? entry.mail.toLowerCase() : normalizedEmail),
                 source: "ldap"
             };
             return {
@@ -428,7 +546,12 @@ async function createSessionToken(user) {
     const secret = getJwtSecret();
     return new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$sign$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["SignJWT"]({
         email: user.email,
-        source: user.source
+        source: user.source,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        displayName: user.displayName,
+        role: user.role
     }).setProtectedHeader({
         alg: "HS256"
     }).setSubject(user.email).setIssuedAt().setExpirationTime(`${SESSION_DURATION_SECONDS}s`).sign(secret);
@@ -439,12 +562,22 @@ async function verifySessionToken(token) {
         const { payload } = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$verify$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["jwtVerify"])(token, secret);
         const email = typeof payload.email === "string" ? payload.email : null;
         const source = payload.source === "ldap" || payload.source === "local" ? payload.source : null;
+        const username = typeof payload.username === "string" ? payload.username : undefined;
+        const firstName = typeof payload.firstName === "string" ? payload.firstName : undefined;
+        const lastName = typeof payload.lastName === "string" ? payload.lastName : undefined;
+        const displayName = typeof payload.displayName === "string" ? payload.displayName : undefined;
+        const role = payload.role === "administrativo" || payload.role === "tecnico" ? payload.role : undefined;
         if (!email || !source) {
             return null;
         }
         return {
             email,
-            source
+            source,
+            username,
+            firstName,
+            lastName,
+            displayName,
+            role
         };
     } catch  {
         return null;
@@ -505,44 +638,56 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$cookie
 ;
 ;
 ;
+const AUTH_NO_CACHE_HEADERS = {
+    "Cache-Control": "private, no-store, no-cache, must-revalidate, max-age=0",
+    Pragma: "no-cache",
+    Expires: "0",
+    Vary: "Cookie"
+};
 async function POST(request) {
     try {
         if (!process.env.AUTH_JWT_SECRET?.trim()) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: "Falta AUTH_JWT_SECRET en .env.local para crear la sesión."
             }, {
-                status: 500
+                status: 500,
+                headers: AUTH_NO_CACHE_HEADERS
             });
         }
         const body = await request.json();
-        const email = body.email?.trim().toLowerCase() ?? "";
+        const identifier = (body.username ?? body.email ?? "").trim().toLowerCase();
         const password = body.password?.trim() ?? "";
-        if (!email || !password) {
+        if (!identifier || !password) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                error: "Debes ingresar correo y contraseña."
+                error: "Debes ingresar usuario/correo y contraseña."
             }, {
-                status: 400
+                status: 400,
+                headers: AUTH_NO_CACHE_HEADERS
             });
         }
-        const localResult = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authenticateLocal"])(email, password);
+        const localResult = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$local$2d$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authenticateLocal"])(identifier, password);
         if (localResult.ok && localResult.user) {
             const token = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$session$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["createSessionToken"])(localResult.user);
             const response = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 ok: true,
                 source: "local",
                 user: localResult.user
+            }, {
+                headers: AUTH_NO_CACHE_HEADERS
             });
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$cookies$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["setSessionCookie"])(response, token);
             return response;
         }
         if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$ldap$2d$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["isLdapEnabled"])()) {
-            const ldapResult = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$ldap$2d$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authenticateLdap"])(email, password);
+            const ldapResult = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$ldap$2d$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authenticateLdap"])(identifier, password);
             if (ldapResult.ok && ldapResult.user) {
                 const token = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$session$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["createSessionToken"])(ldapResult.user);
                 const response = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                     ok: true,
                     source: "ldap",
                     user: ldapResult.user
+                }, {
+                    headers: AUTH_NO_CACHE_HEADERS
                 });
                 (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2f$cookies$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["setSessionCookie"])(response, token);
                 return response;
@@ -551,14 +696,16 @@ async function POST(request) {
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             error: "Credenciales inválidas."
         }, {
-            status: 401
+            status: 401,
+            headers: AUTH_NO_CACHE_HEADERS
         });
     } catch (error) {
         const detail = error instanceof Error && error.message ? error.message : "No se pudo procesar el login.";
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             error: detail
         }, {
-            status: 500
+            status: 500,
+            headers: AUTH_NO_CACHE_HEADERS
         });
     }
 }

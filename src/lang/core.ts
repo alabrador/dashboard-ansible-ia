@@ -1,10 +1,10 @@
 export type Language = "es" | "en" | "it" | "pt";
 
 export const languageOptions: Array<{ code: Language; label: string }> = [
-  { code: "es", label: "ES" },
-  { code: "en", label: "EN" },
-  { code: "it", label: "IT" },
-  { code: "pt", label: "PT" },
+  { code: "es", label: "🇪🇸 ES" },
+  { code: "en", label: "🇺🇸 EN" },
+  { code: "it", label: "🇮🇹 IT" },
+  { code: "pt", label: "🇵🇹 PT" },
 ];
 
 const supportedLanguages: Language[] = ["es", "en", "it", "pt"];
