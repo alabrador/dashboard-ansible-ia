@@ -409,7 +409,6 @@ export default function WhisperSettingsPage() {
             </div>
           </div>
 
-          <p className={`hidden text-center text-sm uppercase tracking-[0.2em] sm:block ${topLabelClass}`}>{t.headerTag}</p>
           <h1 className={`${titleClass} text-center`}>{t.headerTitle}</h1>
           <p className={`mx-auto max-w-2xl text-center text-xs sm:text-sm ${subtitleClass}`}>{t.headerDescription}</p>
         </header>

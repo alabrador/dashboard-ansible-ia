@@ -1,31 +1,58 @@
-[00:00:01.645] Server  LOG     ✓ Ready in 1286ms
-[00:00:02.913] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:03:28.196] Server  LOG       Reload env: .env.local
-[00:03:34.537] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
-[00:03:35.085] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:37.356] Server  LOG     ✓ Compiled in 0ms
-[00:03:38.064] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:03:38.389] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
-[00:03:38.831] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:40.238] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:40.239] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:40.239] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:40.349] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:40.965] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:41.499] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:47.013] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:52.113] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:03:55.061] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:04:04.117] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:04:16.106] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:04:28.114] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:04:40.115] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:04:52.116] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:05:04.107] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:05:10.119] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:05:10.848] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:05:16.109] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:05:28.118] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:05:46.879] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:05:52.107] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
-[00:06:04.108] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:00:00.633] Server  WARN    ⚠ Turbopack's filesystem cache has been deleted because we previously detected an internal error in Turbopack. Builds or page loads may be slower as a result.
+[00:00:01.012] Server  LOG     ✓ Ready in 820ms
+[00:00:17.606] Server  LOG     ○ Compiling / ...
+[00:00:23.797] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:24.113] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:00:24.529] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:06:36.160] Server  LOG     ✓ Compiled in 334ms
+[00:08:53.524] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:08:53.940] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:08:54.480] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:09:50.870] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:09:54.313] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:10:52.095] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:52.380] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:10:52.959] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:12:49.357] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:12:49.627] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:12:50.236] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:14:15.419] Server  LOG     ✓ Compiled in 131ms
+[00:15:52.111] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:15:52.440] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:15:53.066] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:15:55.612] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:15:58.469] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:15:58.833] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:15:59.216] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:16:01.383] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:16:04.567] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:16:17.248] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:16:23.757] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:16:28.012] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:16:31.737] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:17:05.053] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:17:14.471] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:17:16.454] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:17:19.326] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:17:33.539] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:17:37.690] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:17:39.958] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:18:42.567] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:18:46.132] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:19:16.106] Server  LOG     ✓ Compiled in 80ms
+[00:19:48.754] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:19:49.077] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:19:49.742] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:19:52.108] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:19:54.461] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:20:12.009] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:20:16.584] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:20:23.280] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:20:53.095] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:22:06.125] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:06.368] Browser WARN    THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[00:22:06.844] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:22:08.705] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:22:11.142] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:22:15.379] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[00:22:19.178] Browser WARN    THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.

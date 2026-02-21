@@ -256,19 +256,13 @@ export default function AnsibleSettingsPage() {
 
   const userButtonClass =
     theme === "dark"
-      ? "inline-flex h-9 items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 text-xs font-medium text-zinc-100 transition hover:bg-white/15 sm:h-10 sm:px-3"
-      : "inline-flex h-9 items-center gap-1.5 rounded-full border border-zinc-300 bg-white px-2.5 text-xs font-medium text-zinc-800 transition hover:bg-zinc-100 sm:h-10 sm:px-3";
+      ? "inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-zinc-100 transition hover:bg-white/15 sm:h-10 sm:w-10"
+      : "inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-800 transition hover:bg-zinc-100 sm:h-10 sm:w-10";
 
-  const languageSelectWrapperClass = "relative w-24 sm:w-28";
-  const languageSelectClass =
+  const iconButtonClass =
     theme === "dark"
-      ? "h-9 w-full appearance-none rounded-full border border-white/20 bg-zinc-900/75 pl-3 pr-8 text-xs font-semibold text-zinc-200 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/40 sm:h-10 sm:text-sm"
-      : "h-9 w-full appearance-none rounded-full border border-zinc-300 bg-white pl-3 pr-8 text-xs font-semibold text-zinc-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 sm:h-10 sm:text-sm";
-
-  const languageSelectChevronClass =
-    theme === "dark"
-      ? "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400"
-      : "pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500";
+      ? "inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-zinc-200 transition hover:bg-white/15 sm:h-10 sm:w-10"
+      : "inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-700 transition hover:bg-zinc-100 sm:h-10 sm:w-10";
 
   const menuItemClass =
     theme === "dark"
@@ -283,61 +277,63 @@ export default function AnsibleSettingsPage() {
   const userName = userDisplayName || (userEmail ? userEmail.split("@")[0] : t.unknownUser);
   const isAdmin = userRole === "administrativo";
 
+  const cycleLanguage = () => {
+    const currentIndex = languageOptions.findIndex((option) => option.code === language);
+    const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % languageOptions.length : 0;
+    const nextLanguage = languageOptions[nextIndex]?.code;
+    if (nextLanguage && isSupportedLanguage(nextLanguage)) {
+      setLanguage(nextLanguage);
+    }
+  };
+
   if (!isThemeInitialized || !isSessionReady || !isAdmin) {
     return null;
   }
 
   return (
     <main className={mainClass}>
-      <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 py-2 sm:min-h-screen sm:justify-start sm:gap-6 sm:px-6 sm:py-10">
-        <header className={`sticky top-0 z-30 space-y-2 border-b px-1 py-2 backdrop-blur sm:space-y-3 ${theme === "dark" ? "border-white/10 bg-zinc-950/80" : "border-zinc-200 bg-zinc-50/90"}`}>
+      <header className={`sticky top-0 z-30 border-b backdrop-blur ${theme === "dark" ? "border-white/10 bg-zinc-950/80" : "border-zinc-200 bg-zinc-50/90"}`}>
+        <div className="mx-auto w-full max-w-4xl space-y-2 px-3 py-2 sm:space-y-3 sm:px-6 sm:py-3">
           <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             <Link
               href="/"
               className={
                 theme === "dark"
-                  ? "inline-flex h-8 items-center rounded-full border border-white/20 bg-white/5 px-2 text-xs font-semibold tracking-wider text-zinc-200"
-                  : "inline-flex h-8 items-center rounded-full border border-zinc-300 bg-white px-2 text-xs font-semibold tracking-wider text-zinc-700"
+                  ? "inline-flex h-8 items-center gap-2 rounded-full border border-white/20 bg-white/5 px-2.5 text-xs font-semibold tracking-wider text-zinc-200"
+                  : "inline-flex h-8 items-center gap-2 rounded-full border border-zinc-300 bg-white px-2.5 text-xs font-semibold tracking-wider text-zinc-700"
               }
             >
               <Image src="/logo.png" alt={t.logoAlt} width={28} height={28} className="h-5 w-auto object-contain" priority />
+              <span className="hidden sm:inline">{t.headerTag}</span>
             </Link>
 
             <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
-              <label className="sr-only" htmlFor="language-select-ansible-settings">{t.languageSelectAria}</label>
-              <div className={languageSelectWrapperClass}>
-                <select
-                  id="language-select-ansible-settings"
-                  aria-label={t.languageSelectAria}
-                  value={language}
-                  onChange={(event) => {
-                    const nextLanguage = event.target.value;
-                    if (isSupportedLanguage(nextLanguage)) {
-                      setLanguage(nextLanguage);
-                    }
-                  }}
-                  className={languageSelectClass}
-                >
-                  {languageOptions.map((option) => (
-                    <option key={option.code} value={option.code}>{option.label}</option>
-                  ))}
-                </select>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={languageSelectChevronClass} aria-hidden="true">
-                  <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.171l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.24 4.5a.75.75 0 0 1-1.08 0l-4.24-4.5a.75.75 0 0 1 .02-1.06z" clipRule="evenodd" />
+              <button
+                type="button"
+                onClick={cycleLanguage}
+                className={iconButtonClass}
+                aria-label={t.languageSelectAria}
+                title={languageOptions.find((option) => option.code === language)?.label ?? t.languageSelectAria}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M2 12h20" />
+                  <path d="M12 2a15 15 0 0 1 0 20" />
+                  <path d="M12 2a15 15 0 0 0 0 20" />
                 </svg>
-              </div>
+              </button>
 
               <button
                 type="button"
                 onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-                className={
-                  theme === "dark"
-                    ? "inline-flex h-9 items-center rounded-full border border-white/20 bg-white/10 px-3 text-[11px] font-medium text-zinc-200 transition hover:bg-white/15 sm:h-10 sm:px-4 sm:text-xs"
-                    : "inline-flex h-9 items-center rounded-full border border-zinc-300 bg-white px-3 text-[11px] font-medium text-zinc-700 transition hover:bg-zinc-100 sm:h-10 sm:px-4 sm:text-xs"
-                }
+                className={iconButtonClass}
                 aria-label={t.themeToggleAria}
               >
-                {theme === "dark" ? t.themeLight : t.themeDark}
+                {theme === "dark" ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="M4.93 4.93l1.41 1.41" /><path d="M17.66 17.66l1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="M6.34 17.66l-1.41 1.41" /><path d="M19.07 4.93l-1.41 1.41" /></svg>
+                )}
               </button>
 
               <div ref={settingsMenuRef} className="relative">
@@ -382,7 +378,6 @@ export default function AnsibleSettingsPage() {
                     <path d="M20 21a8 8 0 0 0-16 0" />
                     <circle cx="12" cy="8" r="4" />
                   </svg>
-                  <span className="max-w-20 truncate sm:max-w-24">{userName}</span>
                 </button>
                 {isUserMenuOpen ? (
                   <div className={menuPanelClass}>
@@ -399,7 +394,10 @@ export default function AnsibleSettingsPage() {
           <p className={`hidden text-center text-sm uppercase tracking-[0.2em] sm:block ${topLabelClass}`}>{t.headerTag}</p>
           <h1 className={`${titleClass} text-center`}>{t.headerTitle}</h1>
           <p className={`mx-auto max-w-2xl text-center text-xs sm:text-sm ${subtitleClass}`}>{t.headerDescription}</p>
-        </header>
+        </div>
+      </header>
+
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-4xl flex-col justify-start gap-2 px-3 pb-2 pt-2 sm:min-h-screen sm:justify-start sm:gap-6 sm:px-6 sm:pb-10 sm:pt-6">
 
         <section className={panelClass}>
           <h2 className={`text-xs font-semibold uppercase tracking-wider ${topLabelClass}`}>{t.sectionConfig}</h2>
