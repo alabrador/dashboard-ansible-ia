@@ -470,6 +470,8 @@ export default function Home() {
       ? t.buttonStop
       : t.buttonSpeak;
 
+  const showPrimaryButtonLabel = isLoading || isRecording;
+
   const panelClass =
     theme === "dark"
       ? "rounded-xl border border-white/15 bg-white/5 p-4 shadow-[0_8px_24px_-16px_rgba(59,130,246,0.35)] backdrop-blur-2xl sm:rounded-2xl sm:p-5"
@@ -575,7 +577,7 @@ export default function Home() {
                 className="h-5 w-auto object-contain"
                 priority
               />
-              <span className="hidden sm:inline">{t.headerSubtitle}</span>
+              <span className="hidden sm:inline">Dashboard Ansible - Whisper IA</span>
             </div>
             <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
               <button
@@ -762,7 +764,9 @@ export default function Home() {
                 </span>
               </button>
 
-              <p className={`text-xs font-medium sm:text-sm ${statusTextClass}`}>{primaryButtonLabel}</p>
+              {showPrimaryButtonLabel ? (
+                <p className={`text-xs font-medium sm:text-sm ${statusTextClass}`}>{primaryButtonLabel}</p>
+              ) : null}
 
               <div className={helperCardClass}>
                 {isLoading

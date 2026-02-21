@@ -206,8 +206,6 @@
     --text-xs--line-height: calc(1 / .75);
     --text-sm: .875rem;
     --text-sm--line-height: calc(1.25 / .875);
-    --text-base: 1rem;
-    --text-base--line-height: calc(1.5 / 1);
     --text-xl: 1.25rem;
     --text-xl--line-height: calc(1.75 / 1.25);
     --text-2xl: 1.5rem;
@@ -865,10 +863,6 @@
 
   .max-w-4xl {
     max-width: var(--container-4xl);
-  }
-
-  .max-w-20 {
-    max-width: calc(var(--spacing) * 20);
   }
 
   .max-w-md {
@@ -1581,10 +1575,6 @@
     padding: calc(var(--spacing) * 4);
   }
 
-  .px-1 {
-    padding-inline: calc(var(--spacing) * 1);
-  }
-
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
   }
@@ -1680,11 +1670,6 @@
   .tracking-\[0\.2em\] {
     --tw-tracking: .2em;
     letter-spacing: .2em;
-  }
-
-  .tracking-\[0\.16em\] {
-    --tw-tracking: .16em;
-    letter-spacing: .16em;
   }
 
   .tracking-\[0\.18em\] {
@@ -2219,12 +2204,6 @@
   }
 
   @media (min-width: 40rem) {
-    .sm\:max-w-24 {
-      max-width: calc(var(--spacing) * 24);
-    }
-  }
-
-  @media (min-width: 40rem) {
     .sm\:items-center {
       align-items: center;
     }
@@ -2309,12 +2288,6 @@
   }
 
   @media (min-width: 40rem) {
-    .sm\:px-3 {
-      padding-inline: calc(var(--spacing) * 3);
-    }
-  }
-
-  @media (min-width: 40rem) {
     .sm\:px-4 {
       padding-inline: calc(var(--spacing) * 4);
     }
@@ -2367,13 +2340,6 @@
     .sm\:text-4xl {
       font-size: var(--text-4xl);
       line-height: var(--tw-leading, var(--text-4xl--line-height));
-    }
-  }
-
-  @media (min-width: 40rem) {
-    .sm\:text-base {
-      font-size: var(--text-base);
-      line-height: var(--tw-leading, var(--text-base--line-height));
     }
   }
 
