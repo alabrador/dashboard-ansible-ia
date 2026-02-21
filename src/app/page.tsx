@@ -738,7 +738,7 @@ export default function Home() {
             <div className="flex h-full flex-col items-center justify-center gap-3 sm:gap-4">
               <button
                 onClick={isRecording ? stopRecording : startRecording}
-                className={`group relative flex h-16 w-16 items-center justify-center rounded-full border border-white/35 text-2xl font-semibold shadow-lg shadow-sky-500/20 ring-2 ring-white/15 transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 sm:h-20 sm:w-20 ${primaryButtonClass}`}
+                className={`group relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-white/35 text-2xl font-semibold shadow-lg shadow-sky-500/20 ring-2 ring-white/15 transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 sm:h-20 sm:w-20 ${primaryButtonClass}`}
                 disabled={isLoading}
               >
                 <span
@@ -753,7 +753,7 @@ export default function Home() {
                     strokeWidth="2.2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-6 w-6 sm:h-8 sm:w-8"
+                    className="h-7 w-7 sm:h-8 sm:w-8"
                     aria-hidden="true"
                   >
                     <rect x="9" y="3" width="6" height="12" rx="3" />
