@@ -120,13 +120,16 @@ export default function Home() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const speechRecognitionRef = useRef<BrowserSpeechRecognition | null>(null);
+  const wakeRecognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const settingsMenuRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const maxDurationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wakeRestartTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const speechDetectedRef = useRef(false);
   const recordingStartedAtRef = useRef(0);
   const transcriptHintRef = useRef("");
+  const wakeWordArmedRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -263,6 +266,23 @@ export default function Home() {
     void loadSession();
   }, [router]);
 
+  useEffect(() => {
+    if (!isThemeInitialized || !isSessionReady) {
+      return;
+    }
+
+    if (isRecording || isLoading) {
+      stopWakeWordListening();
+      return;
+    }
+
+    startWakeWordListening();
+
+    return () => {
+      stopWakeWordListening();
+    };
+  }, [isThemeInitialized, isSessionReady, isRecording, isLoading, language]);
+
   const clearSilenceTimer = () => {
     if (silenceTimeoutRef.current) {
       clearTimeout(silenceTimeoutRef.current);
@@ -274,6 +294,81 @@ export default function Home() {
     if (maxDurationTimeoutRef.current) {
       clearTimeout(maxDurationTimeoutRef.current);
       maxDurationTimeoutRef.current = null;
+    }
+  };
+
+  const clearWakeRestartTimer = () => {
+    if (wakeRestartTimeoutRef.current) {
+      clearTimeout(wakeRestartTimeoutRef.current);
+      wakeRestartTimeoutRef.current = null;
+    }
+  };
+
+  const stopWakeWordListening = () => {
+    clearWakeRestartTimer();
+    if (wakeRecognitionRef.current) {
+      wakeRecognitionRef.current.onerror = null;
+      wakeRecognitionRef.current.onresult = null;
+      wakeRecognitionRef.current.stop();
+      wakeRecognitionRef.current = null;
+    }
+  };
+
+  const startWakeWordListening = () => {
+    if (!isThemeInitialized || !isSessionReady || isRecording || isLoading) {
+      return;
+    }
+
+    const SpeechRecognitionCtor = getSpeechRecognitionConstructor();
+    if (!SpeechRecognitionCtor) {
+      return;
+    }
+
+    stopWakeWordListening();
+
+    try {
+      const recognition = new SpeechRecognitionCtor();
+      recognition.lang = speechLocales[language];
+      recognition.interimResults = true;
+      recognition.continuous = true;
+
+      recognition.onresult = (event) => {
+        const segments: string[] = [];
+
+        for (let index = event.resultIndex; index < event.results.length; index += 1) {
+          const part = event.results[index]?.[0]?.transcript ?? "";
+          if (part) {
+            segments.push(part);
+          }
+        }
+
+        const mergedText = segments.join(" ").toLowerCase();
+        if (!mergedText.includes("ejecutar")) {
+          return;
+        }
+
+        wakeWordArmedRef.current = true;
+        stopWakeWordListening();
+        void startRecording();
+      };
+
+      recognition.onerror = () => {
+        if (isRecording || isLoading) {
+          return;
+        }
+        clearWakeRestartTimer();
+        wakeRestartTimeoutRef.current = setTimeout(() => {
+          startWakeWordListening();
+        }, 1000);
+      };
+
+      recognition.start();
+      wakeRecognitionRef.current = recognition;
+    } catch {
+      clearWakeRestartTimer();
+      wakeRestartTimeoutRef.current = setTimeout(() => {
+        startWakeWordListening();
+      }, 1000);
     }
   };
 
@@ -352,6 +447,7 @@ export default function Home() {
   };
 
   const startRecording = async () => {
+    stopWakeWordListening();
     setError("");
     setResult(null);
     setLiveTranscript("");
@@ -426,7 +522,33 @@ export default function Home() {
         speechDetectedRef.current = false;
         const transcriptHint = transcriptHintRef.current;
         transcriptHintRef.current = "";
-        void runExecution(blob, transcriptHint);
+
+        const transcriptHintLower = transcriptHint.toLowerCase();
+        const heardWakeWord = wakeWordArmedRef.current || transcriptHintLower.includes("ejecutar");
+        wakeWordArmedRef.current = false;
+
+        if (!heardWakeWord) {
+          setAudioBlob(null);
+          setLiveTranscript("");
+          setTranscript("");
+          setError("Di 'ejecutar' para activar la transcripción.");
+          return;
+        }
+
+        const cleanedTranscriptHint = transcriptHint
+          .replace(/\bejecutar\b/gi, "")
+          .replace(/\s+/g, " ")
+          .trim();
+
+        if (!cleanedTranscriptHint) {
+          setAudioBlob(null);
+          setLiveTranscript("");
+          setTranscript("");
+          setError("Se detectó 'ejecutar'. Ahora di el comando.");
+          return;
+        }
+
+        void runExecution(blob, cleanedTranscriptHint);
       };
 
       recorder.start();
@@ -435,6 +557,8 @@ export default function Home() {
       setIsRecording(true);
     } catch {
       setError(t.micAccessError);
+      wakeWordArmedRef.current = false;
+      startWakeWordListening();
     }
   };
 
